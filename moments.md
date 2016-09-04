@@ -4,7 +4,11 @@ title: 时刻
 permalink: /moments/
 ---
 
-  * 2016年7月14号，[文章 拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"} 登上 [开发者头条榜首](http://toutiao.io/posts/lh7zkk){:target="_blank"}，达成成就[文章被开发者头条邮件推送](/img/moments/understand_okhttp_top_at_toutiao_io.png){:target="_blank"}
+  * 2016年8月7号，[在 GDG Android Meetup](http://mp.weixin.qq.com/s?__biz=MzA5MDg3MjczMg==&mid=2652003543&idx=1&sn=849c06ac198cbfe9cdcfae90b2a17021&scene=1&srcid=0902QGgAZZKCpZbNNPD66mnu#rd){:target="_blank"} 分享 [近乎完美的安卓 Model 层架构](https://github.com/Piasy/talks/tree/master/GDGMeetUp_20160807){:target="_blank"}，感谢 GDG，感谢百万
+  
+  * 2016年7月15号，成功混进 [codeKK 友链](http://www.codekk.com/gays){:target="_blank"} 😁
+  
+  * 2016年7月14号，[文章 拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"} 登上 [开发者头条榜首](http://toutiao.io/posts/lh7zkk){:target="_blank"}，成就[文章被开发者头条邮件推送](/img/moments/understand_okhttp_top_at_toutiao_io.png){:target="_blank"}达成
   
   * 2016年5月30号，follower 突破 300，dashboard star 超过再次逼近 1.5K（transfer OkBuck 暴跌 300 多）
   
