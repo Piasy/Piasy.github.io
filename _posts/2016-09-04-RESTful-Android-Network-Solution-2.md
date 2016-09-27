@@ -227,17 +227,20 @@ public class YLApiErrorAwareConverterFactory extends Converter.Factory {
                 mDelegateFactory.responseBodyConverter(type,
                         annotations, retrofit);
         return value -> {
-            ResponseBody clone = ResponseBody.create(           // 3
-                    value.contentType(),
-                    value.contentLength(),
-                    value.source().buffer().clone());
-            Object apiError = apiErrorConverter.convert(clone);
-            if (apiError instanceof YLApiError
-                    && ((YLApiError) apiError).isApiError()) {
-                throw (YLApiError) apiError;                    // 4
-            }
-            return delegateConverter.convert(value);
-        };
+          // read them all, then create a new ResponseBody for ApiError
+          // because the response body is wrapped, 
+          // we can't clone the ResponseBody correctly
+          MediaType mediaType = value.contentType();
+          String stringBody = value.string();                   // 3
+          Object apiError = apiErrorConverter
+                  .convert(ResponseBody.create(mediaType, stringBody));
+          if (apiError instanceof YLApiError 
+                  && ((YLApiError) apiError).isApiError()) {
+              throw (YLApiError) apiError;                      // 4
+          }
+          // then create a new ResponseBody for normal body
+          return delegateConverter
+                  .convert(ResponseBody.create(mediaType, stringBody));
     }
 }
 ~~~
@@ -248,6 +251,8 @@ public class YLApiErrorAwareConverterFactory extends Converter.Factory {
 2. 除了正常的 response body converter，我们还需要一个专门转化为 API Error 的 converter。
 3. 这里我们必须对 `ResponseBody` 进行 clone，因为 Okio 的流都是只允许读一次的，如果我们直接对传入的参数进行操作，那后面我们尝试解析为正常 body 时就会出错了。
 4. 如果确实是一个 API Error，那我们就抛出它，进入后面的错误处理流程。
+
+**2016.09.27 更新**：由于 Retrofit 会对 OkHttp 返回的 ResponseBody 进行包装，会导致以前的 clone 无法奏效，所以这里我们直接把 body 作为 String 读出来，后面尝试解析为 ApiError 以及正常 body 时，都创建一个新的 ResponseBody。
 
 ### 4.2，单元测试
 
