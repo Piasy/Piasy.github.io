@@ -232,11 +232,14 @@ public class YLApiErrorAwareConverterFactory extends Converter.Factory {
           // we can't clone the ResponseBody correctly
           MediaType mediaType = value.contentType();
           String stringBody = value.string();                   // 3
-          Object apiError = apiErrorConverter
-                  .convert(ResponseBody.create(mediaType, stringBody));
-          if (apiError instanceof YLApiError 
-                  && ((YLApiError) apiError).isApiError()) {
-              throw (YLApiError) apiError;                      // 4
+          try {
+              Object apiError = apiErrorConverter
+                      .convert(ResponseBody.create(mediaType, stringBody));
+              if (apiError instanceof YLApiError 
+                      && ((YLApiError) apiError).isApiError()) {
+                  throw (YLApiError) apiError;                  // 4
+              }
+          } catch (JsonSyntaxException notApiError) {
           }
           // then create a new ResponseBody for normal body
           return delegateConverter
