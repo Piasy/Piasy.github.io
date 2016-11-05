@@ -10,21 +10,23 @@ I enjoy coding. I’m focusing on Android development now, and I love open sourc
 
 ### Summary
 
-I’m Piasy (建林，许). I receive my Bachelor degree on Computer Science in Tsinghua University. During my college time, I did internship in Baidu, Inc. and YOUNG team, maintaining C++ platform and develop Android client respectively. I appreciate technology, love technology, and enjoy dealing real-life challenge, improving productivity, and making life more colorful, with technology. Now I’m focusing on Android development, but my sight will never be limited in it, instead I’ll be excited to know awesome technologies in every field. I do believe what one of my mentor in college said: We are not genius, but we could become more excellent than most of others with harder working. And I am now on my way to become an expert. My dev blog is [http://blog.piasy.com/](http://blog.piasy.com/).
+I’m Piasy (建林，许). I receive my Bachelor degree on Computer Science in Tsinghua University at 2015. Now I'm leading the Android team at YOLO, a mobile live streaming App. I appreciate technology, and enjoy dealing real-life challenge with technology. Now I’m focusing on Android application development, but my sight will never be limited in it. I think solving valuable problems with team members, efficiently and reliably, is the most important thing when building a product. To achieve this, critical thinking, ability to learn new things, and collaborating with others are key points. My dev blog is [http://blog.piasy.com/](http://blog.piasy.com/), and my GitHub profile is [https://github.com/Piasy/](https://github.com/Piasy/).
 
 ### What I have built
 
-**YOUNG** (Android client), a college students’ social network app, develop & maintain & automating UI tests, this project is not develop and out of maintaining, [info link](http://www.wandoujia.com/apps/com.xueba.client.app);
-
 **YOLO** (Android client), live streaming app for friends, it keeps privacy, and has awesome interaction between users, develop & maintain, [official link](https://www.yoloyolo.tv/);
 
-**[OkBuck](https://github.com/Piasy/OkBuck)**, a Gradle plugin, help Android developers to utilize the super fast build system BUCK with several lines configuration;
+**[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)**, An Android TDD bootstrap project, with well designed architecture and collection of awesome libraries, including TDD / code coverage / CI / code quality integration. Aiming to be a good start point of new project, with practice and feedback from two production project.
 
-**[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)**, an Android TDD bootstrap project, with well designed architecture and collection of awesome libraries, including TDD / code coverage / CI / code quality integration;
+**[OkBuck](https://github.com/Piasy/OkBuck)**, A Gradle plugin, help Android developers to utilize the super fast build system BUCK with several lines configuration. It has been transferred to Uber at Sep. 2016.
 
-**[RxAndroidAudio](https://github.com/Piasy/RxAndroidAudio)**, Android Audio API encapsulation library, with part Rx support;
+**[RxAndroidAudio](https://github.com/Piasy/RxAndroidAudio)**, Android Audio API encapsulation library, with part Rx support, maybe the most robust Android Audio API encapsulation library.
 
-**[notes](https://github.com/Piasy/notes)**, this is my tech notes in daily reading and practicing;
+**[SafelyAndroid](https://github.com/Piasy/SafelyAndroid)**, Build safely Android App, no more Activity not found, Activity state loss and NPE during fragment transaction!
+
+**[AdvancedRxJava](https://github.com/Piasy/AdvancedRxJava)**, The Chinese translation of blog series Advanced Reactive Java  [http://akarnokd.blogspot.com/](http://akarnokd.blogspot.com/).
+
+**YOUNG** (Android client), a college students’ social network app, develop & maintain & automating UI tests, this project is not develop and out of maintaining, [info link](http://www.wandoujia.com/apps/com.xueba.client.app);
 
 For more projects, please see [my Github profile](https://github.com/Piasy).
 
