@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-[中文版]({{ site.baseurl }}/about-zh), [full resume]({{ site.baseurl }}/resume/dist/piasy_resume_en.html)
+[中文版]({{ site.baseurl }}/about-zh), [full resume](http://resume.piasy.com/dist/piasy_resume_en.html)
 
 ### TL;DR
 I enjoy coding. I’m focusing on Android development now, and I love open source, agile development, and new technologies which I'm definitely willing to try out. I am on my way to become an expert.

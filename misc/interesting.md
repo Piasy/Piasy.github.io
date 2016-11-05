@@ -8,7 +8,7 @@ permalink: /interesting/
 
   * [时刻]({{ site.baseurl }}/moments/)
   * [真经](http://journey.piasy.com/)
-  * [简历]({{ site.baseurl }}/resume/)
+  * [简历](http://resume.piasy.com/)
 
 ##
 
@@ -18,4 +18,4 @@ permalink: /interesting/
 ##
 
   * [code2png]({{ site.baseurl }}/code2png/)
-  * [Love Story]({{ site.baseurl }}/LoveStory/)
+  * [Love Story](http://love.piasy.com/)
