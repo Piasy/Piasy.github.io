@@ -10,6 +10,11 @@ permalink: /interesting/
   * [真经](http://journey.piasy.com/)
   * [简历](http://resume.piasy.com/)
 
+## 公开演讲
+
+  * 2016.11.17，[droidcon Beijing，打通 RxJava 的任督二脉](/talks/RxJava-DroidCon-Beijing-Piasy)，[试讲录屏](/RxJava-droidcon/)
+  * 2016.08.07，[GDG meet up，完美的 Android model 层架构](/talks/Perfect-Android-Model-Layer-GDG-Meetup-Piasy)
+
 ##
 
   * [开源书籍]({{ site.baseurl }}/books/)
