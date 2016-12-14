@@ -6,6 +6,4 @@ permalink: /RxJava-droidcon-playback/
 
 往下看 ->
 
-<video style="width: 480px; height: 640px; left: 0px; top: 0px; transform: none;" controls="controls">
-    <source src="https://media.githubusercontent.com/media/Piasy/talks/gh-pages/RxJava-DroidCon-Beijing-Piasy/RxJava-DroidCon-Beijing-Piasy-playback.mp4" type="video/mp4" />
-</video>
+<iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=y0347i5pue7&tiny=0&auto=0" allowfullscreen></iframe>

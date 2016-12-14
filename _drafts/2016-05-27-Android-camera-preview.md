@@ -360,3 +360,6 @@ try {
 int sensorOrientation = orientation == null ? 0 : orientation;
 // sensorOrientation 就是相机的角度
 ~~~
+
+
+http://mp.weixin.qq.com/s?__biz=MzAxMzYyNDkyNA==&mid=2651332618&idx=1&sn=9192fd1f027f2e1ae287e6f630634b5f&chksm=80633339b714ba2fed52c1350bfdc681ac9386020540e29eaa4cd8727f2b6182fc9ad8c62c3b&mpshare=1&scene=1&srcid=1124GrEPm9TUpxW5nwmjQSSH#rd
