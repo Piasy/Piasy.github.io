@@ -5,6 +5,8 @@ tags:
     - 安卓开发
 ---
 
+http://tech.youzan.com/surfaceview-sourcecode/
+
 ## `SurfaceTexture` 和 `Surface`
 
 通常来说，拍照都需要先提供预览，预览的是帧数据，显示在 `SurfaceTexture` 上，或者 `Surface` 上。`SurfaceTexture` 把图像作为 OpenGL ES 纹理进行渲染，而数据来源则可以是相机或者解码的视频流。`Surface` 则负责管理用来显示的数据帧，`Surface` 渲染数据实际上也是通过其持有的 `SurfaceTexture` 对象实现的。
