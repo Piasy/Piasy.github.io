@@ -44,9 +44,13 @@ Task 内的 Activity 以栈的形式组织起来，这个 _栈_ 也就是 develo
 
 还是有两个问题，启动 singleInstance，会不会在新的 Task？singleInstance 启动新的 Activity，新的 Activity 是不是在新的 Task？
 
-答案都是否定的：第一个问题，需要 singleInstance Activity 设置不同的 taskAffinity；第二个问题，需要新的 Activity launchMode 为 singleTask 或 singleInstance，且设置不同的 taskAffinity。
+~~答案都是否定的：第一个问题，需要 singleInstance Activity 设置不同的 taskAffinity；第二个问题，需要新的 Activity launchMode 为 singleTask 或 singleInstance，且设置不同的 taskAffinity。~~
 
-那 singleInstance 和 singleTask 还有区别吗？现在看来是没有了！
+~~那 singleInstance 和 singleTask 还有区别吗？现在看来是没有了！~~
+
+**2017.01.17 更新：**上面的结论来自错误的测试结果，代码写错了，manifest 中 singleInstance 都写成了 singleTask。惭愧。
+
+singleInstance 的 Activity，不需要设置 taskAffinity 就可以启动到新的 task；而它启动的新 Activity，只有 taskAffinity 为不同的值时，才会启动到新的 task，至于新 Activity 的 launchMode 是什么，无关紧要。
 
 ### back stack 合并？
 
@@ -66,6 +70,8 @@ developer 的描述很具有迷惑性，其实根本不存在 back stack 的合�
 
 新启动的 Activity 是否在新的 Task，由两个东西一起控制：launchMode 和 taskAffinity，只有 launchMode 为 singleTask 或 singleInstance，且设置不同的 taskAffinity，新的 Activity 才会启动到新的 Task 中。
 
+**2017.01.17 补充：**launchMode 相关的内容，不必太过纠结，我们只需要使用的时候避免复杂用法，并小心验证，而且被问到能把简单的情况答出来，就够了。oasisfeng 老师对这块内容的评价是：“设计的非常失败的部分”。 :)
+
 ## Intent flag
 
 launch mode 除了可以在 manifest 中通过 launchMode 属性控制，还能由调用方在 Intent 中设置 Intent flag。
@@ -81,6 +87,8 @@ A 启动 B，B 的启动行为受 B 在 manifest 中的声明，以及 A 在 Int
 launch mode 相关的还有更多复杂的内容，比如 taskAffinity 完整的作用，allowTaskReparenting 属性，系统清除 Task 的行为控制……这些内容已经超出了我的面试和工作经验，就暂且到此为止。
 
 ## 附录1：launchMode 测试结果
+
+测试代码可以从 [GitHub 获取](https://github.com/Piasy/AndroidPlayground/tree/master/showcase/TaskDemo)。
 
 ### singleTask 测试
 
@@ -100,23 +108,31 @@ singleTask 设置 taskAffinity 为包名以外的值：
 
 singleInstance 不设置 taskAffinity：
 
-![2017010810139activity_single_instance_without_task_affinity.png](https://imgs.babits.top/2017010810139activity_single_instance_without_task_affinity.png)
+![2017011786410activity_single_instance_without_task_affinity.png](https://imgs.babits.top/2017011786410activity_single_instance_without_task_affinity.png)
 
 singleInstance 设置 taskAffinity 为包名：
 
-![2017010863645activity_single_instance_with_same_task_affinity.png](https://imgs.babits.top/2017010863645activity_single_instance_with_same_task_affinity.png)
+![2017011752729activity_single_instance_with_same_task_affinity.png](https://imgs.babits.top/2017011752729activity_single_instance_with_same_task_affinity.png)
 
 singleInstance 设置 taskAffinity 为包名以外的值：
 
-![201701084414activity_single_instance_with_different_task_affinity.png](https://imgs.babits.top/201701084414activity_single_instance_with_different_task_affinity.png)
+![2017011751645activity_single_instance_with_different_task_affinity.png](https://imgs.babits.top/2017011751645activity_single_instance_with_different_task_affinity.png)
+
+singleInstance（设置 taskAffinity 为包名以外的值）启动 standard（不设置 taskAffinity）：
+
+![2017011751555single_instance_difftaskaff_launch_standard_notaskaff.png](https://imgs.babits.top/2017011751555single_instance_difftaskaff_launch_standard_notaskaff.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 standard（设置 taskAffinity 为包名以外的值）：
 
-![2017010812926single_instance_difftaskaff_launch_standard_difftaskaff.png](https://imgs.babits.top/2017010812926single_instance_difftaskaff_launch_standard_difftaskaff.png)
+![2017011712232single_instance_difftaskaff_launch_standard_difftaskaff.png](https://imgs.babits.top/2017011712232single_instance_difftaskaff_launch_standard_difftaskaff.png)
+
+singleInstance（设置 taskAffinity 为包名以外的值）启动 singleTask（不设置 taskAffinity）：
+
+![201701178055single_instance_difftaskaff_launch_singletask_notaskaff.png](https://imgs.babits.top/201701178055single_instance_difftaskaff_launch_singletask_notaskaff.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 singleTask（设置 taskAffinity 为包名以外的值）：
 
-![2017010837840single_instance_difftaskaff_launch_singletask_difftaskaff.png](https://imgs.babits.top/2017010837840single_instance_difftaskaff_launch_singletask_difftaskaff.png)
+![2017011789836single_instance_difftaskaff_launch_singletask_difftaskaff.png](https://imgs.babits.top/2017011789836single_instance_difftaskaff_launch_singletask_difftaskaff.png)
 
 ### Task 合并测试
 
