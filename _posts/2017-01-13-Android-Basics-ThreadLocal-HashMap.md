@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 安卓基础：ThreadLocal，HashMap
+title: Java 基础：ThreadLocal，HashMap
 tags:
     - 安卓开发
     - 基础知识
