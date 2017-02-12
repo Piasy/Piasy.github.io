@@ -62,7 +62,7 @@ onReceive 函数在主线程被调用，返回后系统就会认为 Receiver 所
 
 ### 应用和进程的关系？
 
-一个虚拟机只能跑一个进程，一个进程里可以跑多个应用（声明相同的 android:shareUserID 和 android:process，并用同一个 key 签名 http://stackoverflow.com/a/17664341），一个应用也可以跑在多个进程中（会有多个 Application 实例）。
+一个虚拟机只能跑一个进程，一个进程里可以跑多个应用（[声明相同的 android:shareUserID 和 android:process，并用同一个 key 签名](http://stackoverflow.com/a/17664341)），一个应用也可以跑在多个进程中（会有多个 Application 实例）。
 
 ### 线程和上面这些东西的关系？
 
