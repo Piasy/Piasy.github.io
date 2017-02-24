@@ -4,9 +4,7 @@ title: Effective thinking
 permalink: /effective/
 ---
 
-<video style="width: 640px; height: 360px; left: 0px; top: 0px; transform: none;" controls="controls">
-    <source src="/img/effective_tinking_course_conclusion.mp4" type="video/mp4" />
-</video>
+<iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=v037878ir2o&tiny=0&auto=0" allowfullscreen></iframe>
 
 [Effective Thinking Through Mathematics](https://courses.edx.org/courses/UTAustinX/UT.9.01x/1T2014/info){:target="_blank"}，这大抵是这二十多年来我听过的最好的课程了，为期九周，今天终于完成。
 
