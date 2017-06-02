@@ -25,6 +25,8 @@ tags:
 
 最后分享一个小工具：[frida-server start/stop 脚本](https://github.com/Piasy/frida-push)。
 
+【2017.6.2 更新】：运行得好好的 Frida，今天下午突然又不行了，提示 connection refused，折腾半天发现是电脑不仅连接了 Nexus 5X，还连上了一台 iPhone，拔掉 iPhone 就好了，希望大家不会遇见这样的窘境。
+
 ## hook 需求
 
 MainActivity 的代码如下：
