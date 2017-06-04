@@ -7,6 +7,8 @@ tags:
 
 最近的工作需要通过 hook 研究一些目标 APP 的系统 API 调用，很早就了解到了 Frida，这次终于可以体验一把了。花了一整天的时间，才终于把环境搭好，主要是准备手机系统花了时间。[示例代码可以在 GitHub 获取。](https://github.com/Piasy/AndroidPlayground/tree/master/try/FridaDemo)
 
+【2017.6.4 更新】：自动生成 Javascript hook 脚本的工具有了一个可用的版本，[check it out :)](https://github.com/Piasy/FridaAndroidTracer)。
+
 ## 环境准备
 
 最终成功的环境：
