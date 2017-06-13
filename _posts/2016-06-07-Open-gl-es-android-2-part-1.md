@@ -41,7 +41,7 @@ tags:
 
 ## 3. Hello world
 
-先看一下最简单的完整例子（下文有详细分析，完整代码可以在 [GitHub 获取](https://github.com/Piasy/AndroidPlayground/blob/90030a2ebfc70e948106a2db451df2db801742eb/try/TryOpenGL/src/main/java/com/github/piasy/tryopengl/MainActivity.java){:target="_blank"}），绘制一个三角形：
+先看一下最简单的完整例子（下文有详细分析，完整代码可以在 [GitHub 获取](https://github.com/Piasy/AndroidPlayground/blob/90030a2ebfc70e948106a2db451df2db801742eb/try/TryOpenGL/src/main/java/com/github/piasy/tryopengl/MainActivity.java){:target="_blank"}），绘制一个三角形，效果如图一：
 
 <img src="/img/201606/open_gl_triangle.png" alt="/img/201606/open_gl_triangle.png" style="height:400px">
 
@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 + "  gl_FragColor = vec4(0.5,0,0,1);\n"
                 + "}";
         private static final float[] VERTEX = {   // in counterclockwise order:
-                0, 1, 0.0f, // top
-                -0.5f, -1, 0.0f, // bottom left
-                1f, -1, 0.0f,  // bottom right
+                0,      1,      0,  // top
+                -0.5,   -1,     0,  // bottom left
+                1,      -1,     0,  // bottom right
         };
 
         private final FloatBuffer mVertexBuffer;
@@ -216,6 +216,14 @@ public void onDrawFrame(GL10 unused) {
 
 首先需要应用 GLSL 程序，对于 `attribute` 类型的变量，我们需要先 enable，再赋值，绘制完毕之后再 disable。我们可以通过 `GLES20.glDrawArrays` 或者 `GLES20.glDrawElements` 开始绘制。注意，执行完毕之后，GPU 就在显存中处理好帧数据了，但此时并没有更新到 surface 上，是 `GLSurfaceView` 会在调用 `renderer.onDrawFrame` 之后，调用 `mEglHelper.swap()`，来把显存的帧数据更新到 surface 上的。
 
+这里我们绘制的是一个三角形，OpenGL 坐标原点在屏幕中心，三个顶点分别是：
+
++ `(0, 1, 0)`，位于屏幕顶部中心点；
++ `(-0.5, -1, 0)`，位于屏幕底部四分之一点；
++ `(1, -1, 0)`，位于屏幕右下角；
+
+所以也就是上面图一的效果了。
+
 ## 4. 投影变换和相机视觉（Camera view）
 
 你肯定已经注意到，OpenGL 坐标系和安卓手机坐标系不是线性对应的，因为手机的宽高比几乎都不是 1。因此我们绘制的形状是变形的，所以我们需要进行投影变换和相机视觉，使得渲染出来的图形不变形，并且更接近我们真实的视觉效果。关于投影变换的原理，可以参考[这篇博客](http://blog.csdn.net/popy007/article/details/1797121){:target="_blank"}。
@@ -266,7 +274,7 @@ public void onDrawFrame(GL10 unused) {
 }
 ~~~
 
-经过这样的变换之后，绘制的效果如下：
+经过这样的变换之后，绘制的效果如图二：
 
 <img src="/img/201606/open_gl_triangle_projected_camera.png" alt="/img/201606/open_gl_triangle_projected_camera.png" style="height:400px">
 
@@ -287,7 +295,7 @@ Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
 surface view 的宽高为 `width` 和 `height`，我们要把 OpenGL 坐标系投影到 surface view 上。首先我们忽略坐标系的方向问题（方向问题由相机视觉解决），以 OpenGL 的方向为准，我们把坐标原点置于 view 中心，这样 view 的 y 轴范围就是 `[- height / 2, height / 2]`，x 轴范围就是 `[- width / 2, width / 2]`。
 
-如果我们希望 OpenGL 坐标系 y 坐标范围充满 surface view 的高，那我们就需要让 `[-1, 1]` 和 `[- height / 2, height / 2]` 映射起来。怎么做呢？除以 `height/ 2` 即可。此时 x 轴范围就变成了 `[- width / height, width / height]`，也就是 `[-ratio, ratio]` 了。
+如果我们希望 OpenGL 坐标系 y 坐标范围充满 surface view 的高，那我们就需要让 `[-1, 1]` 和 `[- height / 2, height / 2]` 映射起来。怎么做呢？除以 `height/ 2` 即可。此时 x 轴范围就变成了 `[- width / height, width / height]`，也就是 `[-ratio, ratio]` 了。这样我们就把 OpenGL 坐标系保持宽高比地投影到了屏幕上，高度占满全屏，宽度则超出了屏幕范围，所以我们看到图二的效果是，三角形比例正常，但左右均被截去了一部分。
 
 我们当然可以把 x 坐标范围归一化为 `[-1, 1]`，这时我们的矩阵代码需要变成这样：
 
@@ -296,9 +304,11 @@ float ratio = (float) height / width;
 Matrix.frustumM(mProjectionMatrix, 0, -1, 1, -ratio, ratio, 3, 7);
 ~~~
 
-这时的效果就是这样的：
+这时的效果就是图三了：
 
 <img src="/img/201606/open_gl_triangle_projected_camera_x.png" alt="/img/201606/open_gl_triangle_projected_camera_x.png" style="height:400px">
+
+这里我们可以看到，宽度占满全屏，高度则出现了富余，所以左右两个顶点的位置比例正常，宽高比也正常，但上下出现了空白。
 
 那最后的 `near` 和 `far` 是怎么确定的呢？它们是投影时的近平面和远平面的 z 坐标。这两个值其实是和相机视觉一起用的，所以我们在下节中再介绍，现在只需要记住，`0 < near < far` 即可。
 
@@ -313,9 +323,9 @@ public static void setLookAtM(float[] rm, int rmOffset,
 Matrix.setLookAtM(mCameraMatrix, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0);
 ~~~
 
-我们需要传入 9 个坐标值，(eyeX, eyeY, eyeX)，(centerX, centerY, centerZ)，(upX, upY, upZ)。eye 表示相机的坐标点，center 表示物体（目标，或者图形）的中心坐标点，up 表示方向向量。
+我们需要传入 9 个坐标值，(eyeX, eyeY, eyeZ)，(centerX, centerY, centerZ)，(upX, upY, upZ)。eye 表示相机的坐标点，center 表示物体（目标，或者图形）的中心坐标点，up 表示方向向量。
 
-通常情况下，我们都把 center 设置为坐标原点。而由于上节中介绍的投影变换是投影到 x, y 平面，所以相机都在 z 轴上，至于在 z 轴的哪个点，就要结合调用 `Matrix.frustumM` 时的 `near` 和 `far` 参数了，`near <= z <= far` 时我们才能看到渲染的内容，否则屏幕上就是空白了。
+通常情况下，我们都把 center 设置为坐标原点。而由于上节中介绍的投影变换是投影到 x, y 平面，所以相机都在 z 轴上，至于在 z 轴的哪个点，就要结合调用 `Matrix.frustumM` 时的 `near` 和 `far` 参数了，`near <= eyeZ <= far` 时我们才能看到渲染的内容，否则屏幕上就是空白了。
 
 而 up 向量的设置我们就需要先看一下 OpenGL 坐标系了：
 
