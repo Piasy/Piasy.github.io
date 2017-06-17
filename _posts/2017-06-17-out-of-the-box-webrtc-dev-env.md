@@ -48,8 +48,10 @@ docker run --rm \
 
 不过现在还有两点小瑕疵：
 
-+ proxychains 在 Docker 镜像中还有问题，所以 Shadowsocks 代理暂时不能用；
++ ~~proxychains 在 Docker 镜像中还有问题，所以 Shadowsocks 代理暂时不能用；~~ 换用 `polipo` 之后就 OK 了，感谢 [技术小黑屋](http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/index.html)；
 + 目前只能编译 Android 环境，iOS 的我还没搞过；
+
+_注意：如果 Shadowsocks 的密码有特殊字符，请用 `\` 进行转义，例如 `&bDmc!` 变为 `\&bDmc\!`。_
 
 请大家保持关注 :)
 
