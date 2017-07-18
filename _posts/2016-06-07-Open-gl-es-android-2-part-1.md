@@ -52,7 +52,7 @@ _Update 2017.07.16：时隔一年，工作再次涉及安卓平台 OpenGL 相关
 
 ## 3. Hello world
 
-先看一下最简单的完整例子（下文有详细分析，完整代码可以在 [GitHub 获取](https://github.com/Piasy/OpenGLESTutorial-Android/blob/blog_demo/app/src/main/java/com/github/piasy/openglestutorial_android/MainActivity.java){:target="_blank"}），绘制一个三角形，效果如图一：
+先看一下最简单的完整例子（下文有详细分析，完整代码可以在 [GitHub 获取](https://github.com/Piasy/OpenGLESTutorial-Android/blob/5a6fe4970e039c7f556ab07061ae20f47250901c/app/src/main/java/com/github/piasy/openglestutorial_android/MainActivity.java){:target="_blank"}），绘制一个三角形，效果如图一：
 
 <img src="https://imgs.piasy.com/2017-07-18-open_gl_triangle.png" alt="open_gl_triangle.png" style="height:400px">
 

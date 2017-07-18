@@ -6,15 +6,13 @@ tags:
     - OpenGL
 ---
 
-在[安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/){:target="_blank"} 中，我主要分析了坐标系、基本绘制流程、绘制三角形、投影变换和相机视觉的参数意义，在本篇中，我将分析绘制矩形、绘制图片纹理、读取显存的内容，以及一些注意事项，完整代码可以在 [GitHub 获取](https://github.com/Piasy/AndroidPlayground/blob/7036b9051d5a6a0b2e97e48853fabd19faeaa899/try/TryOpenGL/src/main/java/com/github/piasy/tryopengl/MainActivity.java){:target="_blank"}。
+在[安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/){:target="_blank"} 中，我主要分析了坐标系、基本绘制流程、绘制三角形、投影变换参数意义，在本篇中，我将分析绘制矩形、绘制图片纹理、读取显存的内容，以及一些注意事项，完整代码可以在 [GitHub 获取](https://github.com/Piasy/OpenGLESTutorial-Android/blob/624d0a85f88158f2eb29f33952e73a04491ebb6f/app/src/main/java/com/github/piasy/openglestutorial_android/MainActivity.java){:target="_blank"}。
 
 ## 1. 绘制矩形
 
 上篇中有提到，三角形是基本形状，利用三角形我们可以“拼出”其他的任何形状，例如矩形。
 
-根据 [Developer 网站的例子](https://developer.android.com/training/graphics/opengl/shapes.html#square){:target="_blank"}，我们使用 `glDrawElements` 来绘制矩形。
-
-绘制矩形时，我们除了需要一个数组保存顶点数据之外，还需要一个数组保存顶点的绘制顺序：
+绘制两个三角形时，我们可以指定 6 个顶点的坐标，但实际上只有 4 个不同的点，这样有点浪费，OpenGL 支持用另一种方式完成绘制：用一个数组保存顶点数据，用另一个数组保存顶点的绘制顺序：
 
 ~~~ java
 // ...
@@ -25,6 +23,8 @@ private static final float[] VERTEX = {   // in counterclockwise order:
         1, -1, 0,  // bottom right
 };
 private static final short[] VERTEX_INDEX = { 0, 1, 2, 0, 2, 3 };
+
+private final ShortBuffer mVertexIndexBuffer;
 
 MyRenderer() {
     mVertexBuffer = ByteBuffer.allocateDirect(VERTEX.length * 4)
@@ -46,32 +46,24 @@ MyRenderer() {
 
 _顶点的绘制顺序重不重要？由于这里绘制的是纯颜色，看不出区别，在下面绘制图片纹理的时候，我发现，调换顺序似乎并没有影响，绘制的图片没有变化。_
 
-shader 代码、投影变换和相机视觉的逻辑都不需要更改，我们只需要改一下绘制时调用的函数即可：
+shader 代码、投影变换的逻辑都不需要更改（但为了让矩形能完整显示，我们把 `translateM` 移动的 z 值设为 -5f），我们只需要改一下绘制时调用的函数即可：
 
 ~~~ java
 @Override
 public void onDrawFrame(GL10 unused) {
-    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-    GLES20.glUseProgram(mProgram);
-
-    GLES20.glEnableVertexAttribArray(mPositionHandle);
-    GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0,
-            mVertexBuffer);
+    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
     GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mMVPMatrix, 0);
 
     // 用 glDrawElements 来绘制，mVertexIndexBuffer 指定了顶点绘制顺序
     GLES20.glDrawElements(GLES20.GL_TRIANGLES, VERTEX_INDEX.length,
             GLES20.GL_UNSIGNED_SHORT, mVertexIndexBuffer);
-
-    GLES20.glDisableVertexAttribArray(mPositionHandle);
 }
 ~~~
 
 绘制效果图：
 
-<img src="/img/201606/open_gl_color_rectangle.png" alt="/img/201606/open_gl_color_rectangle.png" style="height:400px">
+<img src="https://imgs.piasy.com/2017-07-18-open_gl_color_rectangle.png" alt="open_gl_color_rectangle.png" style="height:400px">
 
 ## 2. 绘制图片纹理
 
@@ -83,15 +75,16 @@ public void onDrawFrame(GL10 unused) {
 
 ~~~ java
 @Override
-public void onSurfaceChanged(GL10 unused, int width, int height) {
+public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     // ...
-
-    mTexNames = new int[1];
-    GLES20.glGenTextures(1, mTexNames, 0);
-
-    Bitmap bitmap = BitmapFactory.decodeResource(mResources, R.drawable.p_300px);
+    
+    int[] texNames = new int[1];
+    GLES20.glGenTextures(1, texNames, 0);
+    mTexName = texNames[0];
+    Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+            R.drawable.p_300px);
     GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTexNames[0]);
+    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTexName);
     GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
             GLES20.GL_LINEAR);
     GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
@@ -102,8 +95,6 @@ public void onSurfaceChanged(GL10 unused, int width, int height) {
             GLES20.GL_REPEAT);
     GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     bitmap.recycle();
-
-    // ...
 }
 ~~~
 
@@ -114,7 +105,8 @@ public void onSurfaceChanged(GL10 unused, int width, int height) {
 此时，我们的 shader 代码当然也需要进行更改了：
 
 ~~~ java
-private static final String VERTEX_SHADER = "uniform mat4 uMVPMatrix;" +
+private static final String VERTEX_SHADER =
+        "uniform mat4 uMVPMatrix;" +
         "attribute vec4 vPosition;" +
         "attribute vec2 a_texCoord;" +
         "varying vec2 v_texCoord;" +
@@ -122,11 +114,12 @@ private static final String VERTEX_SHADER = "uniform mat4 uMVPMatrix;" +
         "  gl_Position = uMVPMatrix * vPosition;" +
         "  v_texCoord = a_texCoord;" +
         "}";
-private static final String FRAGMENT_SHADER = "precision mediump float;" +
+private static final String FRAGMENT_SHADER =
+        "precision mediump float;" +
         "varying vec2 v_texCoord;" +
         "uniform sampler2D s_texture;" +
         "void main() {" +
-        "  gl_FragColor = texture2D( s_texture, v_texCoord );" +
+        "  gl_FragColor = texture2D(s_texture, v_texCoord);" +
         "}";
 ~~~
 
@@ -139,21 +132,22 @@ private static final String FRAGMENT_SHADER = "precision mediump float;" +
 首先我们需要指定截取纹理的哪一部分绘制到图形上：
 
 ~~~ java
-private static final float[] UV_TEX_VERTEX = {   // in clockwise order:
+private static final float[] TEX_VERTEX = {   // in clockwise order:
         1, 0,  // bottom right
         0, 0,  // bottom left
         0, 1,  // top left
         1, 1,  // top right
 };
+private final ShortBuffer mVertexIndexBuffer;
 
-MyRenderer(Resources resources) {
+MyRenderer(final Context context) {
     // ...
 
-    mUvTexVertexBuffer = ByteBuffer.allocateDirect(UV_TEX_VERTEX.length * 4)
+    mTexVertexBuffer = ByteBuffer.allocateDirect(TEX_VERTEX.length * 4)
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer()
-            .put(UV_TEX_VERTEX);
-    mUvTexVertexBuffer.position(0);
+            .put(TEX_VERTEX);
+    mTexVertexBuffer.position(0);
 }
 ~~~
 
@@ -161,61 +155,50 @@ MyRenderer(Resources resources) {
 
 ~~~ java
 @Override
-public void onSurfaceChanged(GL10 unused, int width, int height) {
-    mProgram = GLES20.glCreateProgram();
-    int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER);
-    int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER);
-    GLES20.glAttachShader(mProgram, vertexShader);
-    GLES20.glAttachShader(mProgram, fragmentShader);
-    GLES20.glLinkProgram(mProgram);
+public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+    // ...
 
     mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
     mTexCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_texCoord");
     mMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
     mTexSamplerHandle = GLES20.glGetUniformLocation(mProgram, "s_texture");
 
+    GLES20.glEnableVertexAttribArray(mPositionHandle);
+    GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false,
+            12, mVertexBuffer);
+
+    GLES20.glEnableVertexAttribArray(mTexCoordHandle);
+    GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0,
+            mTexVertexBuffer);
+
     // ...
 }
 
 @Override
 public void onDrawFrame(GL10 unused) {
-    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-    GLES20.glUseProgram(mProgram);
-
-    GLES20.glEnableVertexAttribArray(mPositionHandle);
-    GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0,
-            mVertexBuffer);
-
-    GLES20.glEnableVertexAttribArray(mTexCoordHandle);
-    GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 0,
-            mUvTexVertexBuffer);
+    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
     GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mMVPMatrix, 0);
     GLES20.glUniform1i(mTexSamplerHandle, 0);
 
+    // 用 glDrawElements 来绘制，mVertexIndexBuffer 指定了顶点绘制顺序
     GLES20.glDrawElements(GLES20.GL_TRIANGLES, VERTEX_INDEX.length,
             GLES20.GL_UNSIGNED_SHORT, mVertexIndexBuffer);
-
-    GLES20.glDisableVertexAttribArray(mPositionHandle);
-    GLES20.glDisableVertexAttribArray(mTexCoordHandle);
 }
 ~~~
 
 绘制效果如下：
 
-<img src="/img/201606/open_gl_image_rectangle.png" alt="/img/201606/open_gl_image_rectangle.png" style="height:400px">
+<img src="https://imgs.piasy.com/2017-07-18-open_gl_image_rectangle.png" alt="open_gl_image_rectangle.png" style="height:400px">
 
 ### 2.4. 纹理坐标系
 
-在上篇中，我们首先了解了各种坐标系，其中就包括纹理坐标系。
+OpenGL 的纹理坐标系是二维坐标系，原点在左下角，s（x）轴向右，t（y）轴向上，x y 取值范围都是 [0, 1]：
 
-> 二维坐标系，原点在左下角，s（x）轴向右，t（y）轴向上，x y 取值范围都是 [0, 1]：
-
-我们在绘制时，`UV_TEX_VERTEX` 指定了截取纹理区域的坐标，上面的代码是使用完整的区域。如果我们把它改成这样：
+我们在绘制时，`TEX_VERTEX` 指定了截取纹理区域的坐标，上面的代码是使用完整的区域。如果我们把它改成这样：
 
 ~~~ java
-private static final float[] UV_TEX_VERTEX = {   // in clockwise order:
+private static final float[] TEX_VERTEX = {   // in clockwise order:
         0.5f, 0,  // bottom right
         0, 0,  // bottom left
         0, 0.5f,  // top left
@@ -225,13 +208,13 @@ private static final float[] UV_TEX_VERTEX = {   // in clockwise order:
 
 这时绘制效果就成了这样子：
 
-<img src="/img/201606/open_gl_image_rectangle_half.png" alt="/img/201606/open_gl_image_rectangle_half.png" style="height:400px">
+<img src="https://imgs.piasy.com/2017-07-18-open_gl_image_rectangle_half.png" alt="open_gl_image_rectangle_half.png" style="height:400px">
 
 为什么截取的是左上角而不是左下角？这和上篇中提到的纹理坐标系不符呀！
 
 在《OpenGL ES 2 for Android A Quick - Start Guide (2013)》这本书中，有这样一幅图：
 
-![open-gl-texture-coordinates-computer.png](/img/201606/open-gl-texture-coordinates-computer.png)
+![](https://imgs.piasy.com/2017-07-18-open-gl-texture-coordinates-computer.png)
 
 看完之后我大概懂了，即便规定的是“原点在左下角，s（x）轴向右，t（y）轴向上”，但由于计算机中图片都是 y 轴向下，所以实际上依然是**原点在左上角，s（x）轴向右，t（y）轴向下**。这也就和实测效果一致了。
 
@@ -290,38 +273,16 @@ static void saveRgb2Bitmap(Buffer buf, String filename, int width, int height) {
 为了避免 activity pause 之后进行不必要的渲染，我们可以在 activity 的回调中调用 GLSurfaceView 的相应方法进行控制，而在 activity 销毁时，我们需要销毁 OpenGL 纹理：
 
 ~~~ java
-private boolean mRendererSet;
-private GLSurfaceView mGlSurfaceView;
-private MyRenderer mRenderer;
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-
-    mGlSurfaceView = (GLSurfaceView) findViewById(R.id.mGLSurfaceView);
-
-    mGlSurfaceView.setEGLContextClientVersion(2);
-    mRenderer = new MyRenderer(getResources());
-    mGlSurfaceView.setRenderer(mRenderer);
-    mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-    mRendererSet = true;
-}
-
 @Override
 protected void onPause() {
     super.onPause();
-    if (mRendererSet) {
-        mGlSurfaceView.onPause();
-    }
+    mGLSurfaceView.onPause();
 }
 
 @Override
 protected void onResume() {
     super.onResume();
-    if (mRendererSet) {
-        mGlSurfaceView.onResume();
-    }
+    mGLSurfaceView.onResume();
 }
 
 @Override
@@ -334,7 +295,7 @@ static class MyRenderer implements GLSurfaceView.Renderer {
     // ...
 
     void destroy() {
-        GLES20.glDeleteTextures(1, mTexNames, 0);
+        GLES20.glDeleteTextures(1, new int[] { mTexName }, 0);
     }
 
     // ...
