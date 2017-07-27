@@ -104,6 +104,50 @@ WebRTC 视频采集的接口定义为 `VideoCapturer`，其中定义了初始化
 + 开启 session 后，设置数据格式（尺寸、帧率、对焦），发出数据请求：`CaptureRequest.Builder` 和 `session.setRepeatingRequest`；
 + 停止预览：`cameraCaptureSession.stop` 和 `cameraDevice.close`；
 
+**2017.07.27 update：才发现漏掉了一块会困扰很多人的内容：图像方向问题。**
+
+### 图像方向
+
+通常前置摄像头输出的图像方向是逆时针旋转 270° 的，后置摄像头是 90°，但存在一些意外情况，例如 Nexus 5X 前后置都是 270°。
+
+在 Camera1 里我们可以通过 `camera.setDisplayOrientation` 接口来控制相机的输出图像角度，但实际上无论是获取内存数据，还是获取显存数据（SurfaceTexture），这个调用都不会改变数据，它只是影响了相机输出数据时携带的变换矩阵的方向。Camera2 里没有相应的接口，但相机服务会自动为我们合理调整变换矩阵方向，所以相当于我们正确地调用了类似的接口。
+
+如果利用 `camera.setPreviewDisplay` 或者 `camera.setPreviewTexture` 实现预览，那 `camera.setDisplayOrientation` 确实会让预览出来的图像方向发生变化，因为相机服务在渲染到 SurfaceView/TextureView 时会应用变换矩阵，使得预览画面是旋转之后的画面。
+
+除了方向还有一个镜像的问题，Camera1 在前置摄像头时会自动为我们翻转一下画面（当然也只是修改了变换矩阵），例如前置摄像头输出的图像方向是逆时针旋转 270° 时，那就会把图像上下翻转，如果我们再设置一个旋转 90°，把图像旋正，那就相当于是左右翻转，也就达到了镜像的效果，即：前置摄像头我们用左手摸左边的脸，预览里也是显示在屏幕左边（但预览在和我们四目相对，所以实际是“他”的右边，是有点绕...）。
+
+至于怎么设置 `camera.setPreviewDisplay` 的参数，使得直接预览可以方向正确，可以使用以下代码：
+
+~~~ java
+private static int getRotationDegree(int cameraId) {
+    int orientation = 0;
+
+    WindowManager wm = (WindowManager) applicationContext
+        .getSystemService(Context.WINDOW_SERVICE);
+    switch (wm.getDefaultDisplay().getRotation()) {
+      case Surface.ROTATION_90:
+        orientation = 90;
+        break;
+      case Surface.ROTATION_180:
+        orientation = 180;
+        break;
+      case Surface.ROTATION_270:
+        orientation = 270;
+        break;
+      case Surface.ROTATION_0:
+      default:
+        orientation = 0;
+        break;
+    }
+
+    if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        return (720 - (cameraInfo.orientation + orientation)) % 360;
+    } else {
+        return (360 - orientation + cameraInfo.orientation) % 360;
+    }
+}
+~~~
+
 ## `SurfaceTextureHelper`
 
 `SurfaceTextureHelper` 负责创建 `SurfaceTexture`，接收 `SurfaceTexture` 数据，相机线程的管理。
