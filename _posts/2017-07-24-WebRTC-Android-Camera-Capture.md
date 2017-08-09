@@ -211,7 +211,6 @@ synchronized (EglBase.lock) {
 }
 ~~~
 
-
 ## 内存抖动优化
 
 运行 AppRTC-Android 程序，我们会发现内存抖动非常严重：
@@ -219,3 +218,8 @@ synchronized (EglBase.lock) {
 ![](https://imgs.piasy.com/2017-07-23-monitor_1.png)
 
 这块我们可以利用 Allocation Tracker 进行分析和优化，具体内容等其他部分的基础内容发布后再整理发布，敬请期待 :)
+
+## 后续文章
+
++ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)
++ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/)

@@ -162,3 +162,7 @@ WebRTC 中 实现了 Renderer 的 View 只有 SurfaceView 版本，如果我们�
 ## 总结
 
 在本文中，我们接着第一篇采集的内容，理清楚了帧数据在预览过程中的流动，以及预览实现过程的细节，OpenGL 相关的内容占了较大的篇幅。接下来第三篇我将分析 WebRTC 视频硬编码的实现，敬请期待 :)
+
+## 后续文章
+
++ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/)

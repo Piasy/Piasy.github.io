@@ -368,3 +368,8 @@ Matrix.translateM(mMVPMatrix, 0, 0f, 0f, -2.5f);
 ## 5. 小结
 
 讲完 hello world 文章有已经这么长了，所以其他的还是放到后面的部分吧，包括：渲染矩形、渲染图片纹理、读取显存数据（保存为图片或者网络传输）、GLSL 简介等，GLSL 可能不会太深入，不要太期待 :)
+
+## 后续文章
+
++ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)
++ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)

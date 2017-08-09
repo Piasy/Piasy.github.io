@@ -305,3 +305,7 @@ static class MyRenderer implements GLSurfaceView.Renderer {
 ## 5. 小结
 
 在本篇中，我分析了绘制矩形、绘制图片纹理、读取显存的内容，以及一些注意事项。关于 GLSL 基本还是没有涉及，纹理参数的内容也没有展开，这些内容在《OpenGL ES 2 for Android A Quick - Start Guide (2013)》这本书都有详细的讲解，感兴趣的朋友可以继续深入。另外，这两篇文章的内容也受到了 [A real Open GL ES 2.0 2D tutorial](http://androidblog.reindustries.com/a-real-open-gl-es-2-0-2d-tutorial-part-1/){:target="_blank"} 系列文章的启发。
+
+## 后续文章
+
++ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)
