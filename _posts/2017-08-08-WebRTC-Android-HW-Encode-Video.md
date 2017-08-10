@@ -167,7 +167,9 @@ param.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
 mediaCodec.setParameters(param);
 ~~~
 
-对于 H.264 编码，WebRTC 设置的关键帧间隔时间为 20s，显然仅靠自动触发是不可能的，因此它会根据实际输出帧的情况，决定何时手动触发输出一个关键帧，也就是前面提到的 `checkKeyFrameRequired` 函数了。而这样做的原因，就是更可控，这和码率模式使用 CBR 是一个道理。
+对于 H.264 编码，WebRTC 设置的关键帧间隔时间为 20s，~~显然仅靠自动触发是不可能的，因此它会根据实际输出帧的情况，决定何时手动触发输出一个关键帧，也就是前面提到的 `checkKeyFrameRequired` 函数了~~。而这样做的原因，就是更可控，这和码率模式使用 CBR 是一个道理。
+
+_2017.08.10 Update: WebRTC H.264 编码时，关键帧还真是 20s 一个，那一旦发生了丢包，怎么解码呢？肯定有其他补救措施，这个问题，也留在之后再探究了。_
 
 ### 方块效应优化
 
