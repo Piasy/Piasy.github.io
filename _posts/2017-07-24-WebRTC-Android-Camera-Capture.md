@@ -211,6 +211,8 @@ synchronized (EglBase.lock) {
 }
 ~~~
 
++ 有些机型上，用 `TextureView` 实现预览，`onSurfaceTextureAvailable` 回调不会被调用，导致无法开启预览，这个问题有可能可以通过开启硬件加速得以解决（参考 [StackOverflow 这个问题](https://stackoverflow.com/a/28895727/3077508)，我还顶过），但有可能这个办法也不管用，那么恭喜你，得再费一番脑细胞了。我就遇到过这种情况，在一款 OPPO 4.3 的手机上，折腾半天发现延迟一会儿重设一次 `LayoutParams` 就能触发，所以就先这么搞了；
+
 ## 内存抖动优化
 
 运行 AppRTC-Android 程序，我们会发现内存抖动非常严重：
