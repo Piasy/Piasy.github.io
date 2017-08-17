@@ -155,6 +155,8 @@ docker run --rm \
 
 运行之后，在 Android demo 的设置界面中，把 Server 地址设置为 `http://<server public IP>:8080`，demo 即可成功**跨网**视频通话。很多人自己部署完服务器之后发现，只能在同一 WiFi 下通话，跨 WiFi 就不行了。大家放心，咱们可没这个问题 :)
 
+**Update 2017.08.17**：`<path to constants.py>` 是 `constants.py` 文件的存放目录，这个文件是 server 需要用到的配置文件，具体怎么修改可以参考[这个示例](https://github.com/Piasy/WebRTC-Docker/blob/master/apprtc-server/constants.py)，其中 `ICE_SERVER_BASE_URL`，`ICE_SERVER_URL_TEMPLATE` 和 `WSS_INSTANCES` 被修改了。
+
 ### AppRTC-Server 部署简介
 
 开箱即用当然好，不过这里我也把构建过程中遇到的一些问题分享出来，希望对大家有所帮助。
