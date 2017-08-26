@@ -3,7 +3,7 @@ layout: post
 title: RxScreenshotDetector：Android 截屏检测
 tags:
     - 安卓开发
-    - 截屏检测
+    - MISC
     - Reactive eXtention
 ---
 

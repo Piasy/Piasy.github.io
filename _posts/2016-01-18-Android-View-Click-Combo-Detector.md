@@ -3,7 +3,7 @@ layout: post
 title: RxComboDetector：Android view点击“连击”检测
 tags:
     - 安卓开发
-    - 连击检测
+    - MISC
     - Reactive eXtention
 ---
 
