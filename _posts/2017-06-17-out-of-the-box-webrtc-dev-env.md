@@ -146,7 +146,7 @@ docker pull piasy/apprtc-server
 
 ~~~ bash
 docker run --rm \
-  -p 8080:8080 -p 8089:8089 -p 3478:3478 -p 3033:3033 \
+  -p 8080:8080 -p 8089:8089 -p 3478:3478 -p 3478:3478/udp -p 3033:3033 \
   --expose=59000-65000 \
   -e PUBLIC_IP=<server public IP> \
   -v <path to constants.py>:/apprtc_configs \
@@ -198,10 +198,8 @@ app.get('/iceconfig', function (req, resp) {
     iceServers: [
       {
         urls: [
-          'turn:ICE_SERVER_ADDR:3478?transport=udp',
-          'turn:ICE_SERVER_ADDR:3478?transport=tcp',
-          'turn:ICE_SERVER_ADDR:3479?transport=udp',
-          'turn:ICE_SERVER_ADDR:3479?transport=tcp'
+          'stun:ICE_SERVER_ADDR:3478',
+          'turn:ICE_SERVER_ADDR:3478'
         ],
         username: turn_username,
         credential: password
@@ -228,4 +226,4 @@ app.listen('3033', function () {
 + `8080` 用于 Room Server；
 + `8089` 用于 Signal Server；
 + `3033` 用于 ICE Server；
-+ `3478` 和 `59000-65000` 用于 TURN/STUN Server；
++ `3478` 和 `59000-65000` 用于 TURN/STUN Server，**注意一定要开放 3478 udp 端口，否则 STUN Binding 请求进不去**；

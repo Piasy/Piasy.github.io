@@ -47,12 +47,12 @@ ICE 是用于 UDP 媒体传输的 NAT 穿透协议（适当扩展也能支持 TC
 每个传输地址记录值都叫做一个 candidate，candidate 可能有三种：
 
 + 客户端从本机网络接口上获取的地址（host）；
-+ STUN server 看到的该客户端的地址（server reflexive）；
++ STUN server 看到的该客户端的地址（server reflexive，缩写为 srflx）；
 + TURN server 为该客户端分配的中继地址（relayed）；
 
 两个客户端上述 candidate 的任意组合也许都能连通，但实际上很多组合都不可用，例如 L R 两个客户端处于两个不同的 NAT 网络后面时，网络接口地址都是内网地址，显然无法连通。而 ICE 的任务，就是找出哪些组合可以连通。怎么找？也没有什么黑科技，就是逐个尝试，只不过是有条理地、按照某种顺序去尝试，而不是一通乱搞。
 
-网络接口地址对应的端口号是客户端自己分配的，如果有多个网络接口地址，那就都要带着（看，这里就不是瞎猜哪个地址可用了）。TURN server 可以同时取得 reflexive 和 relayed candidate，而 STUN server 则只能取得 reflexive candidate（这下我就清楚 [coturn](https://github.com/coturn/coturn) 到底是 STUN server 还是 TURN server 了）。
+网络接口地址对应的端口号是客户端自己分配的，如果有多个网络接口地址，那就都要带着（_看，这里就不是瞎猜哪个地址可用了_）。TURN server 可以同时取得 reflexive 和 relayed candidate，而 STUN server 则只能取得 reflexive candidate（_这下我就清楚 [coturn](https://github.com/coturn/coturn) 到底是 STUN server 还是 TURN server 了_）。
 
 三种 candidate 的关系如下图（_RFC 画图的技术也是比较高超的_）：
 
@@ -82,21 +82,110 @@ STUN 请求和 RTP/RTCP 传输数据使用的是完全一样的地址和端口�
 
 权值的确定，RFC 里面只说明了基本原则：直接的连接比间接的连接要好。但具体如何设置，并没有具体说明。
 
-## candidate 收集代码
+## 收集 candidate
 
-+ `Port::AddAddress` -> `BasicPortAllocatorSession::OnCandidateReady`
-+ `AllocationSequence::EnableProtocol` -> `BasicPortAllocatorSession::OnProtocolEnabled`
+candidate 的收集包括两部分：一是 host，二是 srflx 和 relayed。第一部分肯定得在本地网络接口上做文章，第二部分则需要连接 STUN/TURN Server。
 
-+ `P2PTransportChannel::MaybeStartGathering`
-+ `P2PTransportChannel::OnCandidatesReady@webrtc/p2p/base/p2ptransportchannel.cc`，发 signal
-+ `IceTransportInternal->SignalCandidateGathered@webrtc/p2p/base/icetransportinternal.h`，signal
-+ `TransportController::OnChannelCandidateGathered_n@webrtc/p2p/base/transportcontroller.cc`，slot，收 signal，发 event
-+ `TransportController::OnMessage@webrtc/p2p/base/transportcontroller.cc`，处理 event，发 signal
-+ `TransportController->SignalCandidatesGathered@webrtc/p2p/base/transportcontroller.h`，signal
-+ `WebRtcSession::OnTransportControllerCandidatesGathered@webrtc/pc/webrtcsession.cc`，slot，收 signal
-+ `PeerConnection::OnIceCandidate@webrtc/pc/peerconnection.cc`
-+ `PeerConnectionObserverJni::OnIceCandidate@webrtc/sdk/android/src/jni/pc/peerconnectionobserver_jni.cc`
-+ `PeerConnectionClient.PCObserver#onIceCandidate`
+WebRTC native 代码量还是很大的，像我这样没什么 C++ 开发经验的朋友，阅读代码将会比较吃力，不过咬咬牙坚持坚持，熟悉起来也就好了，下面简要描述下几个重要过程的代码路径。
+
+candidate 的收集由设备网络连接变化触发：
+
+![](https://imgs.piasy.com/2017-08-30-init_pc_start_network_monitor.jpg)
+
+![](https://imgs.piasy.com/2017-08-30-network_change_trigger_ice_candidate_gathering.jpg)
+
+实际收集 candidate 的过程分为几个阶段：Udp，Relay，Tcp，SslTcp。下面重点分析 Udp 和 Relay 这两个阶段，在这两个阶段里，我们会收集 host，server reflexive 和 relayed 这三种 candidate。
+
+![](https://imgs.piasy.com/2017-08-30-do_allocate.jpg)
+
+![](https://imgs.piasy.com/2017-08-30-create_udp_ports.jpg)
+
+![](https://imgs.piasy.com/2017-08-30-create_stun_ports.jpg)
+
+![](https://imgs.piasy.com/2017-08-30-create_relay_ports.jpg)
+
+三种 candidate 都会汇报到 `BasicPortAllocatorSession::OnCandidateReady` 处，从这里最终到达 Java 层的 listener 又还有好几层关卡呢：
+
+![](https://imgs.piasy.com/2017-08-30-candidate_to_java.jpg)
+
+上面的过程主要有三个不直接的东西：
+
++ sig slot：简言之就是一个信号处理的框架，A 发一个信号，B 能接收处理，二者完全解耦，具体的可以看看[官方文档](https://github.com/KubaO/sigslot/blob/master/sigslot.pdf)；
++ message：类似于 Java 里面的 Handler 机制，也是提交消息，接收者进行相关处理，为啥有了 sig slot 还要 message 机制呢？sig slot 无法发送延迟消息是原因之一；
++ 网络：STUN/TURN Server 的访问都是网络请求，为了实现跨平台，网络相关的代码做了不少封装，并且使用的都是操作系统的 C/C++ 接口，这块我也还没有深入看； 
+
+另外这里推荐一个 STUN/TURN Server 测试工具：[Trickle ICE](https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/)，用来测试服务器是否正确部署，以便排查问题。
+
+## 使用 candidate
+
+交换了 candidate 之后，WebRTC 会建立连接，发送 STUN ping 检查 candidate 连通性。连通性检查通过后，再交换 DTLS 证书，最后就可以发送音视频数据了。整个过程涉及的代码比较多（_中间的步骤我也还没捋得特别清楚_），这里就只描述几个关键路径了：
+
+![](https://imgs.piasy.com/2017-08-31-use_candidate_connect.jpg)
+
+## DataChannel 使用
+
+最艰难的部分终于过去了，现在让我们来点轻松的，基于 DataChannel 实现一个 P2P 文字聊天功能。
+
+DataChannel 是 WebRTC 提供的任意数据 P2P 传输的 API，它使用 [SCTP 协议](https://tools.ietf.org/html/rfc4960)，可以灵活配置是否可靠传输。我们可以用它实现文字聊天、文件分享、实时对战游戏等场景下的数据传输，P2P + DTLS 保证了传输数据的安全性。
+
+为了使用 DataChannel，我们先得创建 PeerConnection 对象，而且完成 P2P 连接的建立，具体过程经过上面的分析，我们应该已经了然于胸了，下面只摘录关键代码，完整代码可以查看[这个 GitHub 提交](https://github.com/Piasy/AppRTC-Android/commit/a0c0e11d404645a9886fca7846bed2c82933a13c)。
+
+~~~ java
+// 初始化并创建 factory
+PeerConnectionFactory.initializeAndroidGlobals(mAppContext, true);
+mPeerConnectionFactory = new PeerConnectionFactory(null);
+
+// 创建 PC 对象
+mPeerConnection = mPeerConnectionFactory.createPeerConnection(rtcConfig,
+    new MediaConstraints(), this);
+
+// 创建 DataChannel
+DataChannel.Init init = new DataChannel.Init();
+init.ordered = true;
+mDataChannel = mPeerConnection.createDataChannel("P2P MSG DC", init);
+
+// A，创建 offer
+mPeerConnection.createOffer(MsgPcClient.this, mSdpConstraints);
+// 在 onCreateSuccess 回调中 setLocalDescription
+// 在 onSetSuccess 回调中把 offer 发出去
+mPeerConnection.setLocalDescription(MsgPcClient.this, sdp);
+
+// B，收到 offer 后 setRemoteDescription
+mPeerConnection.setRemoteDescription(MsgPcClient.this, sdp);
+// 创建 answer
+mPeerConnection.createAnswer(MsgPcClient.this, mSdpConstraints);
+// 在 onCreateSuccess 回调中 setLocalDescription
+// 在 onSetSuccess 回调中把 answer 发出去
+mPeerConnection.setLocalDescription(MsgPcClient.this, sdp);
+
+// A，收到 answer 后 setRemoteDescription
+mPeerConnection.setRemoteDescription(MsgPcClient.this, sdp);
+
+// 在 onIceCandidate 回调中把 candidate 发出去
+// 收到对方的 candidate 后 addIceCandidate
+mPeerConnection.addIceCandidate(candidate);
+
+// 在 onDataChannel 回调中注册消息回调
+dataChannel.registerObserver(this);
+
+// 发送消息
+byte[] msg = message.getBytes();
+DataChannel.Buffer buffer = new DataChannel.Buffer(ByteBuffer.wrap(msg), false);
+mDataChannel.send(buffer);
+
+// onMessage 回调中处理消息
+ByteBuffer data = buffer.data;
+final byte[] bytes = new byte[data.capacity()];
+data.get(bytes);
+String msg = new String(bytes);
+Logging.d(TAG, "onMessage " + msg);
+~~~
+
+创建 DataChannel 时可以通过 `DataChannel.Init` 的 `ordered`、`maxRetransmitTimeMs`、`maxRetransmits` 参数配置配置可靠性：
+
++ `ordered`：是否保证顺序传输；
++ `maxRetransmitTimeMs`：重传允许的最长时间；
++ `maxRetransmits`：重传允许的最大次数；
 
 ## prebuilt library
 
