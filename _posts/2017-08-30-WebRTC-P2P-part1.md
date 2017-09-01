@@ -194,5 +194,5 @@ WebRTC 官方团队并没有发布正式版的包，但他们的 CI 系统会自
 ## 脚注
 
 [^sdp]: [SDP: Session Description Protocol](https://tools.ietf.org/html/rfc4566)
-[^offer-answer]: [An Offer/Answer Model with the Session Description Protocol (SDP)](https://tools.ietf.org/html/rfc3264)
+[^offer-answer]: [JavaScript Session Establishment Protocol](https://tools.ietf.org/html/draft-ietf-rtcweb-jsep-22)
 [^ice]: [Interactive Connectivity Establishment (ICE): A Protocol for Network Address Translator (NAT) Traversal for Offer/Answer Protocols](https://tools.ietf.org/html/rfc5245)
