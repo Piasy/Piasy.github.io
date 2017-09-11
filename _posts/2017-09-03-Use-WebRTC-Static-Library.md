@@ -167,8 +167,9 @@ android {
 + 是否活跃维护：[STLport 已经好几年没有更新了](https://groups.google.com/d/msg/android-ndk/HZ6I5XfOnP8/i06SgfkJbRoJ)，source forge 上面最新版本还是 14 年 7 月的版本；
 + License：[GNU STL 使用 GPLv3 许可](https://libcxx.llvm.org/#why)，这可是“病毒许可”，小公司也许可以无所谓，人家根本不会注意到你，但大公司就要小心了；
 + libc++ 虽然有将它们都取而代之的雄心壮志，[但仍不够稳定](https://developer.android.com/ndk/guides/cpp-support.html#cs)；
++ 最后但也同样重要的：编译依赖库时能统一为哪一 STL；
 
-由于我们这里并追求极致的稳定性，当然更主要还是因为 WebRTC 是用 libc++ 编译的，所以我选用了 libc++ 这一运行时环境。前面就已经提到，我们必须使用 libc++ runtime，否则会报一大堆 `undefined reference` 错误，这是因为各个运行时库的二进制接口并不兼容，编译的时候混用 STL 实现，很容易遇到 `undefined reference` 错误。
+由于我们这里并不追求极致的稳定性，当然更主要还是因为 WebRTC 是用 libc++ 编译的，所以我选用了 libc++ 这一运行时环境。前面就已经提到，我们必须使用 libc++ runtime，否则会报一大堆 `undefined reference` 错误，这是因为各个运行时库的二进制接口并不兼容，编译的时候混用 STL 实现，很容易遇到 `undefined reference` 错误。
 
 链接静态依赖库（英文里叫做 link against）时，会把库中的目标文件打包到自己的库里面来，这样就可以不带着依赖库了，但如果我们有多个库都依赖了同一个库，那链接静态依赖库就会导致同样的目标文件被包含了多份，这样既占用了磁盘空间，也会占用运行时内存，[而且 C++ 运行时库如果同时存在多份，可能会导致各种诡异的问题](https://developer.android.com/ndk/guides/cpp-support.html#sr)。此外，我们使用的依赖库可能别的程序也使用了（尤其是 C++ 运行时库），而如果操作系统中运行的多个程序如果要加载同一个动态库，那实际上只会加载一份，所以链接动态依赖库还有可能减少整个系统的内存占用。
 
@@ -182,6 +183,7 @@ android {
 
 ~~~ bash
 # 生成 toolchain，放到 /vagrant/standalone-r15c-arm-libc++/ 目录下
+# 没错，我搞了一个 Linux 虚拟机进行编译
 $ANDROID_NDK/build/tools/make_standalone_toolchain.py \
     --arch arm \
     --api 16 \
