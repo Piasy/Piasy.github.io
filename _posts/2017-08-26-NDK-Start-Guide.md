@@ -14,12 +14,20 @@ NDK 的高性能最常见的场景：多媒体，游戏。此外，利用 NDK �
 + shared library, `.so`
 + static library, `.a`
 + JNI: Java Native Interface
-+ Application Binary Interface, ABI：CPU 指令集，字节序（大小端）……
++ Application Binary Interface, ABI：我们将符号修饰标准、变量内存布局、函数调用方式等跟可执行代码二进制兼容性相关的内容称为程序的 ABI（_摘自《程序员的自我修养》_）；
++ Application Programming Interface, API：API 是源码层面的接口，而 ABI 则是二进制层面的接口，ABI 的兼容程度更为严格；
++ CPU 架构
   - `armeabi`
   - `armeabi-v7a`
   - `arm64-v8a`
   - `x86`
 + JNI function v.s. native method：前者是 JNI 系统（Java）提供的函数，后者则是 Java 类里面定义的 native 函数；
+
+写代码时 C++ 和 Java 的互相调用，这是 JNI 提供的能力，NDK 可以编译出和安卓系统 ABI 兼容的静态/动态库，安卓 APK 打包进去以及运行时使用的都是动态库，静态库可以作为依赖，用来编译其他库。
+
+NDK 开发现在有两种编译方式，一是 `ndk-build`，我们需要编写 `Android.mk` 和 `Application.mk`，运行 `ndk-build` 命令进行编译，另一种是 CMake，它和 Gradle 紧密结合，AndroidStudio 对它也有很好的支持，我们需要编写 `CMakeLists.txt` 和 `build.gradle`。
+
+如果我们的 APP 不希望编写任何 Java 代码，这也是可以做到的，NDK 定义了 native activity 和 native application。除了这俩模块，还有很多模块也都有 native 的定义，我们可以直接在 C++ 代码中访问，例如 native window，asset manager 等。
 
 ## JNI
 
@@ -50,7 +58,7 @@ NDK 的高性能最常见的场景：多媒体，游戏。此外，利用 NDK �
 + native 线程可以创建 JavaVM 和 JNIEnv 对象，用于运行 Java 的代码；
 + JNIEnv 只在创建的线程内有效，如果要如果要保存起来在其他线程使用，都需要先 AttachCurrentThread，下面的代码参考自 [StackOverflow](http://stackoverflow.com/q/12900695/3077508)：
 
-``` java
+~~~ java
 // 在 JNI_OnLoad 中直接保存 g_vm，或者在初始化函数中利用 JNIEnv 获取并保存 g_vm
 static JavaVM *g_vm;
 
@@ -80,7 +88,7 @@ void nativeFunc(char *data, int len) {
         g_vm->DetachCurrentThread();
     }
 }
-```
+~~~
 
 + native 库被加载的时候（`System.loadLibrary`），会调用 `JNI_OnLoad` 函数；库被 GC 的时候，会调用 `JNI_OnUnload`；
 + 调用 JVM（JNI）方法都需要 JNIEnv 指针，但 JNIEnv 不能跨线程共享，我们只能共享 JavaVM 指针，并用它来获取各自线程的 JNIEnv；
@@ -100,10 +108,10 @@ void nativeFunc(char *data, int len) {
 
 + native 方法的参数，以及绝大多数 JNI 方法的返回值，都是 local reference，即便被引用的对象还存在，local reference 也将在作用域外变得非法（不能使用）；可以通过 `NewGlobalRef` 或者 `NewWeakGlobalRef` 创建 global reference；常用的保存 `jclass` 方法就是如下：
 
-``` java
+~~~ java
 jclass localClass = env->FindClass("MyClass");
 jclass globalClass = reinterpret_cast<jclass>(env->NewGlobalRef(localClass));
-```
+~~~
 
 + 在 native 代码中，同一对象的引用值可能不同，因此不要用 `==` 判等，而要用 `IsSameObject` 函数；
 + 对象的引用既不是固定不变的，也不是唯一的，因此不要用 `jobject` 作为 key；
@@ -126,6 +134,125 @@ jclass globalClass = reinterpret_cast<jclass>(env->NewGlobalRef(localClass));
 + `GetByteArrayElements` 可能直接返回堆地址，也可能会进行拷贝，后者就存在性能开销；
 + `java.nio.ByteBuffer.allocateDirect` 分配的数组，一定不需要拷贝（通过 `GetDirectBufferAddress`）；但在 Java 代码中访问 direct ByteBuffer 可能会很慢；
 + 所以需要考虑：数组主要在哪一层代码访问？（native 层就用 direct ByteBuffer，Java 层就用 byte[]）如果数据最终都要交给系统 API，数据必须是什么形式？（最好能用 byte[]）
+
+## CMake 基本使用
+
+CMake 是用来生成其他编译系统配置文件的一套工具集，从 AndroidStudio 2.2 开始作为默认的 NDK 支持方式，和 Gradle、AndroidStudio 都做到了紧密结合。
+
+`build.gradle` 示例：
+
+~~~ gradle
+android {
+    //...
+    defaultConfig {
+        //...
+        ndk.abiFilters = ['armeabi-v7a']
+        externalNativeBuild {
+            cmake {
+                arguments = ['-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static']
+                cppFlags '-std=c++11 -fno-rtti'
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    //...
+}
+~~~
+
+`CMakeLists.txt` 示例：
+
+~~~ CMake
+cmake_minimum_required(VERSION 3.4.1)
+
+set(CWD ${CMAKE_CURRENT_LIST_DIR})
+
+add_library(try-webrtc SHARED
+            src/main/cpp/try-webrtc.cpp
+            )
+
+include_directories(libs/webrtc/include)
+add_definitions(-DWEBRTC_POSIX)
+
+# Include libraries needed for try-webrtc lib
+target_link_libraries(try-webrtc
+                      android
+                      log
+                      ${CWD}/libs/webrtc/libwebrtc.a
+                      )
+~~~
+
+### `set`
+
+定义一个变量，引用变量的方式为 `${var name}`。
+
+### `add_library`
+
+定义一个 library，指定名字，链接类型（static/shared），源文件：
+
+~~~ CMake
+add_library( # Specifies the name of the library.
+             try-webrtc
+             # Sets the library as a shared library.
+             SHARED
+             # Provides a relative path to your source file(s).
+             src/main/cpp/try-webrtc.cpp
+             )
+~~~
+
+### `add_executable`
+
+定义一个可执行目标：
+
+~~~ CMake
+add_executable(myapp main.c)
+~~~
+
+### `include_directories`
+
+指定头文件查找路径：
+
+~~~ CMake
+# Specifies a path to native header files.
+include_directories(libs/webrtc/include)
+~~~
+### `find_library`
+
+查找特定的库：
+
+~~~ CMake
+find_library( # Defines the name of the path variable that stores the
+              # location of the NDK library.
+              log-lib
+              # Specifies the name of the NDK library that
+              # CMake needs to locate.
+              log 
+              )
+~~~
+
+### `target_link_libraries`
+
+为目标增加链接库：
+
+~~~ CMake
+# Links your native library against one or more other native libraries.
+target_link_libraries( # Specifies the target library.
+                       try-webrtc
+                       # Links the log library to the target library.
+                       ${log-lib} 
+                       android
+                       ${CWD}/libs/webrtc/libwebrtc.a
+                       )
+~~~
+
+链接库可以是 `add_library` 定义的，也可以是 `find_library` 定义的，也可以是预先编译好的静态/动态库（绝对路径），甚至可以是链接选项。
+
+### CMake 遇上 Gradle
+
+AndroidStudio 会在构建过程中执行一些 Gradle task，其中就包含运行 CMake 命令的 task，这样就完成了对 NDK 的支持。运行 CMake 的具体命令和参数，会保存在 `<project-root>/<module-root>/.externalNativeBuild/cmake/<build-type>/<ABI>/cmake_build_command.txt` 文件中，调试 CMake 过程时非常有用。在这里 CMake 实际上是生成了 ninja 配置文件，靠 ninja 完成编译。
 
 ## 开发技巧
 
