@@ -6,7 +6,7 @@ permalink: /about/
 
 [完整简历](http://resume.piasy.com/)，[English Version]({{ site.baseurl }}/about-en).
 
-热爱编程，目前专注于安卓开发，喜欢开源，喜欢敏捷，喜欢技术，喜欢折腾，正走在成为技术大牛的路上。
+热爱编程，目前专注于流媒体技术，喜欢开源，喜欢敏捷，喜欢技术，喜欢折腾，正走在成为技术大牛的路上。
 
 ### 简介
 
