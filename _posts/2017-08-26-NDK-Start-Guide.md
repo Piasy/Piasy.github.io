@@ -123,6 +123,7 @@ jclass globalClass = reinterpret_cast<jclass>(env->NewGlobalRef(localClass));
 + `Get<PrimitiveType>ArrayElements` 可能会直接返回 Java heap 上的地址，也可能会做拷贝；无论是否拷贝，都需要 Release；
 + Release 时有 mode 参数，0，`JNI_COMMIT`，`JNI_ABORT`；
 + `Get<PrimitiveType>ArrayRegion` 和 `Set<PrimitiveType>ArrayRegion` 用于单纯的数组拷贝；
++ 自己实现的 JNI 接口如果要返回 jstring，则调用 `NewStringUTF`，传入的 `char*` 参数，需要自己维护内存，可以是栈上分配的，如果是 new 出来的，就要 delete 掉，[参考问题](https://stackoverflow.com/a/6245964/3077508)；
 
 ### Exceptions，Extended Checking
 
