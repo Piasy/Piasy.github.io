@@ -117,7 +117,7 @@ API 是很简单，但我们究竟该用哪种模式？调整码率在各个模�
 
 此外，我们可以让解码器把数据输出到一个 SurfaceTexture，并在 SurfaceTexture 的回调中让数据花开两枝，一枝到预览，一枝到编码器，这样我们就可以一边测试，一遍欣赏视频内容了 :)
 
-测试的大体思路就是这样，实现过程的细节这里就不赘述了，测试项目的源码可以从 [GitHub](https://github.com/Piasy/MediaCodecRcTest) 获取，_项目里有彩蛋 :)_
+测试的大体思路就是这样，实现过程的细节这里就不赘述了，测试项目的源码可以从 [GitHub](https://github.com/Piasy/InsideCodec/tree/master/MediaCodecRcTest) 获取，_项目里有彩蛋 :)_
 
 下面我们看看各个模式调整码率的效果对比：
 
