@@ -2,7 +2,7 @@
 layout: post
 title: WebRTC-Android 源码导读（一）：相机采集实现分析
 tags:
-    - 流媒体
+    - 实时多媒体
     - WebRTC
 ---
 

@@ -3,7 +3,7 @@ layout: post
 title: WebRTC-Android 源码导读（四）：VideoCRE 与内存抖动优化
 tags:
     - 性能优化
-    - 流媒体
+    - 实时多媒体
     - WebRTC
 ---
 

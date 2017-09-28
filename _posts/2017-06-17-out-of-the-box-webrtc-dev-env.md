@@ -2,7 +2,7 @@
 layout: post
 title: 开箱即用的 WebRTC 开发环境
 tags:
-    - 流媒体
+    - 实时多媒体
     - WebRTC
 ---
 

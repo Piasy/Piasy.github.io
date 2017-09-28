@@ -3,7 +3,7 @@ layout: post
 title: WebRTC-Android 源码导读（五）：P2P 连接过程和 DataChannel 使用
 tags:
     - P2P
-    - 流媒体
+    - 实时多媒体
     - WebRTC
 ---
 
