@@ -372,4 +372,5 @@ Matrix.translateM(mMVPMatrix, 0, 0f, 0f, -2.5f);
 ## 后续文章
 
 + [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)
++ [安卓 OpenGL ES 2.0 完全入门（三）：2D 纹理的裁剪、翻转、旋转、缩放](/2017/10/06/Open-gl-es-android-2-part-3/)
 + [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)

@@ -189,7 +189,7 @@ Logging.d(TAG, "onMessage " + msg);
 
 ## prebuilt library
 
-WebRTC 官方团队并没有发布正式版的包，但他们的 CI 系统会自动 build 每个 commit，并生成一个 aar，我们可以下载使用，[下载地址](https://build.chromium.org/p/client.webrtc.fyi/builders/Android%20Archive)，打开某次 build 后，搜索“gsutil.upload”，就能下载 aar 了。
+最近 WebRTC 官方团队已经开始把 CI 系统打包出来的 aar 上传的 [JCenter](https://bintray.com/google/webrtc/google-webrtc) 了，大家可以尽情享用啦！
 
 ## 脚注
 
