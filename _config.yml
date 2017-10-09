@@ -49,7 +49,7 @@ disqus_username: piasy
 #duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
 
-gems:
+plugins:
   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
   - jekyll-paginate
 

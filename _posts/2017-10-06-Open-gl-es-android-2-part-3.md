@@ -304,7 +304,9 @@ private void resolveScale(int inputWidth, int inputHeight, int outputWidth,
 
 如果 `inputWidth * outputHeight == inputHeight * outputWidth`，那三种缩放模式其实效果一样，所以我们无需做事。
 
-`CENTER_CROP` 时，如果 `inputAspect < outputAspect`，即输入宽高比小于输出宽高比，则说明输入宽是短边高是长边，宽填充满即顶点横坐标取值范围充满 `[-1, 1]`，高按比例放大即各顶点纵坐标值乘以放大系数，系数为 `outputAspect / inputAspect`【why？】。`inputAspect > outputAspect` 说明高是长边宽是短边，其处理逻辑同理可得。
+`CENTER_CROP` 时，如果 `inputAspect < outputAspect`，即输入宽高比小于输出宽高比，则说明（竖屏时）输入宽是短边高是长边，宽填充满即顶点横坐标取值范围充满 `[-1, 1]`，高按比例放大即各顶点纵坐标值乘以放大系数，系数为 `outputAspect / inputAspect`（推理过程见下图）。`inputAspect > outputAspect` 说明高是长边宽是短边，其处理逻辑同理可得。
+
+![](https://imgs.piasy.com/2017-10-09-opengl_center_crop_height_ratio.jpeg)
 
 `CENTER_INSIDE` 时，ratio 的计算结果小于 1，即限制顶点坐标的取值范围，使其小于 `[-1, 1]`，其逻辑类似，大家可以自行推导。
 
