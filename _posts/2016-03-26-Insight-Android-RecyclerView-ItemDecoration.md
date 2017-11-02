@@ -88,7 +88,7 @@ public void measureChild(View child, int widthUsed, int heightUsed) {
 }
 ~~~
 
-上面这段代码中调用 `getChildMeasureSpec` 函数的第三个参数就是 child view 的 padding，而这个参数就把 insets 的值算进去了。那么现在就可以确认了，**getItemOffsets 中为 outRect 设置的4个方向的值，将被计算进所有 decoration 的尺寸中，而这个尺寸，被计入了 RecyclerView 每个 item view 的 padding 中**。
+上面这段代码中调用 `getChildMeasureSpec` 函数的第三个参数就是 child view 的 padding，而这个参数就把 insets 的值算进去了。那么现在就可以确认了，**getItemOffsets 中为 outRect 设置的4个方向的值，将被计算进所有 decoration 的尺寸中，而这个尺寸，被用来计算 RecyclerView 每个 item view 的大小（包括 item view 的宽高，padding，以及这个 insets）**。
 
 ### PoC
 这一步测试主要是对 getItemOffsets 函数传入的 outRect 参数各个值的设置，以证实上述分析的结论。
