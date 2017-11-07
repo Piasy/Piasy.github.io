@@ -266,6 +266,7 @@ AndroidStudio 会在构建过程中执行一些 Gradle task，其中就包含运
 
 + [JNI spec](http://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/jniTOC.html)
 + [JNI tips](https://developer.android.com/training/articles/perf-jni.html)
++ [Best practices for using the Java Native Interface](https://www.ibm.com/developerworks/library/j-jni/index.html)
 + [添加、引入、引用 C/C++ 代码、模块](https://developer.android.com/studio/projects/add-native-code.html)
 + [NDK 提供的可直接使用的库](https://developer.android.com/ndk/guides/stable_apis.html)
 + [googlesamples/android-ndk](https://github.com/googlesamples/android-ndk)

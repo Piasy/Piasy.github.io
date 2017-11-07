@@ -5,7 +5,7 @@ tags:
     - 基础知识
 ---
 
-九月除了看 [H.264](/2017/09/22/I-Need-Know-About-H264/)，还看了一本好书：[《程序员的自我修养：链接、装载与库》](https://item.jd.com/10067200.html)。对这本书我只想说一句话，相见恨晚。
+九月除了看 [H.264](/2017/09/22/I-Need-Know-About-H264/)，还看了一本好书：[《程序员的自我修养：链接、装载与库》](https://union-click.jd.com/jdc?e=0&p=AyIHZR5aEQISA1AYUyUCEwZSHVgUAyJDCkMFSjJLQhBaUAscSkIBR0ROVw1VC0dFFQMTAFMYWhQdS0IJRmtUe1JxL1kFRmEXfV1jEBFQUkNVXRB1Dh5pVhpbEx4SB0kaXQQDGwxUGlAWBSIHVB9eEQsVA1cYaxUDEwZQGFscBhI3ZRtaJVB83%2BOtg7CzDtP%2FlI6dlSIHVB1bFwUVDl0faxUGEgZUG1gcARUDVBxrEjJTXwVZEyUyEgZUHF0WAxM3ZStrFDIT&t=W1dCFBBFC1pXUwkEAEAdQFkJBVsUAxUBVhpaCltXWwg%3D)。对这本书我只想说一句话，相见恨晚。
 
 看完这本书之后，结合本科阶段学习的程序设计（C++）、汇编、编译原理、计算机组成原理、计算机体系结构、操作系统这几门课程，我总算对“我们编写的 C/C++ 代码是怎么一步步在电脑上跑起来的”这个问题有了一个宏观的认识。当然，细节和深入之处想靠这一本书甚至一门课程就完全掌握是不可能的，但有了全局的宏观认识，深入钻研就不会不见森林，只是时间问题了。
 

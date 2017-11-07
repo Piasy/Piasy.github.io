@@ -8,7 +8,7 @@ tags:
 
 我在今年年初离开 YOLO 加入了一家在流媒体领域具有极深积累的小公司，负责视频群聊 SDK 的开发工作，YOLO 是一款直播 APP，我常戏称这是从技术下游（SDK 使用方）跑到了技术上游（SDK 提供方）。不过事情当然不是这么简单，经过长期的思考和探讨，我最终确认：实时多媒体领域，更宽泛一点来讲，实时视觉、感知的展现，在未来极长一段时间内都存在很大的需求，也存在很大的挑战，所以这将是我长期技术积累的大方向。
 
-明确了大方向之后，就需要不懈地积累了。我一直强调基础知识的重要性，最近我就花时间学习了 H.264 的基础（[《新一代视频压缩编码标准:H.264/AVC（第2版）》](https://www.amazon.cn/%E6%96%B0%E4%B8%80%E4%BB%A3%E8%A7%86%E9%A2%91%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86-H-264-AVC-%E6%AF%95%E5%8E%9A%E6%9D%B0/dp/B008QM2EG2/ref=sr_1_1?s=books&ie=UTF8&qid=1505913595&sr=1-1&keywords=h264)），力求搞清楚两个问题：**H.264 编解码的过程是怎样的？H.264 码流的结构是怎样的？**
+明确了大方向之后，就需要不懈地积累了。我一直强调基础知识的重要性，最近我就花时间学习了 H.264 的基础（[《新一代视频压缩编码标准:H.264/AVC（第2版）》](https://union-click.jd.com/jdc?e=0&p=AyIHZR5aEQISA1AYUyUCEwZSGVISASJDCkMFSjJLQhBaUAscSkIBR0ROVw1VC0dFFQMTAFcSXBYdS0IJRmtFaVlRUUM%2BSGFwfSlJEhRXaUYMSQNDDh5pVhpbEx4SB0kaXQQDGwxUG1ARAiIHVB9eEQsVA1cYaxUDEwZQGFscBhI3ZRtaJVB83%2BOtg7CzDtP%2FlI6dlSIHVB1bFwYaDlIZaxUGEgZUG1gdAhICVR9rEjJTXwVZEyUyEgZUHFkcBRE3ZStrFDIT&t=W1dCFBBFC1pXUwkEAEAdQFkJBVsUAxUFXBxYCltXWwg%3D)），力求搞清楚两个问题：**H.264 编解码的过程是怎样的？H.264 码流的结构是怎样的？**
 
 _以前看书后分享的只是零碎的笔记，没敢发布博客，这一篇我力求根据自己的理解，把上述两个核心问题描述清楚，细节内容篇幅有限，就不做展开了。感兴趣的朋友可以阅读原书，当然，最正宗的资料莫过于 [H.264 SPEC](https://www.itu.int/rec/T-REC-H.264) 了。本文使用的图片基本都是摘自《新一代视频压缩编码标准:H.264/AVC（第2版）》。_
 
