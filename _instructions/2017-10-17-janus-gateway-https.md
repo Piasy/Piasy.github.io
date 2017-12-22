@@ -1,10 +1,4 @@
----
-layout: post
-title: Janus Gateway HTTPS
-tags:
-    - 安卓开发
-    - OpenGL
----
+# Janus Gateway HTTPS
 
 ## 安装
 
@@ -28,20 +22,17 @@ apt-get -y update && apt-get install -y libmicrohttpd-dev \
     subversion \
     git \
     cmake \
+    make \
+    g++ \
+    gcc \
+    libc6-dev \
     unzip \
     zip \
-    lsof wget vim sudo rsync cron mysql-client openssh-server supervisor locate
-
-apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev \
-    libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
-    libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev nasm
-
-apt-get -y update && apt-get install -y --no-install-recommends \
-        g++ \
-        gcc \
-        libc6-dev \
-        make \
-        pkg-config \
+    lsof wget vim rsync cron mysql-client openssh-server supervisor locate \
+    autoconf libass-dev libfreetype6-dev \
+    libsdl1.2-dev libtheora-dev libva-dev libvdpau-dev \
+    libvorbis-dev libxcb1-dev libxcb-shm0-dev \
+    libxcb-xfixes0-dev texinfo zlib1g-dev nasm libevent-dev doxygen graphviz
 
 mkdir ~/ffmpeg_sources
 
@@ -145,10 +136,19 @@ cd ~/ffmpeg_sources && \
 
 cd ~ && \
     wget https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+    tar -C /usr/local -xzf go1.9.1.linux-amd64.tar.gz
 
 mkdir -p "/go/src" "/go/bin" && chmod -R 777 "/go"
+~~~
 
+修改 `~/.bashrc`：
+
+~~~ sh
+export GOPATH=/go
+export PATH=$GOPATH/bin:/usr/local/go/bin:/opt/janus/bin:$PATH
+~~~
+
+~~~ bash
 cd ~/ffmpeg_sources && \
     git clone https://boringssl.googlesource.com/boringssl && \
     cd boringssl && \
@@ -164,8 +164,8 @@ cd ~/ffmpeg_sources && \
     sudo cp build/ssl/libssl.a /opt/boringssl/lib/  && \
     sudo cp build/crypto/libcrypto.a /opt/boringssl/lib/
 
-apt-get remove -y libsrtp0-dev
-cd ~/ffmpeg_sources && \
+apt-get remove -y libsrtp0-dev && \
+    cd ~/ffmpeg_sources && \
     wget https://github.com/cisco/libsrtp/archive/v2.0.0.tar.gz && \
     tar xfv v2.0.0.tar.gz && \
     cd libsrtp-2.0.0 && \
@@ -185,35 +185,32 @@ cd ~ && \
     git clone https://github.com/meetecho/janus-gateway.git && \
     cd janus-gateway && \
     sh autogen.sh && \
-    ./configure --prefix=/opt/janus && \
+    ./configure --prefix=/opt/janus --enable-docs && \
     make && \
-    make install
-~~~
+    make install && \
+    make configs && \
+    cp -rf docs/html/* html/docs/
 
-修改 `~/.bashrc`：
-
-~~~ sh
-export GOPATH=/go
-export PATH=$GOPATH/bin:/usr/local/go/bin:/opt/janus/bin:$PATH
+curl https://caddyserver.com/download/linux/amd64?license=personal > caddy.tar.gz && \
+    mkdir ~/caddy && tar -C ~/caddy -xzf caddy.tar.gz
 ~~~
 
 ## HTTPS 模式运行
 
 + 修改 `/opt/janus/etc/janus/janus.transport.http.cfg`，设置 `https yes`；
 + 运行 `/opt/janus/bin/janus`；
-+ 安装 [Caddy](https://caddyserver.com/)，下载后解压到 `~/caddy`；
-+ 编辑 Caddyfile，注意把 `192.168.50.4` 替换为实际 IP：
++ 编辑 `/root/caddy/Caddyfile`，注意把 `192.168.50.4` 替换为实际 IP：
 
 ~~~ bash
 192.168.50.4:4443 {
     gzip
-    root /vagrant/janus-gateway/html/
-    log /vagrant/caddy/access.log
+    root /root/janus-gateway/html/
+    log /root/caddy/access.log
     tls /opt/janus/share/janus/certs/mycert.pem /opt/janus/share/janus/certs/mycert.key
 }
 ~~~
 
-+ 进入 `~/janus-gateway/html`，运行 `~/caddy/caddy -conf=~/caddy/Caddyfile`；
++ 进入 `~/janus-gateway/html`，运行 `/root/caddy/caddy -conf=/root/caddy/Caddyfile`；
 + 打开 chrome，访问 `https://192.168.50.4:4443`，提示证书错误，选择继续前往；
 
 ## RTMP 推收流
@@ -229,14 +226,6 @@ cd srs/trunk
 
 + ffmpeg 推流：`ffmpeg -re -i video.mp4 -acodec copy -vcodec copy -f flv -y rtmp://192.168.50.4/live/livestream`；
 + ffplay 收流：`ffplay rtmp://192.168.50.4/live/livestream`；
-
-## RTMP -> RTP -> WEBRTC
-
-~~~ bash
-~/bin/ffmpeg -y -i "rtmp://0.0.0.0:8898/rtmp_relay/test live=1" \
--c:v libx264 -profile:v main -s 640x480 -an -preset ultrafast \
--tune zerolatency -f rtp rtp://0.0.0.0:8888
-~~~
 
 ## 包格式分析
 

@@ -42,3 +42,7 @@ make install
 遇到的问题：
 
 + mac 下编译报错：`undefined reference to 'swr_alloc()'`，通过 `greadelf` 查看 `.so` 和 `.a` 都确定有相关的符号，最终定位到**因为 ffmpeg 是纯 C 代码，在 C++ 中引用时，`include` 需要用 `extern "C"` 包起来**；
+
+## 参考文章
+
++ [Decoding audio files with ffmpeg](https://www.targodan.de/post/decoding-audio-files-with-ffmpeg/)
