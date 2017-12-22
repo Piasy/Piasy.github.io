@@ -22,9 +22,11 @@ tags:
 + [J2ObjC](https://developers.google.com/j2objc/) + [GWT](http://www.gwtproject.org/) (Java)
 + [Djinni](https://github.com/dropbox/djinni) + [WebAssembly](http://webassembly.org/) (C++)
 
-其实如果要把小程序和 Weex 列入其中，也未尝不可，毕竟能在不同平台的微信和支付宝里运行，也堪称跨平台了。
+其实如果要把小程序列入其中，也未尝不可，毕竟能在不同平台的微信和支付宝里运行，也堪称跨平台了。
 
 _注：上述各项技术的基本概念本文不会过多介绍，请大家自行查阅官方文档_。
+
+**2017.12.22 更新**：之前误以为 Weex 是和小程序一样的技术，但它是和 RN 对标的呀，实在汗颜，日后再做补充……
 
 ### React Native
 
