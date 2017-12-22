@@ -2,7 +2,7 @@
 layout: post
 title: 移动客户端跨平台开发方案探索
 tags:
-    - 
+    - 跨平台
 ---
 
 跨平台开发想必很多朋友都听说过，甚至实践过，这里我就不过多介绍相关的背景了，Java 的 Slogan 完美诠释了这一愿景：**Write once, run anywhere！**
