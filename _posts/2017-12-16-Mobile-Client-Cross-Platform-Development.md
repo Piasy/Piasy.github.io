@@ -133,6 +133,20 @@ Djinni 生成代码的思路和 J2ObjC 编译代码的思路异曲同工，也�
 + [JavaUniverse: A demo project that showcase how to use Java to conquer the universe, with the help of J2ObjC and GWT :)](https://github.com/Piasy/JavaUniverse)
 + [CppUniverse: A demo project that showcase how to use C++ to conquer the universe, with the help of Djinni and WebAssembly :)](https://github.com/Piasy/CppUniverse)
 
+## Caveat time
+
+绿色守护的开发者冯森林老师曾在一次 MDCC 上说：如果一个项目只说自己如何如何牛，却对自己的限制、坑闭口不提，那这个项目一定不靠谱。
+
+坑肯定是少不了的，这里记录下我踩过的那些坑。
+
+### React Native
+
+ReactNative 某个标签对应的 native view，如果修改 child view（增减、调整大小），都不会触发这个 native view 自身的 layout，所以需要自己手动触发。参考：[GitHub issue](https://github.com/facebook/react-native/issues/8862#issuecomment-321198212)。
+
+### J2ObjC
+
+包装类型使用注意：对 `List<Long>` 调用 `.contains(long)`，判断将失效，生成的 ObjC 代码在比较指针。
+
 ## 参考文章
 
 React Native:
