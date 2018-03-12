@@ -194,7 +194,7 @@ public interface Renderer {
 
 ### 3.3. GLSL 程序
 
-和普通的 view 利用 canvas 来绘制不一样，OpenGL 需要加载 GLSL 程序，让 GPU 进行绘制。所以我们需要定义 shader 代码，并在初始化时（也就是 `onSurfaceChanged` 回调中）加载：
+和普通的 view 利用 canvas 来绘制不一样，OpenGL 需要加载 GLSL 程序，让 GPU 进行绘制。所以我们需要定义 shader 代码，并在初始化时（也就是 `onSurfaceCreated` 回调中）加载：
 
 ~~~ java
 @Override
