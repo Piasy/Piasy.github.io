@@ -42,7 +42,7 @@ GitHub OAuth 过程分为以下几步：
 
 在这个过程中其实有很多细节需要妥善处理：用户返回了怎么办？浏览器位于前台时，我们的 App 被杀掉了怎么办？调用 GitHub API 的过程中如果退到后台，被杀掉了怎么办？为了处理这些问题，我们需要把整个过程分为几个状态，并考虑状态之间的转移关系，请看下面的状态机：
 
-![2017011551325GitHubOAuth_state_machine_normal.jpg](https://imgs.babits.top/2017011551325GitHubOAuth_state_machine_normal.jpg)
+![](https://imgs.piasy.com/2018-03-23-2017011551325GitHubOAuth_state_machine_normal.jpg)
 
 这里面并未包含 Activity 被杀掉的情况，一步步来。
 
@@ -56,7 +56,7 @@ GitHub OAuth 过程分为以下几步：
 
 上述过程中，我们的 App 可能会在好几个环节中被杀掉，先来看看浏览器处于前台时：
 
-![2017011567121GitHubOAuth_state_machine_killed_behind_browser.jpg](https://imgs.babits.top/2017011567121GitHubOAuth_state_machine_killed_behind_browser.jpg)
+![](https://imgs.piasy.com/2018-03-23-2017011567121GitHubOAuth_state_machine_killed_behind_browser.jpg)
 
 利用开发者选项中的“不保留活动”可以触发 Activity 被销毁。
 
@@ -108,7 +108,7 @@ protected void onDestroy() {
 
 请看下面的状态图：
 
-![2017011557554GitHubOAuth_state_machine_killed_calling_api.jpg](https://imgs.babits.top/2017011557554GitHubOAuth_state_machine_killed_calling_api.jpg)
+![](https://imgs.piasy.com/2018-03-23-2017011557554GitHubOAuth_state_machine_killed_calling_api.jpg)
 
 由于 code 只能用一次，而且这里也不涉及多个 OAuthActivity 实例，所以这里的处理就简单得多：直接判定授权失败。
 

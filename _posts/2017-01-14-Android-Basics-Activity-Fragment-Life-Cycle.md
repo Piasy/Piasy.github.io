@@ -10,11 +10,11 @@ tags:
 
 developer 官方图：
 
-![2017010899959activity_lifecycle.png](https://imgs.babits.top/2017010899959activity_lifecycle.png)  ![201701084431fragment_lifecycle.png](https://imgs.babits.top/201701084431fragment_lifecycle.png)
+![](https://imgs.piasy.com/2018-03-23-activity_lifecycle.png)  ![](https://imgs.piasy.com/2018-03-23-fragment_lifecycle.png)
 
 GitHub 神图：
 
-![2017010890963complete_android_fragment_lifecycle.png](https://imgs.babits.top/2017010890963complete_android_fragment_lifecycle.png)
+![](https://imgs.piasy.com/2018-03-23-2017010890963complete_android_fragment_lifecycle.png)
 
 ## 回答问题
 

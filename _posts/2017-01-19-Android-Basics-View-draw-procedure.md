@@ -12,11 +12,11 @@ tags:
 
 整个 View 树的绘图流程在ViewRoot.java类的performTraversals()函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：
 
-![2017011981992view_mechanism_flow.png](https://imgs.babits.top/2017011981992view_mechanism_flow.png)
+![](https://imgs.piasy.com/2018-03-23-view_mechanism_flow.png)
 
 ## View 绘制流程函数调用链
 
-![2017011929587Android_view_draw_procedure.jpg](https://imgs.babits.top/2017011929587Android_view_draw_procedure.jpg)
+![](https://imgs.piasy.com/2018-03-23-Android_view_draw_procedure.jpg)
 
 有几点注意：
 
@@ -28,7 +28,7 @@ tags:
 
 ## Measure 和 Layout 的具体过程
 
-![201701195945measure_layout.png](https://imgs.babits.top/201701195945measure_layout.png)
+![](https://imgs.piasy.com/2018-03-23-measure_layout.png)
 
 ## 参考文章
 

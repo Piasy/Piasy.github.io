@@ -56,7 +56,7 @@ singleInstance 的 Activity，不需要设置 taskAffinity 就可以启动到新
 
 [developer 文档](https://developer.android.com/guide/components/activities/tasks-and-back-stack.html)中有这么一个例子：
 
-![2017010846558diagram_backstack_singletask_multiactivity.png](https://imgs.babits.top/2017010846558diagram_backstack_singletask_multiactivity.png)
+![](https://imgs.piasy.com/2018-03-23-2017011557554GitHubOAuth_state_machine_killed_calling_api-1.jpg)
 
 > At this point, the back stack now includes all activities from the task brought forward, at the top of the stack.
 
@@ -94,59 +94,59 @@ launch mode 相关的还有更多复杂的内容，比如 taskAffinity 完整的
 
 singleTask 不设置 taskAffinity：
 
-![2017010852activity_single_task_without_task_affinity.png](https://imgs.babits.top/2017010852activity_single_task_without_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017010852activity_single_task_without_task_affinity.png)
 
 singleTask 设置 taskAffinity 为包名：
 
-![2017010884648activity_single_task_with_same_task_affinity.png](https://imgs.babits.top/2017010884648activity_single_task_with_same_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017010884648activity_single_task_with_same_task_affinity.png)
 
 singleTask 设置 taskAffinity 为包名以外的值：
 
-![2017010879551activity_single_task_with_different_task_affinity.png](https://imgs.babits.top/2017010879551activity_single_task_with_different_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017010879551activity_single_task_with_different_task_affinity.png)
 
 ### singleInstance 测试
 
 singleInstance 不设置 taskAffinity：
 
-![2017011786410activity_single_instance_without_task_affinity.png](https://imgs.babits.top/2017011786410activity_single_instance_without_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017011786410activity_single_instance_without_task_affinity.png)
 
 singleInstance 设置 taskAffinity 为包名：
 
-![2017011752729activity_single_instance_with_same_task_affinity.png](https://imgs.babits.top/2017011752729activity_single_instance_with_same_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017011752729activity_single_instance_with_same_task_affinity.png)
 
 singleInstance 设置 taskAffinity 为包名以外的值：
 
-![2017011751645activity_single_instance_with_different_task_affinity.png](https://imgs.babits.top/2017011751645activity_single_instance_with_different_task_affinity.png)
+![](https://imgs.piasy.com/2018-03-23-2017011751645activity_single_instance_with_different_task_affinity.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 standard（不设置 taskAffinity）：
 
-![2017011751555single_instance_difftaskaff_launch_standard_notaskaff.png](https://imgs.babits.top/2017011751555single_instance_difftaskaff_launch_standard_notaskaff.png)
+![](https://imgs.piasy.com/2018-03-23-2017011751555single_instance_difftaskaff_launch_standard_notaskaff.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 standard（设置 taskAffinity 为包名以外的值）：
 
-![2017011712232single_instance_difftaskaff_launch_standard_difftaskaff.png](https://imgs.babits.top/2017011712232single_instance_difftaskaff_launch_standard_difftaskaff.png)
+![](https://imgs.piasy.com/2018-03-23-2017011712232single_instance_difftaskaff_launch_standard_difftaskaff.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 singleTask（不设置 taskAffinity）：
 
-![201701178055single_instance_difftaskaff_launch_singletask_notaskaff.png](https://imgs.babits.top/201701178055single_instance_difftaskaff_launch_singletask_notaskaff.png)
+![](https://imgs.piasy.com/2018-03-23-201701178055single_instance_difftaskaff_launch_singletask_notaskaff.png)
 
 singleInstance（设置 taskAffinity 为包名以外的值）启动 singleTask（设置 taskAffinity 为包名以外的值）：
 
-![2017011789836single_instance_difftaskaff_launch_singletask_difftaskaff.png](https://imgs.babits.top/2017011789836single_instance_difftaskaff_launch_singletask_difftaskaff.png)
+![](https://imgs.piasy.com/2018-03-23-2017011789836single_instance_difftaskaff_launch_singletask_difftaskaff.png)
 
 ### Task 合并测试
 
 先设置测试环境，Main 启动 SingleTaskWithDifferentTaskAffinity，后者再启动 SingleTaskWithDifferentTaskAffinity2，注意后两者的 taskAffinity 值相同：
 
-![2017010884876task_merge_setup.png](https://imgs.babits.top/2017010884876task_merge_setup.png)
+![](https://imgs.piasy.com/2018-03-23-2017010884876task_merge_setup.png)
 
 再通过最近任务，切换到 Main 所在的 Task：
 
-![2017010899241task_merge_recent_switch.png](https://imgs.babits.top/2017010899241task_merge_recent_switch.png)
+![](https://imgs.piasy.com/2018-03-23-2017010899241task_merge_recent_switch.png)
 
 再从 Main 启动 SingleTaskWithDifferentTaskAffinity2：
 
-![201701084051task_merge_launch.png](https://imgs.babits.top/201701084051task_merge_launch.png)
+![](https://imgs.piasy.com/2018-03-23-201701084051task_merge_launch.png)
 
 注意看清楚，上面有三个 TaskRecord 的条目，但实际只有两个 Task，169 和 170，而且这个排列顺序是 most recent first，真正逐步返回的时候，顺序是 `SingleTaskWithDifferentTaskAffinity2 -> SingleTaskWithDifferentTaskAffinity -> Main`。
 
