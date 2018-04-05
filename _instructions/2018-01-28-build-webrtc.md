@@ -7,19 +7,23 @@
 
 ## iOS AppRTCMobile
 
-+ `src/example/BUILD.gn` 中，搜索 `ios_app_bundle("AppRTCMobile")`，为其中增加以下内容：
++ `src/examples/BUILD.gn` 中，搜索 `ios_app_bundle("AppRTCMobile")`，为其中增加以下内容（bundle id 设置为实际使用的独特 id）：
 
 ``` gn
       extra_substitutions = [
-        "PRODUCT_BUNDLE_IDENTIFIER=com.google.AppRTCMobile",
+        "PRODUCT_BUNDLE_IDENTIFIER=com.github.piasy.AppRTCMobile",
       ]
 ```
 
-+ `src` 目录下执行 `gn gen out/ios --args='target_os="ios" target_cpu="arm64"' --ide=xcode`；
-+ 用 Xcode 打开 `src/out/ios/all.xcworkspace`；
-+ 选择 `AppRTCMobile` 这个 target，先 run 一下，但最后会提示 `"AppRTCMobile" isn't code signed but requires entitlements. It is not possible to add entitlements to a binary without signing it.`；
-+ 在工程文件的 general tab 中，手动选择 Info.plist 为 `src/examples/objc/AppRTCMobile/ios/Info.plist`，设置一个独特的 bundle id；`src/examples/objc/AppRTCMobile/ios/Info.plist` 也改下 bundle id；
-+ 勾选「Automatically manage signing」
++ `src` 目录下执行 `gn gen out/xcode_ios_arm64 --args='target_os="ios" target_cpu="arm64"' --ide=xcode`；
++ 用 Xcode 打开 `src/out/ios/all.xcworkspace`，run target 选择 `AppRTCMobile`，工程文件的设置 target 也选择 `AppRTCMobile`；
+
+![](https://imgs.piasy.com/2018-04-01-apprtc_ios_setup.png)
+
++ 在工程文件的 general tab 中，手动选择 `Info.plist` 为 `src/examples/objc/AppRTCMobile/ios/Info.plist`，设置一个独特的 bundle id，该 `Info.plist` 文件也改下 bundle id，否则会提示 `The executable was signed with invalid entitlements.`；
++ 勾选「Automatically manage signing」，选择合适的 team；
 + 在工程文件的 general tab 最底部，「Embedded Binaries」添加 WebRTC.framework；
-+ 再次 run 即可；
-+ Xcode beta 经常提示「can not write to device」，clean 一下即可（clean 并不会清除 ninja 脚本编译的结果，所以不会耗时）；
++ 点击 run 即可；
++ clean 工程并不会清除 ninja 脚本编译的结果，所以不必担心耗时；
++ 更新代码后，可能需要删掉老的 `src/third_party/llvm-build/` 目录，然后执行 `gclient run_hooks` 下载新的 llvm；
++ 在 `examples/objc/AppRTCMobile/ARDAppEngineClient.m` 里，修改 `kARDRoomServerHostUrl`, `kARDRoomServerJoinFormat`, `kARDRoomServerJoinFormatLoopback`, `kARDRoomServerMessageFormat`, `kARDRoomServerLeaveFormat` 这四个变量的域名为实际部署的 AppRTC server 域名/地址；

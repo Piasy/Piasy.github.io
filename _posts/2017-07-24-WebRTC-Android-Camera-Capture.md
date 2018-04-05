@@ -1,12 +1,12 @@
 ---
 layout: post
-title: WebRTC-Android 源码导读（一）：相机采集实现分析
+title: WebRTC-Native 源码导读（一）：安卓相机采集实现分析
 tags:
     - 实时多媒体
     - WebRTC
 ---
 
-前面分享了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)，希望能给对 WebRTC 感兴趣的朋友带来帮助。不过有了开发环境只是迈出了万里长征第一步，后面的事情还得仔细研读源码才行，所以这里给大家先带来 WebRTC 的安卓 demo 工程—— AppRTC-Android 的源码导读系列。（[十个月前说好的拆 Dagger2](/2016/09/15/Understand-RxJava/) 看来又要等等了，海涵海涵...）
+前面分享了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)，希望能给对 WebRTC 感兴趣的朋友带来帮助。不过有了开发环境只是迈出了万里长征第一步，后面的事情还得仔细研读源码才行，所以这里给大家先带来 WebRTC 的安卓 demo 工程—— AppRTC-Native 的源码导读系列。（[十个月前说好的拆 Dagger2](/2016/09/15/Understand-RxJava/) 看来又要等等了，海涵海涵...）
 
 WebRTC 的代码量不小，一次性看明白不太现实，在本系列中，我将试图搞清楚三个问题：
 

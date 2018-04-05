@@ -1,6 +1,6 @@
 ---
 layout: post
-title: WebRTC-Android 源码导读（五）：P2P 连接过程和 DataChannel 使用
+title: WebRTC-Native 源码导读（五）：安卓 P2P 连接过程和 DataChannel 使用
 tags:
     - P2P
     - 实时多媒体
@@ -142,7 +142,12 @@ mPeerConnection = mPeerConnectionFactory.createPeerConnection(rtcConfig,
 // 创建 DataChannel
 DataChannel.Init init = new DataChannel.Init();
 init.ordered = true;
+init.negotiated = true; // false is ok
+init.maxRetransmits = -1;
+init.maxRetransmitTimeMs = -1;
+init.id = 0; // must be set, and >= 0
 mDataChannel = mPeerConnection.createDataChannel("P2P MSG DC", init);
+mDataChannel.registerObserver(this);
 
 // A，创建 offer
 mPeerConnection.createOffer(MsgPcClient.this, mSdpConstraints);
