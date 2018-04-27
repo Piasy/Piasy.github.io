@@ -268,3 +268,5 @@ Java.perform(function () {
 ## 小结
 
 Frida 的基本使用算是搞定了，但如果我想要 hook 目标 APP 对某个类所有方法的调用，怎么实现？手写代码显然太 low，所以我打算写一个工具，从 AOSP 获取目标类的代码，从中解析 public API，然后生成对应的 Javascript hook 脚本，stay tuned :)
+
+【2017.6.4 更新】：自动生成 Javascript hook 脚本的工具有了一个可用的版本，[check it out :)](https://github.com/Piasy/FridaAndroidTracer)。
