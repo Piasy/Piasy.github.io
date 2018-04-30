@@ -1,10 +1,12 @@
 ---
 layout: post
-title: WebRTC-Native 源码导读（七）：iOS 相机采集实现分析
+title: WebRTC Native 源码导读（七）：iOS 相机采集实现分析
 tags:
     - 实时多媒体
     - WebRTC
 ---
+
+从上一篇开始，我们这个系列就进入了 iOS 的世界，接下来我打算先熟悉一下 iOS 相机相关的内容，包括采集、预览、编码等，本篇重点是采集。
 
 WebRTC-iOS 的相机采集主要涉及到以下几个类：AVCaptureSession, RTCCameraVideoCapturer, RTCVideoFrame。
 
@@ -175,6 +177,20 @@ int64_t timeStampNs =
 ## RTCVideoFrame
 
 `RTCVideoFrame` 是对视频数据的封装，它内部用 `RTCVideoFrameBuffer` 表示实际的视频数据。`RTCVideoFrameBuffer` 是一个 protocol，它的实现有 `RTCCVPixelBuffer`, `RTCI420Buffer` 和 `RTCMutableI420Buffer`。
+
+CoreVideo 里有多种 image buffer，`CVImageBufferRef` 算是基类，`CVPixelBufferRef`, `CVOpenGLESTextureRef`, `CVOpenGLTextureRef`, `CVOpenGLBufferRef`, `CVMetalTextureRef` 算是子类。
+
+正如它们的名字所示：
+
++ `CVPixelBufferRef` 表示的是内存像素数据，格式包括 RGB YUV 等；
++ `CVOpenGLESTextureRef` 表示的是 OpenGL ES 的纹理数据；
++ `CVOpenGLTextureRef` 表示的是 OpenGL 的纹理数据；
++ `CVOpenGLBufferRef` 表示的是 OpenGL 的 buffer 数据；
++ `CVMetalTextureRef` 表示的是 Metal 的纹理数据；
+
+在 WebRTC 里，相机采集使用 `AVCaptureVideoDataOutput` 接收数据，格式是 `CVPixelBufferRef`，而 WebRTC 内部则是使用的 I420 格式进行存储和传递，`CVPixelBufferRef` 到 I420 的转换，在 `RTCCVPixelBuffer.mm` 中实现。
+
+iOS 不支持相机直接输出 OpenGL ES texture，这一点和安卓不同，但可以把 YUV 数据上传到 OpenGL ES texture，具体可以查看[官方 demo GLCameraRipple](https://developer.apple.com/library/content/samplecode/GLCameraRipple/Introduction/Intro.html)。
 
 ## 参考文章
 
