@@ -168,7 +168,7 @@ int64_t timeStampNs =
     kNanosecondsPerSecond;
 ~~~
 
-采集到视频数据之后的处理，且听下回分解 :)
+采集到视频数据后，会封装为 `RTCVideoFrame` 对象，通过 `RTCVideoCapturerDelegate` 回调出去，至于之后的处理，且听下回分解 :)
 
 ### 切换摄像头
 
