@@ -139,7 +139,7 @@ API 是很简单，但我们究竟该用哪种模式？调整码率在各个模�
 
 而对比调整码率和不调整码率 CQ 的结果，我们可以发现 CQ 模式下调整码率不起作用，这符合预期，因为 CQ 的定义就是如此。虽然 MediaFormat 里面有一个隐藏的 `KEY_QUALITY`，文档表明是搭配 CQ 使用的，但在 Nexus 5X 7.1.2 上实测，修改 quality 不会影响输出码率。
 
-更多测试结果，可以从 [GitHub 项目](https://github.com/Piasy/MediaCodecRcTest/tree/master/results)中获取。
+更多测试结果，可以从 [GitHub 项目](https://github.com/Piasy/InsideCodec/tree/master/MediaCodecRcTest/results)中获取。
 
 **回到前面的问题，我们究竟应该用哪种模式？**
 
@@ -147,10 +147,19 @@ API 是很简单，但我们究竟该用哪种模式？调整码率在各个模�
 + VBR 输出码率会在一定范围内波动，对于小幅晃动，方块效应会有所改善，但对剧烈晃动仍无能为力，而连续调低码率则会导致码率急剧下降，如果无法接受这个问题，那 VBR 就不是好的选择；
 + WebRTC 使用的是 CBR，稳定可控是 CBR 的优点，一旦稳定可控，那我们就可以自己实现比较可靠的控制了；
 
+**2018.05.04 Update**：
+
++ VBR 在画面内容保持静止时，码率会降得很低，一旦画面内容开始动起来，码率上升会跟不上，就会导致画面质量很差；
++ VBR 上调码率后，有可能导致中间网络路径的丢包/延迟增加，进而导致问题；
++ CBR 会存在关键帧后的几帧内容模糊的问题，如果关键帧间隔较短，可以观察到明显的「呼吸效应」；
++ WebRTC 使用的方案是 CBR + 长关键帧间隔，这样「呼吸效应」就不是那么明显，而 CBR 确实能增强画面质量；
+
+_前两点援引自 [Twitch blog](https://blog.twitch.tv/better-broadcasting-with-cbr-d45fd4ed199)_。
+
 当然在编写这个测试项目的过程中，也是遇到了几个小问题的：
 
 + 主线程创建 extractor、decoder、encoder，子线程使用，extractor/decoder 会抛 IllegalStateException，创建和使用在同一个线程就没问题（主线程或子线程都可以）；
-+ 直接 decoder 直接输出到 encoder 的 Surface，编出来的视频是花屏，原因是 encoder 的输出尺寸和视频尺寸不一样，把输出尺寸改为和视频尺寸一样就可以了；但 decoder -> SurfaceTexture -> encoder，中间加入一次 OpenGL 绘制，输出尺寸不同就没问题；
++ decoder 直接输出到 encoder 的 Surface，编出来的视频是花屏，原因是 encoder 的输出尺寸和视频尺寸不一样，把输出尺寸改为和视频尺寸一样就可以了；但 decoder -> SurfaceTexture -> encoder，中间加入一次 OpenGL 绘制，输出尺寸不同就没问题；
 + 调整码率后 encoder 输出码率直降为 1/10，死活没想明白怎么回事，在 [StackOverflow](https://stackoverflow.com/q/45548675/3077508) 上面一问，还真有人帮我把代码看出问题了，原来是调整码率时，单位用得不对，忘记 `* 1000` 了，还好不是啥坑 :)
 
 ### 关键帧
