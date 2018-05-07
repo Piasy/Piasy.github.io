@@ -60,6 +60,8 @@ OSStatus status =
 // 检查 status，释放 ioSurfaceValue, pixelFormat, sourceAttributes
 ~~~
 
+WebRTC iOS demo 输入编码器的数据格式是 `kCVPixelFormatType_420YpCbCr8BiPlanarFullRange`，宽高可以在 demo 里面设置。
+
 这里需要指出的是，VideoToolbox 编码时，需要输入图像尺寸和输出图像尺寸的宽高比保持一致，否则画面就会出现拉伸或压缩。其实 Android 的 MediaCodec 本身也是不支持裁剪的，要么我们对 YUV 数据自行裁剪，要么我们在绘制到 Surface 里时进行裁剪。
 
 此外，回调函数（第八个参数）传入的是一个函数指针，回调发生时是没有 self 指针的，但第九个参数允许我们传入一个指针，每次回调发生时会作为回调的第一个参数，所以我们可以用它来传递 self 指针。但 WebRTC 这里传的是 nullptr，那如何获取 self 指针呢？答案稍后揭晓。
@@ -213,6 +215,8 @@ uint8_t* data = new uint8_t[data_size];
 CMBlockBufferCopyDataBytes(data_buffer, 0, data_size, data);
 ~~~
 
+需要指出的是，编码器输出的数据是 AVCC 格式，WebRTC 将其转换为 Annex-B 格式后，再进行封装和发送。它们是两种 H.264 码流 NALU 存储的方式，简单来说 Annex-B 是 start code + NALU + start code + NALU 的形式，而 AVCC 则是 NALU length + NALU + NALU length + NALU 的形式，具体可以查阅规范，或者[这篇中文博客](https://blog.csdn.net/romantic_energy/article/details/50508332)。
+
 ## 调节码率
 
 码率调节和配置 session 时设置码率的方法一样。
@@ -223,7 +227,7 @@ iOS 有个东西倒是没有：bitrate mode。根据文档描述来看，应该�
 
 之前在 [WebRTC Native 源码导读（三）：安卓视频硬编码实现分析](https://blog.piasy.com/2017/08/08/WebRTC-Android-HW-Encode-Video/#mediacodec-%E6%B5%81%E6%8E%A7%E6%B5%8B%E8%AF%95)中我对 VBR CBR 如何选择给出了一点看法，这里我想补充几点：
 
-+ VBR 在画面内容保持静止时，码率会降得很低，一旦画面内容开始动起来，码率上升会跟不上，就会导致画面质量很差；
++ VBR 在画面内容保持静止时，码率会降得很低，一旦画面内容开始动起来，码率上升速度会跟不上，就会导致画面质量很差；
 + VBR 上调码率后，有可能导致中间网络路径的丢包/延迟增加，进而导致问题；
 + CBR 会存在关键帧后的几帧内容模糊的问题，如果关键帧间隔较短，可以观察到明显的「呼吸效应」；
 + WebRTC 使用的方案是 CBR + 长关键帧间隔，这样「呼吸效应」就不是那么明显，而 CBR 确实能增强画面质量；
@@ -252,4 +256,6 @@ OSStatus status =
 
 ## 总结
 
-至此，iOS 的视频采集、渲染、编码都已经分析完毕了，和 Android 一样，我也会尝试把 WebRTC 这块代码摘出来，形成 iOS VideoCRE 库，敬请期待 :)
+至此，iOS 的视频采集、渲染、编码都已经分析完毕了，原本我打算和 Android 一样把 WebRTC 这块代码摘出来，形成 iOS VideoCRE 库，但头文件实在太多，而且依赖关系太复杂，所以只得作罢 :(
+
+接下来我会尝试把完整的 WebRTC 带到 Flutter 的世界里，形成 FlutterRTC，毕竟我还是比较看好 Flutter 的，敬请期待 :)
