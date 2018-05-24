@@ -57,7 +57,7 @@ previewLayer.frame =
 
 待解码数据送入解码器：
 
-![](https://imgs.piasy.com/2018-05-02-ios_rtp_stream_to_decoder.png)
+![](https://imgs.piasy.com/2018-05-23-ios_rtp_stream_to_decoder.png)
 
 解码后数据进行渲染：
 

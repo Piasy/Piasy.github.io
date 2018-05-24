@@ -157,59 +157,59 @@ private static int getRotationDegree(int cameraId) {
 + 创建 OpenGL texture 时所在的线程需要准备好 GL 上下文，WebRTC 中将这部分逻辑封装在 `EglBase` 类中；
 + 创建 `SurfaceTexture` 所在的线程，将是其数据回调 `onFrameAvailable` 发生的线程；不过 API 21 引入了一个新的重载版本，支持指定回调所在线程的 Handler；
 
-~~~ java
-// The onFrameAvailable() callback will be executed on the SurfaceTexture ctor thread. 
-// See: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/
-// android/5.1.1_r1/android/graphics/SurfaceTexture.java#195.
-// Therefore, in order to control the callback thread on API lvl < 21, 
-// the SurfaceTextureHelper is constructed on the |handler| thread.
-~~~
+    ~~~ java
+    // The onFrameAvailable() callback will be executed on the SurfaceTexture ctor thread. 
+    // See: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/
+    // android/5.1.1_r1/android/graphics/SurfaceTexture.java#195.
+    // Therefore, in order to control the callback thread on API lvl < 21, 
+    // the SurfaceTextureHelper is constructed on the |handler| thread.
+    ~~~
 
 ## 有哪些坑
 
 + 低版本（5.0 以前）的系统上，Camera1 停止预览时，不要手贱地调用下列接口设置 null 值：`setPreviewDisplay`/`setPreviewCallback`/`setPreviewTexture`（文档中确实也说过不要调用...），否则可能导致系统服务全线崩溃，最终导致手机重启：
 
-![](https://imgs.piasy.com/2017-07-24-set_null_cause_system_services_crash.png)
+    ![](https://imgs.piasy.com/2017-07-24-set_null_cause_system_services_crash.png)
 
 + Camera1 停止预览可能存在死锁（没有解决）：
 
-~~~ java
-// Note: stopPreview or other driver code might deadlock. Deadlock in
-// android.hardware.Camera._stopPreview(Native Method) has been observed on
-// Nexus 5 (hammerhead), OS version LMY48I.
-camera.stopPreview();
-~~~
+    ~~~ java
+    // Note: stopPreview or other driver code might deadlock. Deadlock in
+    // android.hardware.Camera._stopPreview(Native Method) has been observed on
+    // Nexus 5 (hammerhead), OS version LMY48I.
+    camera.stopPreview();
+    ~~~
 
 + Camera2 相关的代码在 4.4.2 之前的系统上遇到 VerifyError：
 
-~~~ java
-try {
-    return cameraManager.getCameraIdList();
-    // On Android OS pre 4.4.2, a class will not load because of VerifyError if it contains a
-    // catch statement with an Exception from a newer API, even if the code is never executed.
-    // https://code.google.com/p/android/issues/detail?id=209129
-} catch (/* CameraAccessException */ AndroidException e) {
-    Logging.e(TAG, "Camera access exception: " + e);
-    return new String[] {};
-}
-~~~
+    ~~~ java
+    try {
+        return cameraManager.getCameraIdList();
+        // On Android OS pre 4.4.2, a class will not load because of VerifyError if it contains a
+        // catch statement with an Exception from a newer API, even if the code is never executed.
+        // https://code.google.com/p/android/issues/detail?id=209129
+    } catch (/* CameraAccessException */ AndroidException e) {
+        Logging.e(TAG, "Camera access exception: " + e);
+        return new String[] {};
+    }
+    ~~~
 
 + 利用 SurfaceTexture 接收帧数据，有些机型可能获取到的数据是黑屏（MX5 遇到过）：[需要设置 SurfaceTexture 的 buffer size，`surfaceTexture.setDefaultBufferSize`](http://stackoverflow.com/a/34337226/3077508)
 + 利用 SurfaceTexture 接收帧数据，通过 `SurfaceTexture.getTimestamp` 接口获取时间戳，这个时间戳是相对时间，而且前面会有几帧值为 0：相对时间的问题可以在首帧记录下和物理时间的差值，然后计算后续每帧的物理时间戳，但头几帧时间戳为 0，所以我们记下差值就得等到非零时，而头几帧则可以直接使用物理时间作为时间戳；
 + `surfaceTexture.updateTexImage` 和 `eglSwapBuffers` 会发生死锁，我们需要自行加锁：
 
-~~~ java
-// SurfaceTexture.updateTexImage apparently can compete and deadlock with eglSwapBuffers,
-// as observed on Nexus 5. Therefore, synchronize it with the EGL functions.
-// See https://bugs.chromium.org/p/webrtc/issues/detail?id=5702 for more info.
-synchronized (EglBase.lock) {
-  surfaceTexture.updateTexImage();
-}
+    ~~~ java
+    // SurfaceTexture.updateTexImage apparently can compete and deadlock with eglSwapBuffers,
+    // as observed on Nexus 5. Therefore, synchronize it with the EGL functions.
+    // See https://bugs.chromium.org/p/webrtc/issues/detail?id=5702 for more info.
+    synchronized (EglBase.lock) {
+    surfaceTexture.updateTexImage();
+    }
 
-synchronized (EglBase.lock) {
-  EGL14.eglSwapBuffers(eglDisplay, eglSurface);
-}
-~~~
+    synchronized (EglBase.lock) {
+    EGL14.eglSwapBuffers(eglDisplay, eglSurface);
+    }
+    ~~~
 
 + 有些机型上，用 `TextureView` 实现预览，`onSurfaceTextureAvailable` 回调不会被调用，导致无法开启预览，这个问题有可能可以通过开启硬件加速得以解决（参考 [StackOverflow 这个问题](https://stackoverflow.com/a/28895727/3077508)，我还顶过），但有可能这个办法也不管用，那么恭喜你，得再费一番脑细胞了。我就遇到过这种情况，在一款 OPPO 4.3 的手机上，折腾半天发现延迟一会儿重设一次 `LayoutParams` 就能触发，所以就先这么搞了；
 
