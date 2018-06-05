@@ -10,6 +10,8 @@ tags:
 
 iOS 的视频硬编码用到的是 VideoToolbox 库，除了编码，VideoToolbox 还提供了解码、转码等功能。我们先了解一下 VideoToolbox 编码的基本工作流程，再看看 WebRTC 对它的使用。
 
+_本文的分析基于 WebRTC 的 #23295 提交_。
+
 ## VideoToolbox
 
 使用 VideoToolbox 进行编码的基本工作流程如下：

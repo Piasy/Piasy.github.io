@@ -10,6 +10,8 @@ tags:
 
 视频数据采集之后的处理，iOS 和 Android 有一个很大的差别。iOS 的本地视频预览没有使用自定义渲染，而是简单把 `AVCaptureSession` 和 `AVCaptureVideoPreviewLayer` 绑定了一下，利用了系统已有的预览功能；而 Android 无论是本地视频预览还是远端视频渲染，走的都是 `VideoRenderer` 的自定义渲染流程。
 
+_本文的分析基于 WebRTC 的 #23295 提交_。
+
 ## 本地视频预览
 
 WebRTC iOS 的本地视频预览利用 `AVCaptureVideoPreviewLayer` 实现，Apple 官方文档有对这个类有简单的使用示例：

@@ -416,3 +416,5 @@ AR=arm-linux-androideabi-ar \
 CROSS_COMPILE=arm-linux-androideabi \
 make install
 ~~~
+
+**2018.06.03 Update**: zlib 不需要自己编译，安卓系统已经带着了，在 `target_link_libraries` 里增加 `z` 即可。

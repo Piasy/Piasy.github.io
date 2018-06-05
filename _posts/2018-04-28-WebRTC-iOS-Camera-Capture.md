@@ -12,6 +12,8 @@ WebRTC-iOS 的相机采集主要涉及到以下几个类：AVCaptureSession, RTC
 
 AVCaptureSession 是 iOS 和 macOS 系统提供的采集管理类，位于 `AVFoundation.framework` 中，在 RTCCameraVideoCapturer 中完成了对 AVCaptureSession 的使用，RTCVideoFrame 则是对视频数据的封装。
 
+_本文的分析基于 WebRTC 的 #23295 提交_。
+
 ## AVCaptureSession
 
 我们先来了解一下 AVCaptureSession 的基本使用。

@@ -11,6 +11,8 @@ tags:
 
 另外，从本篇开始，「WebRTC Android 源码导读」系列正式升级为「WebRTC Native 源码导读」 :)
 
+_本文的分析基于 WebRTC 的 #23295 提交_。
+
 ## AppRTCMobile 工作流程
 
 ### 界面入口
