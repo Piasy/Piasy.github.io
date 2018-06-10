@@ -2,9 +2,9 @@
 layout: post
 title: WebRTC Native 源码导读（六）：iOS P2P 连接过程和 DataChannel 使用
 tags:
-    - P2P
     - 实时多媒体
     - WebRTC
+    - 网络
 ---
 
 今天给大家带来 WebRTC iOS demo 的工作流程分析（P2P 连接过程），以及 DataChannel 的使用示例。最后，我把 WebRTC iOS demo 的代码从 WebRTC 代码库中摘了出来，并使用 CocoaPods 上 Google 发布的预编译库，[GitHub 传送门](https://github.com/Piasy/AppRTC-iOS)。

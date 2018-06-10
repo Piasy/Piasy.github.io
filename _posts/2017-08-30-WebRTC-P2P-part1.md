@@ -2,9 +2,9 @@
 layout: post
 title: WebRTC Native 源码导读（五）：安卓 P2P 连接过程和 DataChannel 使用
 tags:
-    - P2P
     - 实时多媒体
     - WebRTC
+    - 网络
 ---
 
 前面四篇里，我们分别分析了 WebRTC Android 的视频采集、视频渲染和视频硬编码，最后把相关代码剥离出来形成了一个独立的模块：VideoCRE，并对其进行了极大地内存抖动优化。从本篇起，我们将迈入新的领域：网络传输。首先我们看看 P2P 连接的建立过程，以及 DataChannel 的使用，最终我们会利用 DataChannel 实现一个 P2P 的文字聊天功能。
