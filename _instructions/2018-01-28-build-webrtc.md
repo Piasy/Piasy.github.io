@@ -28,3 +28,13 @@
 + clean 工程并不会清除 ninja 脚本编译的结果，所以不必担心耗时；
 + 更新代码后，可能需要删掉老的 `src/third_party/llvm-build/` 目录，然后执行 `gclient run_hooks` 下载新的 llvm；
 + 在 `examples/objc/AppRTCMobile/ARDAppEngineClient.m` 里，修改 `kARDRoomServerHostUrl`, `kARDRoomServerJoinFormat`, `kARDRoomServerJoinFormatLoopback`, `kARDRoomServerMessageFormat`, `kARDRoomServerLeaveFormat` 这四个变量的域名为实际部署的 AppRTC server 域名/地址；
+
+## Windows 使用静态库
+
+首先可能会提示 `winsock.h` 和 `winsock2.h` 里的符号重定义，这是因为 `windows.h` 在 `winsock2.h` 之前被 include 导致的，我们在包含 WebRTC 头文件之前，先 `#include winsock2.h` 即可。
+
+对 std min max 的使用导致 `error C2589: '(' : illegal token on right side of '::'` 错误，在项目中增加 `NOMINMAX` 宏定义即可解决。
+
+对 `av_err2str()` 的使用会导致 `error C4576: a parenthesized type followed by an initializer list is a non-standard explicit type conversion syntax` 错误，暂时无解，只能去掉。
+
+ninja 编出来的 `webrtc.lib` 太小（7MB 左右），且 VS 提示文件已损坏？……

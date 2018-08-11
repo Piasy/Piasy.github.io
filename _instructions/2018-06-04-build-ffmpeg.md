@@ -37,6 +37,7 @@ make -j16 install
 --disable-doc \
 --disable-programs \
 --disable-symver \
+--disable-asm \
 --prefix=`pwd`/out
 
 make -j16 install
@@ -65,6 +66,7 @@ make -j16 install
 --disable-doc \
 --disable-programs \
 --disable-symver \
+--disable-asm \
 --prefix=`pwd`/out
 
 make -j16 install
@@ -72,7 +74,7 @@ make -j16 install
 
 `out/lib` 目录里会有动态库和静态库。
 
-遇到的问题：
+### 遇到的问题
 
 mac 下编译报错：`undefined reference to 'swr_alloc()'`，通过 `greadelf` 查看 `.so` 和 `.a` 都确定有相关的符号，最终定位到**因为 ffmpeg 是纯 C 代码，在 C++ 中引用时，`include` 需要用 `extern "C"` 包起来**；
 
@@ -89,6 +91,10 @@ libavutil/log.c:362: error: undefined reference to 'stderr'
 
 是 NDK unified headers 导致，在创建 standalone toolchain 时加上 `--deprecated-headers` 即可。
 
+`x86` 和 `x86_64` 使用静态库时报错：`ld: warning: shared library text segment is not shareable`。
+
+使用 `--disable-asm` 选项禁用汇编优化即可。另外，网上有人建议通过 `--no-warn-shared-textrel` 来禁用这个警告，其实这是不妥的，链接时不警告，在安卓 23 及以后的系统上，运行时会给用户弹框警告的。而禁用汇编优化只是性能稍差一些，两害相较取其轻。
+
 ## iOS
 
 [FFmpeg iOS build script](https://github.com/kewlbear/FFmpeg-iOS-build-script) 亲测可用：
@@ -97,6 +103,33 @@ libavutil/log.c:362: error: undefined reference to 'stderr'
 macOS   10.13.4 (17E202)
 Xcode   9.4 (9F1027a)
 ffmpeg  3.4.2
+~~~
+
+## macOS
+
+~~~ bash
+./configure \
+--arch=x86_64 \
+--enable-shared \
+--disable-doc \
+--disable-programs \
+--disable-symver \
+--prefix=`pwd`/out
+
+make -j16 install
+~~~
+
+## Windows
+
+~~~ bash
+./configure \
+--toolchain=msvc \
+--arch=x86 \
+--enable-shared \
+--disable-symver \
+--prefix=`pwd`/out
+
+make -j16 install
 ~~~
 
 ## 参考文章
