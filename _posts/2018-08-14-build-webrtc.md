@@ -66,10 +66,12 @@ _注：这个 CMakeLists.txt 基于 `#24277` 提交，且只适配了 arm64-v8a 
 
 不过 clone 下来之后，别急着用 Android Studio 打开，首先要修改一下 `libjingle_peerconnection/build.gradle`，设置以下变量：
 
-+ `webrtc_repo`: WebRTC Android 代码仓库路径；
++ `webrtc_repo`: WebRTC Android 本地代码仓库路径；
 + `android_jar`: Android SDK 的 android.jar 路径；
 + `py2`: Python 2.x 可执行文件的路径；
 + `protoc`: protobuf 编译程序的路径，注意它的版本需要和 WebRTC 代码库匹配，我没找到这个程序在代码库里的位置，但我发现用 gn + ninja 编译一次后，会在 `out/dir/clang_x64` 目录下生成这个程序；
+
+_注意：WebRTC 及其依赖的源码，需要自行下载，上述变量是为了让 Android Studio 工程可以找到源码，关于如何下载源码，可以参考上文，或者[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)_。
 
 修改完了 build.gradle 之后也不要着急，还要修改 Android Studio 启动配置，编辑 `~/Library/Preferences/AndroidStudio3.1/studio.vmoptions`（替换为正确版本），修改 `-Xms`, `-Xmx`, `-XX:MaxPermSize`, `-XX:ReservedCodeCacheSize` 这四个参数：
 
