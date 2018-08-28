@@ -1,9 +1,9 @@
 # Janus Gateway HTTPS
 
-## 安装
+## Ubuntu 安装
 
 ~~~ bash
-apt-get -y update && apt-get install -y libmicrohttpd-dev \
+sudo apt-get -y update && sudo apt-get install -y libmicrohttpd-dev \
     libjansson-dev \
     libnice-dev \
     libssl-dev \
@@ -40,7 +40,7 @@ cd ~/ffmpeg_sources && \
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
     tar xzvf yasm-1.3.0.tar.gz && \
     cd yasm-1.3.0 && \
-    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin"  && \
+    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" && \
     make && \
     make install && \
     make distclean
@@ -117,67 +117,72 @@ cd ~/ffmpeg_sources && \
     hash -r
 
 cd ~/ffmpeg_sources && \
+    LIBEVENT_VER=2.1.8 && \
+    wget https://github.com/libevent/libevent/releases/download/release-$LIBEVENT_VER-stable/libevent-$LIBEVENT_VER-stable.tar.gz && \
+    tar xvfz libevent-$LIBEVENT_VER-stable.tar.gz && \
+    cd libevent-$LIBEVENT_VER-stable && \
+    ./configure --prefix="$HOME/ffmpeg_build" && \
+    make && make install
+
+cd ~/ffmpeg_sources && \
     COTURN="4.5.0.6" && \
-    wget https://github.com/coturn/coturn/archive/$COTURN.tar.gz && \
-    tar xzvf $COTURN.tar.gz && \
+    wget -O coturn-$COTURN.tar.gz https://github.com/coturn/coturn/archive/$COTURN.tar.gz && \
+    tar xzvf coturn-$COTURN.tar.gz && \
     cd coturn-$COTURN && \
-    ./configure && \
+    ./configure --prefix="$HOME/ffmpeg_build" && \
     make && make install
 
 cd ~/ffmpeg_sources && \
     LIBWEBSOCKET="2.2.1" && vLIBWEBSOCKET="v2.2.1" && \
-    wget https://github.com/warmcat/libwebsockets/archive/$vLIBWEBSOCKET.tar.gz && \
-    tar xzvf $vLIBWEBSOCKET.tar.gz && \
+    wget -O libwebsockets-$vLIBWEBSOCKET.tar.gz https://github.com/warmcat/libwebsockets/archive/$vLIBWEBSOCKET.tar.gz && \
+    tar xzvf libwebsockets-$vLIBWEBSOCKET.tar.gz && \
     cd libwebsockets-$LIBWEBSOCKET && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_FLAGS="-fpic" -DLWS_MAX_SMP=1 -DLWS_IPV6="ON" .. && \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" \
+        -DCMAKE_C_FLAGS="-fpic" \
+        -DLWS_MAX_SMP=1 \
+        -DLWS_IPV6="ON" .. && \
     make && make install
 
-cd ~ && \
-    wget https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.9.1.linux-amd64.tar.gz
+cd ~/ffmpeg_sources && \
+    GO_VER="1.11" && \
+    wget https://storage.googleapis.com/golang/go${GO_VER}.linux-amd64.tar.gz && \
+    tar -C "$HOME/ffmpeg_build" -xzf go${GO_VER}.linux-amd64.tar.gz && \
+    mkdir go_path && \
+    echo 'export GOPATH=$HOME/ffmpeg_sources/go_path' >> ~/.bashrc && \
+    echo 'export PATH=$GOPATH/bin:$HOME/ffmpeg_build/go/bin:$HOME/ffmpeg_build/bin:$HOME/bin:$HOME/ffmpeg_build/caddy/bin:$PATH' >> ~/.bashrc && \
+    source ~/.bashrc
 
-mkdir -p "/go/src" "/go/bin" && chmod -R 777 "/go"
-~~~
-
-修改 `~/.bashrc`：
-
-~~~ sh
-export GOPATH=/go
-export PATH=$GOPATH/bin:/usr/local/go/bin:/opt/janus/bin:$PATH
-~~~
-
-~~~ bash
 cd ~/ffmpeg_sources && \
     git clone https://boringssl.googlesource.com/boringssl && \
     cd boringssl && \
     sed -i s/" -Werror"//g CMakeLists.txt && \
-    mkdir -p build  && \
-    cd build  && \
-    cmake -DCMAKE_CXX_FLAGS="-lrt" ..  && \
-    make  && \
-    cd ..  && \
-    sudo mkdir -p /opt/boringssl  && \
-    sudo cp -R include /opt/boringssl/  && \
-    sudo mkdir -p /opt/boringssl/lib  && \
-    sudo cp build/ssl/libssl.a /opt/boringssl/lib/  && \
-    sudo cp build/crypto/libcrypto.a /opt/boringssl/lib/
+    mkdir -p build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DCMAKE_CXX_FLAGS="-lrt" .. && \
+    make && \
+    cd .. && \
+    mkdir -p $HOME/ffmpeg_build/boringssl && \
+    cp -R include $HOME/ffmpeg_build/boringssl/  && \
+    mkdir -p $HOME/ffmpeg_build/boringssl/lib  && \
+    cp build/ssl/libssl.a $HOME/ffmpeg_build/boringssl/lib/  && \
+    cp build/crypto/libcrypto.a $HOME/ffmpeg_build/boringssl/lib/
 
-apt-get remove -y libsrtp0-dev && \
+sudo apt-get remove -y libsrtp0-dev && \
     cd ~/ffmpeg_sources && \
     wget https://github.com/cisco/libsrtp/archive/v2.0.0.tar.gz && \
     tar xfv v2.0.0.tar.gz && \
     cd libsrtp-2.0.0 && \
-    ./configure --prefix=/usr --enable-openssl && \
-    make shared_library && sudo make install
+    ./configure --prefix="$HOME/ffmpeg_build" --enable-openssl && \
+    make shared_library && make install
 
 cd ~/ffmpeg_sources && \
     GDB="8.0" && \
     wget ftp://sourceware.org/pub/gdb/releases/gdb-$GDB.tar.gz && \
     tar xzvf gdb-$GDB.tar.gz && \
     cd gdb-$GDB && \
-    ./configure && \
+    ./configure --prefix="$HOME/ffmpeg_build" && \
     make && \
     make install
 
@@ -185,15 +190,73 @@ cd ~ && \
     git clone https://github.com/meetecho/janus-gateway.git && \
     cd janus-gateway && \
     sh autogen.sh && \
-    ./configure --prefix=/opt/janus --enable-docs && \
+    env CPPFLAGS="-I$HOME/ffmpeg_build/include" \
+        LDFLAGS="-L$HOME/ffmpeg_build/lib" \
+        PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" \
+    ./configure --prefix="$HOME/ffmpeg_build" \
+    --enable-post-processing \
+    --enable-boringssl=$HOME/ffmpeg_build/boringssl \
+    --disable-data-channels \
+    --disable-rabbitmq \
+    --disable-mqtt  \
+    --disable-plugin-echotest \
+    --disable-unix-sockets \
+    --enable-dtls-settimeout \
+    --disable-plugin-recordplay \
+    --disable-plugin-sip \
+    --disable-plugin-videocall \
+    --disable-plugin-voicemail \
+    --disable-plugin-textroom && \
     make && \
     make install && \
-    make configs && \
-    cp -rf docs/html/* html/docs/
+    make configs
 
-curl https://caddyserver.com/download/linux/amd64?license=personal > caddy.tar.gz && \
-    mkdir ~/caddy && tar -C ~/caddy -xzf caddy.tar.gz
+cd ~/ffmpeg_sources && \
+    curl https://caddyserver.com/download/linux/amd64?license=personal > caddy.tar.gz && \
+    mkdir ~/ffmpeg_build/caddy && tar -C ~/ffmpeg_build/caddy -xzf caddy.tar.gz
 ~~~
+
+## macOS 安装
+
+``` bash
+brew install jansson libnice openssl srtp libusrsctp libmicrohttpd \
+    libwebsockets cmake rabbitmq-c sofia-sip opus libogg curl \
+    glib pkg-config gengetopt autoconf automake libtool
+
+# master 分支的才能正常工作
+wget https://codeload.github.com/warmcat/libwebsockets/zip/master && \
+unzip libwebsockets-master.zip && \
+cd libwebsockets-master && \
+mkdir build && \
+cd build && \
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/libwebsockets \
+    -DCMAKE_C_FLAGS="-fpic" \
+    -DLWS_MAX_SMP=1 \
+    -DLWS_IPV6="ON" \
+    -DLWS_WITH_SSL=0 .. && \
+make && sudo make install
+
+sh autogen.sh && \
+ENV CPPFLAGS='-I/usr/local/libwebsockets/include' \
+    LDFLAGS='-L/usr/local/libwebsockets/lib' \
+./configure --prefix=`pwd`/out \
+    PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig \
+    --enable-post-processing \
+    --disable-data-channels \
+    --disable-rabbitmq \
+    --disable-mqtt  \
+    --disable-plugin-echotest \
+    --enable-websockets \
+    --disable-unix-sockets \
+    --disable-plugin-recordplay \
+    --disable-plugin-sip \
+    --disable-plugin-videocall \
+    --disable-plugin-voicemail \
+    --disable-plugin-textroom && \
+make && \
+make install && \
+make configs
+```
 
 ## HTTPS 模式运行
 
