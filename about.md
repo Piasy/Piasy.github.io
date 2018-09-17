@@ -10,7 +10,7 @@ permalink: /about/
 
 ### 简介
 
-我是许建林(Piasy)，2015年本科毕业于清华大学计算机系，目前就职于 Powerinfo，带领客户端 SDK 团队。我热爱技术，喜欢用技术解决现实生活中的问题。我目前专注于实时多媒体技术，但视野不局限于此。我认为和团队一起，解决问题，又快又好，是创业过程中最重要的，要做到这一点，解决问题的思路和能力、学习能力、团队协作是关键。我的技术博客：[http://blog.piasy.com/](http://blog.piasy.com/)，我的 GitHub 个人主页：[https://github.com/Piasy/](https://github.com/Piasy/)。
+我是许建林(Piasy)，2015年本科毕业于清华大学计算机系，目前就职于 Powerinfo，带领客户端 SDK 团队。我热爱技术，喜欢用技术解决现实生活中的问题。我目前专注于实时多媒体技术，但视野不局限于此。我认为和团队一起，解决问题，又快又好，是创业过程中最重要的，要做到这一点，解决问题的思路和能力、学习能力、团队协作是关键。我的技术博客：[https://blog.piasy.com/](https://blog.piasy.com/)，我的 GitHub 个人主页：[https://github.com/Piasy/](https://github.com/Piasy/)。
 
 ### 项目经历
 

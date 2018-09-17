@@ -4,6 +4,8 @@ title: 时刻
 permalink: /moments/
 ---
 
+  * 2018 年 8 月 17 号，[BIV 登上 GitHub Java 周榜第二](/img/moments/biv_weekly_trending_2nd.png){:target="_blank"}
+  
   * 2016 年 11 月 17 号，[在 droidcon Beijing](http://mp.weixin.qq.com/s?__biz=MzAxMjM0OTA3Nw==&mid=2650203973&idx=1&sn=e9a6829b8b2af8d32503541d9f123ac9&chksm=83b17cbfb4c6f5a9dde700be0785089f6959c07ca8f9b452e9f56af5ece38869d2033aaf704f#rd){:target="_blank"} 分享 [打通 RxJava 的任督二脉](/talks/RxJava-DroidCon-Beijing-Piasy){:target="_blank"}，感谢 droidcon，感谢长风
   
   * 2016 年 8 月 7 号，[在 GDG Android Meetup](http://mp.weixin.qq.com/s?__biz=MzA5MDg3MjczMg==&mid=2652003543&idx=1&sn=849c06ac198cbfe9cdcfae90b2a17021&scene=1&srcid=0902QGgAZZKCpZbNNPD66mnu#rd){:target="_blank"} 分享 [近乎完美的安卓 Model 层架构](/talks/Perfect-Android-Model-Layer-GDG-Meetup-Piasy){:target="_blank"}，感谢 GDG，感谢百万
