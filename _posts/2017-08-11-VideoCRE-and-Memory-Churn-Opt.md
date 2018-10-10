@@ -31,7 +31,7 @@ demo 工程里实现了高低码率两路本地 MP4 录制功能，下面我们�
 
 首先是配置参数，标清和高清：
 
-~~~ java
+``` java
 VideoConfig config = VideoConfig.builder()
         .previewWidth(1280)
         .previewHeight(720)
@@ -48,11 +48,11 @@ VideoConfig hdConfig = VideoConfig.builder()
         .fps(30)
         .outputBitrate(2000)
         .build();
-~~~
+```
 
 接下来是创建 `VideoCapturer`：
 
-~~~ java
+``` java
 VideoCapturer capturer = createVideoCapturer();
 
 private VideoCapturer createVideoCapturer() {
@@ -65,11 +65,11 @@ private VideoCapturer createVideoCapturer() {
             return null;
     }
 }
-~~~
+```
 
 准备 Renderer 和 Encoder：
 
-~~~ java
+``` java
 mVideoView = (SurfaceViewRenderer) findViewById(R.id.mVideoView1);
 try {
     String filename = "video_source_record_" + System.currentTimeMillis();
@@ -85,33 +85,33 @@ try {
 }
 mHwAvcEncoder = new HwAvcEncoder(config, mMp4Recorder);
 mHdHwAvcEncoder = new HwAvcEncoder(hdConfig, mHdMp4Recorder);
-~~~
+```
 
 创建 `VideoSink` 和 `VideoSource`，`VideoSource` 也需要视频配置，但只需要使用预览尺寸、帧率，所以用 `config` 或者 `hdConfig` 都可以：
 
-~~~ java
+``` java
 mVideoSink = new VideoSink(mVideoView, mHwAvcEncoder, mHdHwAvcEncoder);
 mVideoSource = new VideoSource(getApplicationContext(), config, capturer, mVideoSink);
-~~~
+```
 
 初始化：
 
-~~~ java
+``` java
 mVideoView.init(mVideoSource.getRootEglBase().getEglBaseContext(), null);
 mHwAvcEncoder.start(mVideoSource.getRootEglBase());
 mHdHwAvcEncoder.start(mVideoSource.getRootEglBase());
-~~~
+```
 
 开始采集、录制：
 
-~~~ java
+``` java
 @Override
 protected void onStart() {
     super.onStart();
 
     mVideoSource.start();
 }
-~~~
+```
 
 ## 内存抖动优化
 

@@ -11,21 +11,21 @@ Android 6.0引入了Runtime Permission模型，一方面用户不必在安装APP
 ## 快速使用运行时权限
 +  在AndroidManifest.xml中声明权限，就算是运行时权限，这一步也是不能忘记的：
 
-~~~ xml
+``` xml
 <uses-permission android:name="android.permission.READ_CONTACTS"/>
-~~~
+```
 
 +  检查系统版本：
 
-~~~ java
+``` java
 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
     // 继续
 }
-~~~
+```
 
 +  检查是否被授权：
 
-~~~ java
+``` java
 switch (checkSelfPermission(Manifest.permission.READ_CONTACTS)) {
     case PackageManager.PERMISSION_GRANTED:
         // 已有授权
@@ -38,18 +38,18 @@ switch (checkSelfPermission(Manifest.permission.READ_CONTACTS)) {
         // 其实只会返回上述两种情况
         break;
 }
-~~~
+```
 
 +  如果当前没有权限，则请求权限：
 
-~~~ java
+``` java
 requestPermissions(new String[] { Manifest.permission.READ_CONTACTS },
                         REQUEST_PERMISSION);
-~~~
+```
 
 +  处理授权请求回调：
 
-~~~ java
+``` java
 @Override
 public void onRequestPermissionsResult(int requestCode, 
         @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -68,15 +68,15 @@ public void onRequestPermissionsResult(int requestCode,
     }
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 }
-~~~
+```
 
 ## 进一步深入
 系统还提供了一个API：
 
-~~~ java
+``` java
 public boolean shouldShowRequestPermissionRationale(
         @NonNull String permission)
-~~~
+```
 
 文档中的描述比较晦涩，“显示Rationale是为了解释不那么明显的权限请求，该方法就是检查是否需要显示Rationale，例如相机应用请求定位权限”，那么这个函数到底是干什么用的呢？它的行为有何规律？
 

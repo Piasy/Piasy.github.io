@@ -21,7 +21,7 @@ WebSocket 是基于 TCP 的协议，它和 HTTP 的关系仅仅是其握手可�
 
 客户端请求：
 
-~~~ bash
+``` bash
 GET /chat HTTP/1.1
 Host: server.example.com
 Upgrade: websocket
@@ -30,17 +30,17 @@ Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
 Origin: http://example.com
 Sec-WebSocket-Protocol: chat, superchat
 Sec-WebSocket-Version: 13
-~~~
+```
 
 服务端响应：
 
-~~~ bash
+``` bash
 HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
 Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 Sec-WebSocket-Protocol: chat
-~~~
+```
 
 客户端握手请求实际上是一个 HTTP Upgrade 请求。`Upgrade` 和 `Connection` 字段表明这是 WebSocket Upgrade 请求和响应。
 
@@ -78,9 +78,9 @@ frame 结构：
 
 客户端建立连接的接口为 `client.go Dialer.Dial`：
 
-~~~ go
+``` go
 c, _, err := websocket.DefaultDialer.Dial("ws://localhost:8080/echo", nil)
-~~~
+```
 
 + 准备 `http.Request` 对象，用来发起握手请求；
 + 默认使用 `net.Dialer Dialer.Dial` 函数建立 TCP 连接；
@@ -90,7 +90,14 @@ c, _, err := websocket.DefaultDialer.Dial("ws://localhost:8080/echo", nil)
 
 服务端接受客户端连接的接口为 `server.go Upgrader.Upgrade`：
 
-![](https://imgs.piasy.com/2018-06-07-websocket_listen.png)
+``` go
+func echo(w http.ResponseWriter, r*http.Request) {
+    c, err := upgrader.Upgrade(w, r, nil)
+}
+
+http.HandleFunc("/echo", echo)
+http.ListenAndServe("localhost:8080", nil)
+```
 
 + 通常这个接口都由 HTTP handler 调用，传入 `w http.ResponseWriter`, `r *http.Request` 和 `responseHeader http.Header`；
 + 检查请求的 header，确保是握手请求；
@@ -106,9 +113,9 @@ c, _, err := websocket.DefaultDialer.Dial("ws://localhost:8080/echo", nil)
 
 读数据的接口是 `conn.go Conn.ReadMessage`：
 
-~~~ go
+``` go
 mt, message, err := c.ReadMessage()
-~~~
+```
 
 + `ReadMessage` 是一个辅助接口，其内部调用 `NextReader`，并从中读出一个 frame；
 + `NextReader` 内部则是循环调用 `advanceFrame` 取得下一个 frame（可能阻塞），如果取到了，就构造一个 `messageReader` 对象并返回，如果支持压缩，就包一层解压；
@@ -120,9 +127,9 @@ mt, message, err := c.ReadMessage()
 
 写数据的接口是 `conn.go Conn.WriteMessage`：
 
-~~~ go
+``` go
 err := c.WriteMessage(websocket.TextMessage, []byte("hello"))
-~~~
+```
 
 + `WriteMessage` 也是一个辅助接口，其内部调用 `NextWriter`，并把数据写入；
 + 不过对于 server 来说，有一个优化：如果不需要压缩，那就直接创建 `messageWriter` 对象，并把数据写入；
@@ -148,7 +155,11 @@ engine.io 的使用主要分为三步：
 
 engine.io 监听请求的方式和 WebSocket 类似：
 
-![](https://imgs.piasy.com/2018-06-07-engineio_listen.png)
+``` go
+server, err := engineio.NewServer(nil)
+http.Handle("/engine.io/", server)
+http.ListenAndServe(":5000", nil)
+```
 
 收到 HTTP 请求后，Go http 模块会调用 `server.go Server.ServeHTTP` 函数，处理请求。
 
@@ -161,9 +172,9 @@ engine.io 监听请求的方式和 WebSocket 类似：
 
 接受连接的接口是 `server.go Server.Accept`：
 
-~~~ go
+``` go
 conn, _ := server.Accept()
-~~~
+```
 
 它其实就是从 `socketChan` 里读数据，还没有请求时这个调用会阻塞，客户端初次请求时就会读到创建的 Conn 对象。
 
@@ -193,7 +204,11 @@ socket.io 的使用主要分为五步：
 
 socket.io 监听请求的方式则和 engine.io 完全一样：
 
-![](https://imgs.piasy.com/2018-06-07-socketio_listen.png)
+``` go
+server, err := socketio.NewServer(nil)
+http.Handle("/engine.io/", server)
+http.ListenAndServe(":5000", nil)
+```
 
 + `NewServer` 里会调用 `engineio.NewServer` 创建 `engineio.Server` 对象；
 + 创建了 `socketio.Server` 对象后，会起一个协程，执行 `Server.loop` 函数；

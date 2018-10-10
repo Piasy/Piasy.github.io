@@ -12,7 +12,7 @@ tags:
 
 在`app/build.gradle`中加入以下配置：
 
-~~~ groovy
+``` groovy
 androidTestCompile project(':testbase')
 androidTestCompile (appTestDependencies.androidJUnitRunner) {
     exclude module: 'support-annotations'
@@ -32,23 +32,23 @@ androidTestCompile (appTestDependencies.androidJUnit4Rules) {
 androidTestApt (appDependencies.daggerCompiler) {
     exclude module: 'dagger'
 }
-~~~
+```
 
 `androidTestCompile`就是用来声明安卓instrumentation测试的依赖的，它对应的gradle测试命令是`./gradlew :app:connectedAndroidTest`或者`./gradlew :app:cAT`。而`androidTestApt`则是在instrumentation测试代码中使用apt插件生成代码的（dagger2用到）。
 
 在这里我还遇到了两个特别诡异的错误，第一个是运行测例直接失败，logcat报错如下：
 
-~~~ java
+``` java
 android.content.res.Resources$NotFoundException: Resource ID
-~~~
+```
 
 Google几番也没有找到什么头绪，最后从[StackOverflow上一个回答的评论](http://stackoverflow.com/questions/34791907/inflating-activity-content-fails-in-instrumentation)中找到了原因：归根结底还是因为发生了重复依赖！通过`./gradlew :app:dependencies`分析`app`的依赖，发现`testbase`这个module依赖了`appcompat-v7`，而`app`则直接编译依赖了它，两者在instrumentation测试中发生了冲突，导致了这个诡异的闪退，移除`testbase`对`appcompat-v7`的依赖之后就解决了这个问题。
 
 第二个是执行`./gradlew :model:cAT`失败，gradle报错如下：
 
-~~~ java
+``` java
 java.util.zip.ZipException: duplicate entry:      javax/annotation/Generated.class
-~~~
+```
 
 同样是几番Google无果，反复折腾了几天，无奈只能自行分析。从报错来看还是发生了依赖重复，存在两个`javax/annotation/Generated.class`类，通过`./gradlew :model:dependencies`分析`model`的依赖，最终发现`testbase`这个module通过`espresso`间接依赖了`javax.annotation-api`，而`model`则通过`base`编译依赖了`javax.annotation`，两者发生了重复，导致了这个问题。通过配置`testbase`，在依赖`espresso`的时候`exclude module: 'javax.annotation-api'`终于解决了这个问题。
 
@@ -70,7 +70,7 @@ Retrofit 2.0中没有了end point的概念，取而代之的是base url，在创
 
 MockWebServer可以设置`Dispatcher`，可以根据不同的请求返回不同的数据，在本工程的一个测例中，dispatcher的设置如下：
 
-~~~ java
+``` java
 new Dispatcher() {
     @Override
     public MockResponse dispatch(final RecordedRequest request)
@@ -84,6 +84,6 @@ new Dispatcher() {
         }
     }
 };
-~~~
+```
 
 如此通过Retrofit调用`/search/users`接口返回的就是mock的数据了。完美 :)

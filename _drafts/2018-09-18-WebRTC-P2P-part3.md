@@ -7,6 +7,8 @@ tags:
     - 网络
 ---
 
+> 连接建立成功后，就可以收发应用层的数据了，数据的收发将会通过选出来的 Connection 对象完成，Connection 则是调用 Port，Port 则是调用 AsyncPacketSocket，而这里用到的 Port 和 AsyncPacketSocket 对象，都是在收集本地 candidate 过程中创建的，并不会重新创建。
+
 DTLS？SRTP？
 
 使用 P2P 连接的各种 transport, channel 类结构、关系？

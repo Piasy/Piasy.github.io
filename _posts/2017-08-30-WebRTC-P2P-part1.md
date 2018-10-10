@@ -130,7 +130,7 @@ DataChannel 是 WebRTC 提供的任意数据 P2P 传输的 API，它使用 [SCTP
 
 为了使用 DataChannel，我们先得创建 PeerConnection 对象，而且完成 P2P 连接的建立，具体过程经过上面的分析，我们应该已经了然于胸了，下面只摘录关键代码，完整代码可以查看[这个 GitHub 提交](https://github.com/Piasy/AppRTC-Android/commit/a0c0e11d404645a9886fca7846bed2c82933a13c)。
 
-~~~ java
+``` java
 // 初始化并创建 factory
 PeerConnectionFactory.initializeAndroidGlobals(mAppContext, true);
 mPeerConnectionFactory = new PeerConnectionFactory(null);
@@ -184,7 +184,7 @@ final byte[] bytes = new byte[data.capacity()];
 data.get(bytes);
 String msg = new String(bytes);
 Logging.d(TAG, "onMessage " + msg);
-~~~
+```
 
 创建 DataChannel 时可以通过 `DataChannel.Init` 的 `ordered`、`maxRetransmitTimeMs`、`maxRetransmits` 参数配置配置可靠性：
 

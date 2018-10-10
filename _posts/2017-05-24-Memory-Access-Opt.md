@@ -25,7 +25,7 @@ YUV 的操作其实都挺烧脑的，我每次都会画图来分析。
 
 相当于**要把矩阵完全逆序**，代码如下：
 
-~~~ java
+``` java
 private void flipImage(byte[] src, byte[] dst, int width, int height) {
     int wh = width * height;
 
@@ -40,7 +40,7 @@ private void flipImage(byte[] src, byte[] dst, int width, int height) {
         dst[wh + j + 1] = src[wh + wh / 2 - j - 1];
     }
 }
-~~~
+```
 
 其实这个操作可以就地实现，[LeetCode 上也有一道要求就地旋转图像的题：Rotate Image](https://leetcode.com/problems/rotate-image/)，但这里我们就不在这一点上纠结了。
 
@@ -50,7 +50,7 @@ private void flipImage(byte[] src, byte[] dst, int width, int height) {
 
 这里我们需要的是**把矩阵底部的行放到顶部去**，代码如下：
 
-~~~ java
+``` java
 private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
     // Y
     for (int x = 0; x < width; x++) {
@@ -69,7 +69,7 @@ private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
         }
     }
 }
-~~~
+```
 
 通常来说，测试没问题之后故事就要结束了，但这里出现了新情况：之前对这段 YUV 操作的代码加了时长统计，旋转 180° 的代码执行耗时平均 13ms，但上下翻转的代码却要 23ms，耗时多了将近一倍！
 
@@ -97,7 +97,7 @@ Java 最大的特点就是简单，没有 C++ 那样海量的语言特性难以�
 
 而显然乘除运算比加减运算要耗时，所以我决定拿乘除运算开刀，代码修改如下：
 
-~~~ java
+``` java
 private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
     // Y
     int endIdx = (height - 1) * width;
@@ -126,7 +126,7 @@ private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
         }
     }
 }
-~~~
+```
 
 就在我满心欢喜打算见证奇迹的时候，现实打了我一个响亮的耳光：22ms，几乎没差别！这我就尴尬了，难道一层循环还真的就比两层循环好？
 
@@ -140,7 +140,7 @@ private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
 
 实际上翻转操作并不需要这样的随机访问，我们需要的是**把矩阵底部的行放到顶部去**，那么直接逐行拷贝即可，所以最后的代码长这样：
 
-~~~ java
+``` java
 private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
     // Y
     for (int y = 0; y < height; y++) {
@@ -154,7 +154,7 @@ private void flipImageVertical(byte[] src, byte[] dst, int width, int height) {
         System.arraycopy(src, wh + y * width, dst, wh + (halfH - 1 - y) * width, width);
     }
 }
-~~~
+```
 
 拿这段 Java 代码，测量耗时就已经缩短到了 13ms，不过由于 `System.arraycopy` 肯定是 native 实现的，把这段代码转移到 native 层优化将不会太大。实际测量结果符合预期，native 化之后，耗时只降低到了 11ms。
 

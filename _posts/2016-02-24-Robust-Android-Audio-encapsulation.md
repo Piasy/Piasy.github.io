@@ -27,9 +27,9 @@ MediaRecorder可以录制视频和音频到文件，MediaPlayer可以播放视�
 +  无论是prepare还是start，抛出异常之后[都需要reset和release](https://github.com/Piasy/RxAndroidAudio/blob/f9c840e3aaf0a4512aee433d250c570cb441e4d8/rxandroidaudio%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fpiasy%2Frxandroidaudio%2FAudioRecorder.java#L145)；
 +  需要保证不会对jni层进行多线程的调用，以免出现下面这样的“静默闪退”（[参考资料](http://stackoverflow.com/questions/14023291/fatal-signal-11-sigsegv-at-0x00000000-code-1-phonegap)），RxAndroidAudio通过[单例](https://github.com/Piasy/RxAndroidAudio/blob/f9c840e3aaf0a4512aee433d250c570cb441e4d8/rxandroidaudio%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fpiasy%2Frxandroidaudio%2FAudioRecorder.java#L61)和[synchronized方法](https://github.com/Piasy/RxAndroidAudio/blob/f9c840e3aaf0a4512aee433d250c570cb441e4d8/rxandroidaudio%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fpiasy%2Frxandroidaudio%2FAudioRecorder.java#L116)来保证这一点：
 
-~~~ java
+``` java
 A/libc: Fatal signal 11 (SIGSEGV) at 0x00000010 (code=1), thread 9302 (RxComputationTh)
-~~~
+```
 
 +  当用户录完声音，需要停止录音，调用stop的时候，[需要sleep一段时间](https://github.com/Piasy/RxAndroidAudio/blob/f9c840e3aaf0a4512aee433d250c570cb441e4d8/rxandroidaudio%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fpiasy%2Frxandroidaudio%2FAudioRecorder.java#L239)，以免最后几百毫秒录不上，这有可能是安卓系统音频编码器的bug，[参考资料](http://stackoverflow.com/a/24092524/3077508)；
 +  当prepare返回后，有些低端的设备需要再延迟一段时间开始说话，以免开头几百毫秒录不上，可以[在prepare返回后延迟几百毫秒（例如300ms）再显示初始化完毕的UI](https://github.com/Piasy/RxAndroidAudio/blob/f9c840e3aaf0a4512aee433d250c570cb441e4d8/app%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fpiasy%2Frxandroidaudio%2Fexample%2FFileActivity.java#L210)，原因还需要继续寻找；
@@ -63,15 +63,15 @@ RxAndroidAudio之所以叫Rx，就是因为它尽可能的提供了Reactive的AP
 
 RxAudioPlayer播放声音文件：
 
-~~~ java
+``` java
 public Single<Boolean> play(@NonNull final File audioFile);
 
 public Single<Boolean> play(final Context context, @RawRes final int audioRes);
-~~~
+```
 
 当然RxAudioPlayer也提供了传统的API：
 
-~~~ java
+``` java
 public boolean playNonRxy(@NonNull final File audioFile,
         final MediaPlayer.OnCompletionListener onCompletionListener,
         final MediaPlayer.OnErrorListener onErrorListener);
@@ -79,19 +79,19 @@ public boolean playNonRxy(@NonNull final File audioFile,
 public boolean playNonRxy(final Context context, @RawRes final int audioRes,
         final MediaPlayer.OnCompletionListener onCompletionListener,
         final MediaPlayer.OnErrorListener onErrorListener);
-~~~
+```
 
 RxAmplitude获取当前说话音量等级：
 
-~~~ java
+``` java
 public static Observable<Integer> from(@NonNull AudioRecorder audioRecorder);
-~~~
+```
 
 当然RxAmplitude使用的是AudioRecorder的传统API：
 
-~~~ java
+``` java
 public synchronized int getMaxAmplitude();
-~~~
+```
 
 ## 使用
 详情请见[Github主页](https://github.com/Piasy/RxAndroidAudio)以及[demo app工程](https://github.com/Piasy/RxAndroidAudio/tree/master/app)。[demo apk下载地址](https://www.pgyer.com/rsyU)。

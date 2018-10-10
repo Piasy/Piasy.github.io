@@ -19,31 +19,31 @@ tags:
 
 ### 2.1，创建 Retrofit 对象
 
-~~~ java
+``` java
 Retrofit retrofit = new Retrofit.Builder()
     .baseUrl("https://api.github.com/")
     .addConverterFactory(GsonConverterFactory.create())
     .build();
-~~~
+```
 
 **builder 模式，外观模式（门面模式）**，这就不多说了，可以看看 [stay 的 Retrofit分析-经典设计模式案例](http://www.jianshu.com/p/fb8d21978e38){:target="_blank"}这篇文章。
 
 ### 2.2，定义 API 并获取 API 实例
 
-~~~ java
+``` java
 public interface GitHubService {
   @GET("users/{user}/repos")
   Call<List<Repo>> listRepos(@Path("user") String user);
 }
 
 GitHubService github = retrofit.create(GitHubService.class);
-~~~
+```
 
 先看定义，非常简洁，也没有什么特别之处，除了两个注解：`@GET` 和 `@Path`。它们的用处稍后再分析，我们接着看创建 API 实例：`retrofit.create(GitHubService.class)`。这样就创建了 API 实例了，就可以调用 API 的方法发起 HTTP 网络请求了，太方便了。
 
 但 `create` 方法是怎么创建 API 实例的呢？
 
-~~~ java
+``` java
 public <T> T create(final Class<T> service) {
   // 省略非关键代码
   return (T) Proxy.newProxyInstance(service.getClassLoader(), 
@@ -56,7 +56,7 @@ public <T> T create(final Class<T> service) {
         }
       });
 }
-~~~
+```
 
 创建 API 实例使用的是**动态代理技术**，关于动态代理的详细介绍，可以查看 [codeKK 公共技术点之 Java 动态代理](http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86){:target="_blank"}这篇文章。
 
@@ -68,16 +68,16 @@ public <T> T create(final Class<T> service) {
 
 获取到 API 实例之后，调用方法和普通的代码没有任何区别：
 
-~~~ java
+``` java
 Call<List<Repo>> call = github.listRepos("square");
 List<Repo> repos = call.execute().body();
-~~~
+```
 
 这两行代码就发出了 HTTP 请求，并把返回的数据转化为了 `List<Repo>`，太方便了！
 
 现在我们来看看调用 `listRepos` 是怎么发出 HTTP 请求的。上面 `Retrofit#create` 方法返回时省略的代码如下：
 
-~~~ java
+``` java
 return (T) Proxy.newProxyInstance(service.getClassLoader(), 
     new Class<?>[] { service },
     new InvocationHandler() {
@@ -98,15 +98,15 @@ return (T) Proxy.newProxyInstance(service.getClassLoader(),
         return serviceMethod.callAdapter.adapt(okHttpCall);
       }
     });
-~~~
+```
 
 如果调用的是 `Object` 的方法，例如 `equals`，`toString`，那就直接调用。如果是 default 方法（Java 8 引入），就调用 default 方法。这些我们都先不管，因为我们在安卓平台调用 `listRepos`，肯定不是这两种情况，那这次调用真正干活的就是这三行代码了（好好记住这三行代码，因为接下来很长的篇幅都是在讲它们 :) ）：
 
-~~~ java
+``` java
 ServiceMethod serviceMethod = loadServiceMethod(method);
 OkHttpCall okHttpCall = new OkHttpCall<>(serviceMethod, args);
 return serviceMethod.callAdapter.adapt(okHttpCall);
-~~~
+```
 
 在继续分析这三行代码之前，我们先看看 [Stay 在 Retrofit分析-漂亮的解耦套路](http://www.jianshu.com/p/45cb536be2f4){:target="_blank"} 这篇文章中分享的流程图，完整的流程概览建议仔细看看这篇文章：
 
@@ -122,7 +122,7 @@ return serviceMethod.callAdapter.adapt(okHttpCall);
 
 一个 `ServiceMethod` 对象对应于一个 API interface 的一个方法，`loadServiceMethod(method)` 方法负责加载 `ServiceMethod`：
 
-~~~ java
+``` java
 ServiceMethod loadServiceMethod(Method method) {
   ServiceMethod result;
   synchronized (serviceMethodCache) {
@@ -134,13 +134,13 @@ ServiceMethod loadServiceMethod(Method method) {
   }
   return result;
 }
-~~~
+```
 
 这里实现了缓存逻辑，同一个 API 的同一个方法，只会创建一次。这里由于我们每次获取 API 实例都是传入的 `class` 对象，而 `class` 对象是进程内单例的，所以获取到它的同一个方法 `Method` 实例也是单例的，所以这里的缓存是有效的。
 
 我们再看看 `ServiceMethod` 的构造函数：
 
-~~~ java
+``` java
 ServiceMethod(Builder<T> builder) {
   this.callFactory = builder.retrofit.callFactory();
   this.callAdapter = builder.callAdapter;
@@ -155,7 +155,7 @@ ServiceMethod(Builder<T> builder) {
   this.isMultipart = builder.isMultipart;
   this.parameterHandlers = builder.parameterHandlers;
 }
-~~~
+```
 
 成员很多，但这里我们重点关注四个成员：`callFactory`，`callAdapter`，`responseConverter` 和 `parameterHandlers`。
 
@@ -172,7 +172,7 @@ ServiceMethod(Builder<T> builder) {
 
 #### 2.4.2，`callAdapter`
 
-~~~ java
+``` java
 private CallAdapter<?> createCallAdapter() {
   // 省略检查性代码
   Annotation[] annotations = method.getAnnotations();
@@ -183,13 +183,13 @@ private CallAdapter<?> createCallAdapter() {
     throw methodError(e, "Unable to create call adapter for %s", returnType);
   }
 }
-~~~
+```
 
 可以看到，`callAdapter` 还是由 `Retrofit` 类提供。在 `Retrofit` 类内部，将遍历一个 `CallAdapter.Factory` 列表，让工厂们提供，如果最终没有工厂能（根据 `returnType` 和 `annotations`）提供需要的 `CallAdapter`，那将抛出异常。而这个工厂列表我们可以在构造 `Retrofit` 对象时进行添加。
 
 #### 2.4.3，`responseConverter`
 
-~~~ java
+``` java
 private Converter<ResponseBody, T> createResponseConverter() {
   Annotation[] annotations = method.getAnnotations();
   try {
@@ -199,7 +199,7 @@ private Converter<ResponseBody, T> createResponseConverter() {
     throw methodError(e, "Unable to create converter for %s", responseType);
   }
 }
-~~~
+```
 
 同样，`responseConverter` 还是由 `Retrofit` 类提供，而在其内部，逻辑和创建 `callAdapter` 基本一致，通过遍历 `Converter.Factory` 列表，看看有没有工厂能够提供需要的 responseBodyConverter。工厂列表同样可以在构造 `Retrofit` 对象时进行添加。
 
@@ -229,7 +229,7 @@ private Converter<ResponseBody, T> createResponseConverter() {
 
 #### 2.5.1，先看 `execute()`
 
-~~~ java
+``` java
 @Override 
 public Response<T> execute() throws IOException {
   okhttp3.Call call;
@@ -285,7 +285,7 @@ Response<T> parseResponse(okhttp3.Response rawResponse) throws IOException {
     // ...异常处理
   }
 }
-~~~
+```
 
 主要包括三步：
 
@@ -327,7 +327,7 @@ retrofit-adapters 的各个子模块则实现了更多的工厂：`GuavaCallAdap
 
 那我们就来看看 `SimpleCallAdapter#adapt`：
 
-~~~ java
+``` java
 @Override
 public <R> Observable<R> adapt(Call<R> call) {
   Observable<R> observable = Observable.create(new CallOnSubscribe<>(call))
@@ -337,13 +337,13 @@ public <R> Observable<R> adapt(Call<R> call) {
   }
   return observable;
 }
-~~~
+```
 
 这里创建了一个 `Observable`，它的逻辑由 `CallOnSubscribe` 类实现，同时使用了一个 `OperatorMapResponseToBodyOrError` 操作符，用来把 `retrofit2.Response` 转为我们声明的类型，或者错误异常类型。
 
 我们接着看 `CallOnSubscribe#call`：
 
-~~~ java
+``` java
 @Override
 public void call(final Subscriber<? super Response<T>> subscriber) {
   // Since Call is a one-shot type, clone it for each new subscriber.
@@ -354,7 +354,7 @@ public void call(final Subscriber<? super Response<T>> subscriber) {
   subscriber.add(requestArbiter);
   subscriber.setProducer(requestArbiter);
 }
-~~~
+```
 
 代码很简短，只干了三件事：
 
@@ -368,7 +368,7 @@ public void call(final Subscriber<? super Response<T>> subscriber) {
 
 那我们就看看 `RequestArbiter#request`：
 
-~~~ java
+``` java
 @Override
 public void request(long n) {
   if (n < 0) throw new IllegalArgumentException("n < 0: " + n);
@@ -392,13 +392,13 @@ public void request(long n) {
     subscriber.onCompleted();
   }
 }
-~~~
+```
 
 producer 相关的逻辑非常简单，看看[Operator 并发原语： producers（二），SingleDelayedProducer](/AdvancedRxJava/2016/06/04/operator-concurrency-primitives-4/){:target="_blank"}就能懂了，这里就不在赘述。实际干活的逻辑就是执行 `call.execute()`，并把返回值发送给下游。
 
 而 `OperatorMapResponseToBodyOrError#call` 也相当简短：
 
-~~~ java
+``` java
 @Override
 public Subscriber<? super Response<T>> call(final Subscriber<? super T> child) {
   return new Subscriber<Response<T>>(child) {
@@ -422,7 +422,7 @@ public Subscriber<? super Response<T>> call(final Subscriber<? super T> child) {
     }
   };
 }
-~~~
+```
 
 关键就是调用了 `response.body()` 并发送给下游。这里，`body()` 返回的就是我们声明的泛型类型了，至于 Retrofit 是怎么把服务器返回的数据转为我们声明的类型的，这就是 `responseConverter` 的事了，还记得吗？
 
@@ -444,7 +444,7 @@ retrofit 模块内置了 `BuiltInConverters`，只能处理 `ResponseBody`， `R
 
 代码非常简单：
 
-~~~ java
+``` java
 @Override
 public Converter<ResponseBody, ?> responseBodyConverter(Type type, 
     Annotation[] annotations, Retrofit retrofit) {
@@ -470,7 +470,7 @@ final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
     }
   }
 }
-~~~
+```
 
 根据目标类型，利用 `Gson#getAdapter` 获取相应的 adapter，转换时利用 Gson 的 API 即可。关于 Gson 的原理，就不是本文内容的范围了，敬请期待“拆 Gson”的文章 :)
 

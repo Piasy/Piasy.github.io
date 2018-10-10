@@ -24,7 +24,7 @@ tags:
 
 `DemoNewDependencyImpl.java`:
 
-~~~ java
+``` java
 public class DemoNewDependencyImpl implements DemoNewDependency {
     private final Context mContext;
 
@@ -33,11 +33,11 @@ public class DemoNewDependencyImpl implements DemoNewDependency {
         Timber.d("new DemoNewDependencyImpl");
     }
 }
-~~~
+```
 
 `DemoInjectDependencyImpl.java`:
 
-~~~ java
+``` java
 public class DemoInjectDependencyImpl implements DemoInjectDependency {
     private final Context mContext;
 
@@ -47,11 +47,11 @@ public class DemoInjectDependencyImpl implements DemoInjectDependency {
         Timber.d("new DemoInjectDependencyImpl");
     }
 }
-~~~
+```
 
 `DemoDirectInjectDependency.java`:
 
-~~~ java
+``` java
 public class DemoDirectInjectDependency {
     private final Context mContext;
 
@@ -62,13 +62,13 @@ public class DemoDirectInjectDependency {
         Timber.d("new DemoDirectInjectDependency");
     }
 }
-~~~
+```
 
 注意，后两者的构造函数使用了 `@Inject` 注解，这个结合下面的 module 代码解释一下。
 
 `DemoModule.java`:
 
-~~~ java
+``` java
 @Module
 public class DemoModule {
     @ActivityScope
@@ -89,7 +89,7 @@ public class DemoModule {
         return demoInjectDependency;
     }
 }
-~~~
+```
 
 `provideDemoNewDependency` 函数调用了 `DemoNewDependencyImpl` 的构造函数创建了一个新对象后返回，这个构造函数没有用 `@Inject` 注解，而 `provideDemoInjectDependency` 函数则是接收了一个 `DemoInjectDependencyImpl` 实例参数，直接返回了，`DemoInjectDependencyImpl` 的构造函数使用了 `@Inject` 注解，而 `DemoDirectInjectDependency` 则压根儿没有 provide 方法。
 
@@ -104,7 +104,7 @@ dagger2 对父子类的支持还有一个小坑（称之为注意事项更恰当
 
 `MainActivity_MembersInjector.java`:
 
-~~~ java
+``` java
   @Override
   public void injectMembers(MainActivity instance) {
     if (instance == null) {
@@ -114,13 +114,13 @@ dagger2 对父子类的支持还有一个小坑（称之为注意事项更恰当
     instance.mDemoInjectDependency = mDemoInjectDependencyProvider.get();
     instance.mDemoDirectInjectDependency = mDemoDirectInjectDependencyProvider.get();
   }
-~~~
+```
 
 三个依赖都是由 provider 提供的，这三个 provider 在 `MainActivity_MembersInjector.create` 函数中传入 `MainActivity_MembersInjector` 的构造函数中进而被设置。而 `create` 方法则在 `DaggerDemoComponent` 的 `initialize` 函数中调用：
 
 `DaggerDemoComponent.java`:
 
-~~~ java
+``` java
   @SuppressWarnings("unchecked")
   private void initialize(final Builder builder) {
 
@@ -155,7 +155,7 @@ dagger2 对父子类的支持还有一个小坑（称之为注意事项更恰当
             provideDemoInjectDependencyProvider,
             demoDirectInjectDependencyProvider);
   }
-~~~
+```
 
 这里我们就看到了，`provideDemoNewDependencyProvider` 创建的是一个 `ScopedProvider` 实例，而 `ScopedProvider` 则是实现了局部单例性的一个 provider，对同一个 ScopedProvider 调用 get 方法，得到的就是同一个对象。同样，`provideDemoInjectDependencyProvider` 也是一个 `ScopedProvider`，而 `demoDirectInjectDependencyProvider` 则就不是 ScopedProvider 了。所以这里我们可以得出结论了，mDemoNewDependency 和 mDemoInjectDependency 将会注入相同的实例，而 mDemoDirectInjectDependency 则会注入多个实例。
 

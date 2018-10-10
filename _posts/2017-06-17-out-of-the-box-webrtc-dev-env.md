@@ -20,22 +20,22 @@ _注意：这里我假设大家具备 Docker 的基本使用能力，如不具�
 
 首先是 pull 镜像：
 
-~~~ bash
+``` bash
 docker pull piasy/webrtc-build
-~~~
+```
 
 然后就是运行 Docker 镜像了：
 
-~~~ bash
+``` bash
 docker run --rm \
   -e ENABLE_SHADOW_SOCKS=false \
   -v <path to place webrtc source>:/webrtc \
   -t -i piasy/webrtc-build
-~~~
+```
 
 单纯对 webrtc-build-scripts 做一层封装肯定没啥意思，针对国情，我在 Docker 镜像里面加上了使用 Shadowsocks 代理的支持，上面的命令不启用 Shadowsocks 代理，如需启用，则运行下面的命令：
 
-~~~ bash
+``` bash
 docker run --rm \
   -e ENABLE_SHADOW_SOCKS=true \
   -e SHADOW_SOCKS_SERVER_ADDR=<your shadowsocks server ip> \
@@ -44,7 +44,7 @@ docker run --rm \
   -e SHADOW_SOCKS_ENC_PASS=<your shadowsocks encrypt password> \
   -v <path to place webrtc source>:/webrtc \
   -t -i piasy/webrtc-build
-~~~
+```
 
 不过现在还有两点小瑕疵：
 
@@ -57,13 +57,13 @@ _注意：如果 Shadowsocks 的密码有特殊字符，请用 `\` 进行转义�
 
 ### 编译命令
 
-~~~ bash
+``` bash
 # 下载 WebRTC 代码
 get_webrtc
 
 # 编译 WebRTC 代码
 build_apprtc
-~~~
+```
 
 更多编译指令，可以参考 [webrtc-build-scripts](https://github.com/pristineio/webrtc-build-scripts) 和 [WebRTC 项目官网](https://webrtc.org/native-code/android/)。
 
@@ -71,7 +71,7 @@ build_apprtc
 
 在这里顺便分享一下如何在命令行挂上 Shadowsocks 代理：
 
-~~~ bash
+``` bash
 sudo apt-get install python-pip
 sudo pip install shadowsocks
 sudo apt-get install proxychains
@@ -82,11 +82,11 @@ tar zxf LATEST.tar.gz && cd libsodium*
 
 # 修复关联
 echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf && ldconfig
-~~~
+```
 
 `/etc/shadowsocks.json` 配置内容：
 
-~~~ json
+``` json
 {
 "server":"server-ip",
 "server_port":8000,
@@ -96,11 +96,11 @@ echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf && ldconfig
 "timeout":600,
 "method":"aes-256-cfb"
 }
-~~~
+```
 
 `~/.proxychains/proxychains.conf` 配置内容：
 
-~~~
+```
 strict_chain
 proxy_dns
 remote_dns_subnet 224
@@ -111,14 +111,14 @@ quiet_mode
 
 [ProxyList]
 socks5  127.0.0.1 1080
-~~~
+```
 
 执行下述命令之后，命令行程序就会使用 Shadowsocks 代理了：
 
-~~~ bash
+``` bash
 sudo sslocal -c /etc/shadowsocks.json -d start
 proxychains bash
-~~~
+```
 
 ## Android demo 工程
 
@@ -138,20 +138,20 @@ AppRTC 是 WebRTC 的一个 demo 应用，它需要和 Server 配合才能运行
 
 pull 镜像：
 
-~~~ bash
+``` bash
 docker pull piasy/apprtc-server
-~~~
+```
 
 运行 Docker 镜像：
 
-~~~ bash
+``` bash
 docker run --rm \
   -p 8080:8080 -p 8089:8089 -p 3478:3478 -p 3478:3478/udp -p 3033:3033 \
   --expose=59000-65000 \
   -e PUBLIC_IP=<server public IP> \
   -v <path to constants.py>:/apprtc_configs \
   -t -i piasy/apprtc-server
-~~~
+```
 
 运行之后，在 Android demo 的设置界面中，把 Server 地址设置为 `http://<server public IP>:8080`，demo 即可成功**跨网**视频通话。很多人自己部署完服务器之后发现，只能在同一 WiFi 下通话，跨 WiFi 就不行了。大家放心，咱们可没这个问题 :)
 
@@ -173,7 +173,7 @@ AppRTC Android demo 中，会尝试从房间配置中读取 `pc_config` 域，�
 
 因此我们还需要第四个 Server：ICE Server。它用于下发 TURN/STUN Server 配置信息，代码如下（nodejs）：
 
-~~~ javascript
+``` javascript
 var express = require('express')
 var crypto = require('crypto')
 var app = express()
@@ -211,7 +211,7 @@ app.get('/iceconfig', function (req, resp) {
 app.listen('3033', function () {
   console.log('server started')
 })
-~~~
+```
 
 几点说明：
 

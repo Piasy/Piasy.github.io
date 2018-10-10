@@ -58,7 +58,7 @@ NDK 开发现在有两种编译方式，一是 `ndk-build`，我们需要编写 
 + native 线程可以创建 JavaVM 和 JNIEnv 对象，用于运行 Java 的代码；
 + JNIEnv 只在创建的线程内有效，如果要如果要保存起来在其他线程使用，都需要先 AttachCurrentThread，下面的代码参考自 [StackOverflow](http://stackoverflow.com/q/12900695/3077508)：
 
-~~~ java
+``` java
 // 在 JNI_OnLoad 中直接保存 g_vm，或者在初始化函数中利用 JNIEnv 获取并保存 g_vm
 static JavaVM *g_vm;
 
@@ -88,7 +88,7 @@ void nativeFunc(char *data, int len) {
         g_vm->DetachCurrentThread();
     }
 }
-~~~
+```
 
 + native 库被加载的时候（`System.loadLibrary`），会调用 `JNI_OnLoad` 函数；库被 GC 的时候，会调用 `JNI_OnUnload`；
 + 调用 JVM（JNI）方法都需要 JNIEnv 指针，但 JNIEnv 不能跨线程共享，我们只能共享 JavaVM 指针，并用它来获取各自线程的 JNIEnv；
@@ -108,10 +108,10 @@ void nativeFunc(char *data, int len) {
 
 + native 方法的参数，以及绝大多数 JNI 方法的返回值，都是 local reference，即便被引用的对象还存在，local reference 也将在作用域外变得非法（不能使用）；可以通过 `NewGlobalRef` 或者 `NewWeakGlobalRef` 创建 global reference；常用的保存 `jclass` 方法就是如下：
 
-~~~ java
+``` java
 jclass localClass = env->FindClass("MyClass");
 jclass globalClass = reinterpret_cast<jclass>(env->NewGlobalRef(localClass));
-~~~
+```
 
 + 在 native 代码中，同一对象的引用值可能不同，因此不要用 `==` 判等，而要用 `IsSameObject` 函数；
 + 对象的引用既不是固定不变的，也不是唯一的，因此不要用 `jobject` 作为 key；
@@ -142,7 +142,7 @@ CMake 是用来生成其他编译系统配置文件的一套工具集，从 Andr
 
 `build.gradle` 示例：
 
-~~~ gradle
+``` gradle
 android {
     //...
     defaultConfig {
@@ -162,11 +162,11 @@ android {
     }
     //...
 }
-~~~
+```
 
 `CMakeLists.txt` 示例：
 
-~~~ CMake
+``` CMake
 cmake_minimum_required(VERSION 3.4.1)
 
 set(CWD ${CMAKE_CURRENT_LIST_DIR})
@@ -184,7 +184,7 @@ target_link_libraries(try-webrtc
                       log
                       ${CWD}/libs/webrtc/libwebrtc.a
                       )
-~~~
+```
 
 ### `set`
 
@@ -194,7 +194,7 @@ target_link_libraries(try-webrtc
 
 定义一个 library，指定名字，链接类型（static/shared），源文件：
 
-~~~ CMake
+``` CMake
 add_library( # Specifies the name of the library.
              try-webrtc
              # Sets the library as a shared library.
@@ -202,29 +202,29 @@ add_library( # Specifies the name of the library.
              # Provides a relative path to your source file(s).
              src/main/cpp/try-webrtc.cpp
              )
-~~~
+```
 
 ### `add_executable`
 
 定义一个可执行目标：
 
-~~~ CMake
+``` CMake
 add_executable(myapp main.c)
-~~~
+```
 
 ### `include_directories`
 
 指定头文件查找路径：
 
-~~~ CMake
+``` CMake
 # Specifies a path to native header files.
 include_directories(libs/webrtc/include)
-~~~
+```
 ### `find_library`
 
 查找特定的库：
 
-~~~ CMake
+``` CMake
 find_library( # Defines the name of the path variable that stores the
               # location of the NDK library.
               log-lib
@@ -232,13 +232,13 @@ find_library( # Defines the name of the path variable that stores the
               # CMake needs to locate.
               log 
               )
-~~~
+```
 
 ### `target_link_libraries`
 
 为目标增加链接库：
 
-~~~ CMake
+``` CMake
 # Links your native library against one or more other native libraries.
 target_link_libraries( # Specifies the target library.
                        try-webrtc
@@ -247,7 +247,7 @@ target_link_libraries( # Specifies the target library.
                        android
                        ${CWD}/libs/webrtc/libwebrtc.a
                        )
-~~~
+```
 
 链接库可以是 `add_library` 定义的，也可以是 `find_library` 定义的，也可以是预先编译好的静态/动态库（绝对路径），甚至可以是链接选项。
 

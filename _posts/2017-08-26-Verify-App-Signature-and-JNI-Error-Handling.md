@@ -61,7 +61,7 @@ tags:
 
 在使用 native 代码实现之前，我们先用 Java 代码实现以下，便于我们理解原理：
 
-~~~ java
+``` java
 private byte[] getCertificateSHA1Fingerprint(Context context) {
     PackageManager pm = context.getPackageManager();
     String packageName = context.getPackageName();
@@ -80,7 +80,7 @@ private byte[] getCertificateSHA1Fingerprint(Context context) {
     }
     return null;
 }
-~~~
+```
 
 这段代码在 Android Studio 中会有一个 Lint 警告，“android-fake-id-vulnerability”，经过搜索我们可以发现在安卓 2.1~4.4 的系统中存在安全漏洞，使得应用签名可以被伪造。不过这已经是三年前的事情了，而且 Google 已经发出了补丁，所以让我们暂且认为这个漏洞影响不大。
 
@@ -94,7 +94,7 @@ private byte[] getCertificateSHA1Fingerprint(Context context) {
 
 ### Native 代码实现
 
-~~~ cpp
+``` cpp
 #include <jni.h>
 #include <stddef.h>
 
@@ -194,7 +194,7 @@ Java_com_github_piasy_MainActivity_nativeGetSig(
 }
 
 }
-~~~
+```
 
 其实 native 代码并没有什么高深的技巧，就是啰嗦！在[安卓 NDK 入门指南](/2017/08/26/NDK-Start-Guide/#jclass-jmethodid-and-jfieldid)中我们提到了 native 代码调用 Java 函数的套路：先找到 `jclass` 和 `jmethodID`，再 `CallXXXMethod`。
 

@@ -170,7 +170,7 @@ VideoStreamEncoder 开始接收视频数据后，会在 `VideoStreamEncoder::Rec
 
 ## 附录：部分类实现代码路径
 
-~~~ bash
+``` bash
 sdk/objc/Framework/Classes/PeerConnection/RTCVideoSource.mm
 sdk/objc/Framework/Native/src/objc_video_track_source.mm
 media/base/adaptedvideotracksource.cc
@@ -181,4 +181,4 @@ video/video_stream_encoder.cc
 modules/video_coding/video_coding_impl.cc
 modules/video_coding/video_sender.cc
 modules/video_coding/generic_encoder.cc
-~~~
+```

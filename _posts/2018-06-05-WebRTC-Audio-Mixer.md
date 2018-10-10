@@ -128,7 +128,7 @@ WebRTC 里的音频处理都是以 10ms 为单位的，所以我们混音操作�
 
 ## 附录：部分类实现代码路径
 
-~~~ bash
+``` bash
 api/audio/audio_mixer.h
 modules/audio_mixer/audio_mixer_impl.h(cc)
 modules/audio_mixer/default_output_rate_calculator.h(cc)
@@ -137,4 +137,4 @@ modules/audio_mixer/frame_combiner.h(cc)
 modules/audio_coding/acm2/acm_receiver.h(cc)
 modules/audio_processing/audio_processing_impl.h(cc)
 modules/audio_processing/agc2/fixed_gain_controller.h(cc)
-~~~
+```

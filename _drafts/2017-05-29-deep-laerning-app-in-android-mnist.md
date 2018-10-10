@@ -32,7 +32,7 @@ tags:
 
 MNIST 的数据准备工作 TensorFlow 已经帮我们完成了，直接代码导入即可：
 
-~~~ python
+``` python
 # Python 3.6.0
 # tensorflow 1.1.0
 
@@ -50,21 +50,21 @@ NUM_STEPS = 3000
 BATCH_SIZE = 16
 
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
-~~~
+```
 
 接下来就是定义模型了，首先我们定义模型的输入：
 
-~~~ python
+``` python
 def model_input(input_node_name, keep_prob_node_name):
     x = tf.placeholder(tf.float32, shape=[None, 28*28], name=input_node_name)
     keep_prob = tf.placeholder(tf.float32, name=keep_prob_node_name)
     y_ = tf.placeholder(tf.float32, shape=[None, 10])
     return x, keep_prob, y_
-~~~
+```
 
 然后是定义模型：
 
-~~~ python
+``` python
 def build_model(x, keep_prob, y_, output_node_name):
     x_image = tf.reshape(x, [-1, 28, 28, 1])
     # 28*28*1
@@ -106,13 +106,13 @@ def build_model(x, keep_prob, y_, output_node_name):
     merged_summary_op = tf.summary.merge_all()
 
     return train_step, loss, accuracy, merged_summary_op
-~~~
+```
 
 这里我们定义了一个 CNN 模型，使用的也都是 TensorFlow 封装程度较高的 layers API。但对初学的朋友我有一个建议，先熟悉基础的 API，搞清楚了基本原理之后，再使用封装好的 API，基础知识要是不打牢，后面很容易犯迷糊。
 
 接下来就是训练模型了：
 
-~~~ python
+``` python
 def train(x, keep_prob, y_, train_step, loss, accuracy,
         merged_summary_op, saver):
     print("training start...")
@@ -147,11 +147,11 @@ def train(x, keep_prob, y_, train_step, loss, accuracy,
         print('test accuracy %g' % test_accuracy)
 
     print("training finished!")
-~~~
+```
 
 我们在训练的过程中保存了三个东西：模型结构图（`tf.train.write_graph`），训练过程的中间数据（`summary_writer.add_summary`），训练完成之后的各个变量值（`saver.save`）。中间数据我们可以利用 TensorBoard 工具观察/分析训练过程，而模型结构图和变量值则用于接下来的模型导出：
 
-~~~ python
+``` python
 def export_model(input_node_names, output_node_name):
     freeze_graph.freeze_graph('out/' + MODEL_NAME + '.graph.bin', None, True,
         'out/' + MODEL_NAME + '.ckpt', output_node_name, "save/restore_all",
@@ -169,13 +169,13 @@ def export_model(input_node_names, output_node_name):
         f.write(output_graph_def.SerializeToString())
 
     print("graph saved!")
-~~~
+```
 
 我们利用 `freeze_graph` 和 `optimize_for_inference_lib` 把 graph 和 checkpoint 处理成可以单独使用的模型文件，这个处理的主要目的是优化模型，去掉一些训练过程才需要的东西，提高模型使用时的运行效率。`input_node_names` 和 `output_node_name` 就是我们后面在 Java 代码里面将要使用到的输入输出 Tensor 名。
 
 最后就是我们的 main 函数了：
 
-~~~ python
+``` python
 def main():
     if not path.exists('out'):
         os.mkdir('out')
@@ -197,7 +197,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-~~~
+```
 
 上面的 python 代码执行完毕后，会在 out 目录下生成 `opt_mnist_convnet.pb` 文件，这个文件就是我们将要在安卓平台中使用的模型文件了。
 
@@ -205,9 +205,9 @@ if __name__ == '__main__':
 
 在安卓平台上使用 TensorFlow 导出的模型，我们需要引入 TensorFlow 依赖，之前这个库并没有发布到 bintray，为此我还搞了一个 double-tf-android 项目，不过现在不需要啦，直接使用官方发布的库即可：
 
-~~~ gradle
+``` gradle
 compile 'org.tensorflow:tensorflow-android:1.2.0-rc0'
-~~~
+```
 
 我们主要使用的是 `TensorFlowInferenceInterface` 这个类，用它来加载模型、输入数据、执行推断（inference）、取出结果等。
 
@@ -215,9 +215,9 @@ compile 'org.tensorflow:tensorflow-android:1.2.0-rc0'
 
 我们需要把之前导出的模型文件放到项目的 assets 目录中，供运行时加载模型：
 
-~~~ java
+``` java
 TensorFlowInferenceInterface tfHelper = new TensorFlowInferenceInterface(assetManager, "opt_mnist_convnet.pb");
-~~~
+```
 
 ### 输入数据，执行推断，取出结果
 
@@ -225,7 +225,7 @@ TensorFlowInferenceInterface tfHelper = new TensorFlowInferenceInterface(assetMa
 
 另外，输入数据除了图像数据，还有一个 dropout 层的 `keep_prob` 值，这里我们需要模型发挥全部实力，就不需要 dropout 了，所以传 1 即可。
 
-~~~ java
+``` java
 // 1, 28, 28, 1 是输入 tensor 的各个维度
 // batch_size = 1，width = height = 28，channels = 1
 tfHelper.feed("input", pixels, 1, 28, 28, 1);
@@ -235,7 +235,7 @@ tfHelper.run(new String[]{ "output" });
 
 float[] output = new float[10];
 tfHelper.fetch("output", output);
-~~~
+```
 
 执行完之后，`output` 数组里就是模型认为输入数据属于各个输出分类的概率了，选出最大的作为模型的输出即可。
 

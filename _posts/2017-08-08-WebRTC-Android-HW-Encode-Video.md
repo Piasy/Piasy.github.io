@@ -86,14 +86,14 @@ MediaCodec 流控相关的接口并不多，一是配置时设置目标码率和
 
 **配置时指定目标码率和码率控制模式**：
 
-~~~ java
+``` java
 mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitRate);
 mediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE,
         MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
 // 其他配置
 
 mVideoCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-~~~
+```
 
 码率控制模式在 `MediaCodecInfo.EncoderCapabilities` 类中定义了三种，在 [framework 层有另一套名字](http://androidxref.com/7.1.1_r6/xref/frameworks/native/include/media/openmax/OMX_Video.h#237)和它们的值一一对应：
 
@@ -103,11 +103,11 @@ mVideoCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
 
 **动态调整目标码率**：
 
-~~~ java
+``` java
 Bundle param = new Bundle();
 param.putInt(MediaCodec.PARAMETER_KEY_VIDEO_BITRATE, bitrate);
 mediaCodec.setParameters(param);
-~~~
+```
 
 API 是很简单，但我们究竟该用哪种模式？调整码率在各个模式下是否有用，效果如何？接下来就让我们探讨一下这些问题。
 
@@ -170,11 +170,11 @@ MediaCodec 有两种方式触发输出关键帧，一是由配置时设置的 `K
 
 手动触发输出关键帧：
 
-~~~ java
+``` java
 Bundle param = new Bundle();
 param.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
 mediaCodec.setParameters(param);
-~~~
+```
 
 对于 H.264 编码，WebRTC 设置的关键帧间隔时间为 20s，~~显然仅靠自动触发是不可能的，因此它会根据实际输出帧的情况，决定何时手动触发输出一个关键帧，也就是前面提到的 `checkKeyFrameRequired` 函数了~~。而这样做的原因，就是更可控，这和码率模式使用 CBR 是一个道理。
 

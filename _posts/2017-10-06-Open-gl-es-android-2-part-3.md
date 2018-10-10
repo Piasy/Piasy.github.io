@@ -103,7 +103,7 @@ Grafika 的绘制逻辑封装在 `Texture2dProgram#draw` 函数中，其 Shader 
 
 ### 处理框架
 
-~~~ java
+``` java
 private static final float FULL_RECTANGLE_COORDS[] = {
     -1.0f, -1.0f,   // 0 bottom left
     1.0f, -1.0f,    // 1 bottom right
@@ -143,7 +143,7 @@ public void setTransformation(final Transformation transformation) {
     mVertexArray = GlUtil.createFloatBuffer(vertices);
     mTexCoordArray = GlUtil.createFloatBuffer(textureCoords);
 }
-~~~
+```
 
 由于这里使用了 `GL_TRIANGLE_STRIP` 的模式，所以顶点列表的顺序不能是`左下 -> 右下 -> 右上 -> 左上`，而得是 `左下 -> 右下 -> 左上 -> 右上`。如果我们用 `左下 -> 右下 -> 右上 -> 左上`，那 `012` 和 `123` 将是 `左下 -> 右下 -> 右上`和`右下 -> 右上 -> 左上`，很遗憾这两个三角形无法构成一个矩形。
 
@@ -151,7 +151,7 @@ public void setTransformation(final Transformation transformation) {
 
 ### resolveCrop
 
-~~~ java
+``` java
 private void resolveCrop(float x, float y, float width, float height) {
     float minX = x;
     float minY = y;
@@ -171,13 +171,13 @@ private void resolveCrop(float x, float y, float width, float height) {
     textureCoords[6] = maxX;
     textureCoords[7] = maxY;
 }
-~~~
+```
 
 可以看到，确实就是限制纹理坐标的取值范围来实现裁剪的效果。
 
 ### resolveFlip
 
-~~~ java
+``` java
 private void resolveFlip(int flip) {
     switch (flip) {
         case Transformation.FLIP_HORIZONTAL:
@@ -200,13 +200,13 @@ private void resolveFlip(int flip) {
             break;
     }
 }
-~~~
+```
 
 水平翻转时，`swap(0, 2)` 是交换了左下、右下两点的 x 坐标，`swap(4, 6)` 则是交换了左上、右上两点的 x 坐标，即完成了左边两点和右边两点的交换。垂直翻转同理，大家可以自己推导一下。
 
 ### resolveRotate
 
-~~~ java
+``` java
 private void resolveRotate(int rotation) {
     float x, y;
     switch (rotation) {
@@ -245,13 +245,13 @@ private void resolveRotate(int rotation) {
             break;
     }
 }
-~~~
+```
 
 这里我们只分析选择 90° 的情况，剩余情况大家参照着分析。这段代码相当于是依次把左上移到左下，右上移到左上，右下移到右上，左下移到右下，是不是就相当于逆时针旋转了 90° ？
 
 ### resolveScale
 
-~~~ java
+``` java
 private void resolveScale(int inputWidth, int inputHeight, int outputWidth, 
         int outputHeight, int scaleType) {
     if (scaleType == Transformation.SCALE_TYPE_FIT_XY) {
@@ -300,7 +300,7 @@ private void resolveScale(int inputWidth, int inputHeight, int outputWidth,
         }
     }
 }
-~~~
+```
 
 如果 `inputWidth * outputHeight == inputHeight * outputWidth`，那三种缩放模式其实效果一样，所以我们无需做事。
 

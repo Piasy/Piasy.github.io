@@ -69,7 +69,7 @@ Okio 有自己的流类型，那就是 `Source` 和 `Sink`，它们和 `InputStr
 
 我们来看一下[官方文档中 PNG 解码](https://github.com/square/okio#example-a-png-decoder){:target="_blank"}的例子：
 
-~~~ java
+``` java
 private static final ByteString PNG_HEADER = ByteString.decodeHex("89504e470d0a1a0a");
 
 public void decodePng(InputStream in) throws IOException {
@@ -82,11 +82,11 @@ public void decodePng(InputStream in) throws IOException {
   // ...
   pngSource.close();
 }
-~~~
+```
 
 这里我们可以看到，我们可以直接从十六进制字符串得到它所表示的字节串，我们看看它的内部实现：
 
-~~~ java
+``` java
 public static ByteString decodeHex(String hex) {
   // ...
 
@@ -105,13 +105,13 @@ private static int decodeHexDigit(char c) {
   if (c >= 'A' && c <= 'F') return c - 'A' + 10;
   throw new IllegalArgumentException("Unexpected hex digit: " + c);
 }
-~~~
+```
 
 我们可以看到，它其实就是把每个字符所对应的十六进制值，保存到一个字节数组中，然后利用 `of` 这个工厂方法构造一个 `ByteString` 对象。
 
 那我们再看一下它的判等是怎么实现的：
 
-~~~ java
+``` java
 @Override public boolean equals(Object o) {
   if (o == this) return true;
   return o instanceof ByteString
@@ -132,7 +132,7 @@ public static boolean arrayRangeEquals(
   }
   return true;
 }
-~~~
+```
 
 不出所料，果然就是把指定范围内的字节逐个对比！当然就是这样，因为我们对串相等的定义本来就是这样的。
 
@@ -145,7 +145,7 @@ public static boolean arrayRangeEquals(
 
 我们继续看 PNG 解码的例子：
 
-~~~ java
+``` java
 public void decodePng(InputStream in) throws IOException {
   BufferedSource pngSource = Okio.buffer(Okio.source(in));
 
@@ -169,11 +169,11 @@ public void decodePng(InputStream in) throws IOException {
 
   pngSource.close();
 }
-~~~
+```
 
 我们先看看 `Okio.buffer(Okio.source(in))` 做了些什么：
 
-~~~ java
+``` java
 public static Source source(InputStream in) {
   return source(in, new Timeout());
 }
@@ -196,13 +196,13 @@ private static Source source(final InputStream in, final Timeout timeout) {
 public static BufferedSource buffer(Source source) {
   return new RealBufferedSource(source);
 }
-~~~
+```
 
 `Okio.source` 最终创建了一个匿名的 `Source` 实现类，它就是把我们的读取请求转发给 `InputStream`，代码这里我们省略了，大家可以自行阅读。而 `Okio.buffer` 则用这个匿名 Source 创建了一个 `RealBufferedSource`。那么这里就涉及到 InputStream，匿名 Source 和 RealBufferedSource 这三个东西。
 
 我们再看 `RealBufferedSource#readByteString` 相关的代码：
 
-~~~ java
+``` java
 final class RealBufferedSource implements BufferedSource {
   public final Buffer buffer = new Buffer();
   public final Source source;
@@ -219,7 +219,7 @@ final class RealBufferedSource implements BufferedSource {
   
   // ...
 }
-~~~
+```
 
 `require` 函数代码这里就不贴了，它就是把 `source` 中的数据读到了 `buffer` 中，这样我们就可以从 `buffer` 中读出 `ByteString` 了。
 
@@ -241,7 +241,7 @@ BufferedSource 要提供各种形式的读取操作，还有查找与判等操�
 
 在[拆 OkHttp 一文的 发送和接收数据：CallServerInterceptor 部分中](/2016/07/11/Understand-OkHttp/#callserverinterceptor){:target="_blank"}我们就接触过 Okio 相关的代码：
 
-~~~ java
+``` java
 // CallServerInterceptor#intercept
 // 发送请求 body
 Sink requestBodyOut = httpCodec.createRequestBody(request, 
@@ -254,7 +254,7 @@ bufferedRequestBody.close();
 response = response.newBuilder()
     .body(httpCodec.openResponseBody(response))
     .build();
-~~~
+```
 
 `httpCodec.createRequestBody` 这个调用就不在这里逐步展开了，在 HTTP/1.1 的实现中就是利用 Okio 把 `Socket` 包装成了 `BufferedSource` 和 `BufferedSink`，这个函数返回的 `Sink` 也就是把对它的写调用转发给 `Socket` 包装成的 `BufferedSink`。
 
@@ -272,7 +272,7 @@ response = response.newBuilder()
 
 首先，在 OkHttp 的架构下实现压缩，是通过自己实现一个 Interceptor 来完成的：
 
-~~~ java
+``` java
 // 构造 OkHttpClient 时添加 GzipRequestInterceptor 即可
 private final OkHttpClient client = new OkHttpClient.Builder()
     .addInterceptor(new GzipRequestInterceptor())
@@ -299,7 +299,7 @@ static class GzipRequestInterceptor implements Interceptor {
     };
   }
 }
-~~~
+```
 
 在[分析 OkHttp 的文章中](/2016/07/11/Understand-OkHttp/#section-2){:target="_blank"}我们就提到：
 
@@ -311,7 +311,7 @@ static class GzipRequestInterceptor implements Interceptor {
 
 那我们接着看 `GzipSink` 的实现：
 
-~~~ java
+``` java
 public final class GzipSink implements Sink {
   // ...
 
@@ -343,7 +343,7 @@ public final class GzipSink implements Sink {
   
   // ...
 }
-~~~
+```
 
 这里我们只关注主要流程，省略了很多代码，大家感兴趣可以自己去看。我们可以看到，构造 `GzipSink` 时，我们用传入的 `Sink` 构造了一个 `DeflaterSink`，后面的 `write` 操作我们都是转交给 DeflaterSink 做的。那这里就涉及到 `GzipSink`，`DeflaterSink`，和最初的 `Sink`，我们把数据写到 GzipSink 中，而它则把数据写到 DeflaterSink 中，后者又把数据最终写到目标 Sink 中。
 

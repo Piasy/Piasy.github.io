@@ -7,7 +7,7 @@
 * http://ronubo.blogspot.jp/2016/01/debugging-aosp-platform-code-with.html
 * https://www.ibm.com/developerworks/cn/opensource/os-cn-android-build/
 
-~~~ bash
+``` bash
 curl https://storage.googleapis.com/git-repo-downloads/repo > repo
 wget https://mirrors.tuna.tsinghua.edu.cn/aosp-monthly/aosp-latest.tar
 tar xf aosp-latest.tar
@@ -23,24 +23,24 @@ lunch
 make -j4
 
 mmm <path to the module>
-~~~
+```
 
 
 ## 错误解决
 
-~~~ bash
+``` bash
 build/core/combo/mac_version.mk:26: none of the installed SDKs (wifi-serviceac_sdk_versions_installed) match supported versions (10.8 10.9 10.10 10.11), trying 10.8
 build/core/combo/mac_version.mk:36: no SDK 10.8 at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk, trying legacy dir
 build/core/combo/mac_version.mk:40: *****************************************************
 build/core/combo/mac_version.mk:41: * Can not find SDK 10.8 at /Developer/SDKs/MacOSX10.8.sdk
 build/core/combo/mac_version.mk:42: *****************************************************
 build/core/combo/mac_version.mk:43: *** Stop..  Stop.
-~~~
+```
 
-~~~修改 `build/core/combo/mac_version.mk`，修改 `mac_sdk_versions_supported := 10.12`（系统安装的 XCode 版本，`ls /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/` 获得）~~~
+```修改 `build/core/combo/mac_version.mk`，修改 `mac_sdk_versions_supported := 10.12`（系统安装的 XCode 版本，`ls /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/` 获得）```
 
 10.12 弃用了 syscall，所以还是得安装老的 SDK，[下载地址](https://github.com/phracker/MacOSX-SDKs/releases)，解压拷贝到`/Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs`。为了避免下次升级的时候再被删除，可以放到 `~/tools/MacOSX10.11.sdk`，再给它创建一个软链接：
 
-~~~ bash
+``` bash
 ln -s ~/tools/MacOSX10.11.sdk /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk
-~~~
+```

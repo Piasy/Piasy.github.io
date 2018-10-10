@@ -2,7 +2,7 @@
 
 ## Ubuntu 安装
 
-~~~ bash
+``` bash
 sudo apt-get -y update && sudo apt-get install -y libmicrohttpd-dev \
     libjansson-dev \
     libnice-dev \
@@ -214,14 +214,15 @@ cd ~ && \
 cd ~/ffmpeg_sources && \
     curl https://caddyserver.com/download/linux/amd64?license=personal > caddy.tar.gz && \
     mkdir ~/ffmpeg_build/caddy && tar -C ~/ffmpeg_build/caddy -xzf caddy.tar.gz
-~~~
+```
 
 ## macOS 安装
 
 ``` bash
-brew install jansson libnice openssl srtp libusrsctp libmicrohttpd \
-    libwebsockets cmake rabbitmq-c sofia-sip opus libogg curl \
+brew install jansson libnice openssl srtp libusrsctp \
+    cmake rabbitmq-c sofia-sip opus libogg curl \
     glib pkg-config gengetopt autoconf automake libtool
+brew install libmicrohttpd --with-ssl
 
 # master 分支的才能正常工作
 wget https://codeload.github.com/warmcat/libwebsockets/zip/master && \
@@ -239,7 +240,7 @@ make && sudo make install
 sh autogen.sh && \
 ENV CPPFLAGS='-I/usr/local/libwebsockets/include' \
     LDFLAGS='-L/usr/local/libwebsockets/lib' \
-./configure --prefix=`pwd`/out \
+./configure --prefix=`pwd`/build \
     PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig \
     --enable-post-processing \
     --disable-data-channels \
@@ -264,14 +265,14 @@ make configs
 + 运行 `/opt/janus/bin/janus`；
 + 编辑 `/root/caddy/Caddyfile`，注意把 `192.168.50.4` 替换为实际 IP：
 
-~~~ bash
+``` bash
 192.168.50.4:4443 {
     gzip
     root /root/janus-gateway/html/
     log /root/caddy/access.log
     tls /opt/janus/share/janus/certs/mycert.pem /opt/janus/share/janus/certs/mycert.key
 }
-~~~
+```
 
 + 进入 `~/janus-gateway/html`，运行 `/root/caddy/caddy -conf=/root/caddy/Caddyfile`；
 + 打开 chrome，访问 `https://192.168.50.4:4443`，提示证书错误，选择继续前往；
@@ -280,12 +281,12 @@ make configs
 
 + 部署 SRS 服务器：
 
-~~~ bash
+``` bash
 git clone https://github.com/ossrs/srs
 cd srs/trunk
 ./configure && make
 ./objs/srs -c conf/rtmp.conf
-~~~
+```
 
 + ffmpeg 推流：`ffmpeg -re -i video.mp4 -acodec copy -vcodec copy -f flv -y rtmp://192.168.50.4/live/livestream`；
 + ffplay 收流：`ffplay rtmp://192.168.50.4/live/livestream`；

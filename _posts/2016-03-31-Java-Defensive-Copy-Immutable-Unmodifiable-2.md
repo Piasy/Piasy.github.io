@@ -9,7 +9,7 @@ tags:
 
 考虑以下代码：
 
-~~~ java
+``` java
 static class ImmutablePerson {
     final String mName;
 
@@ -21,7 +21,7 @@ static class ImmutablePerson {
 List<ImmutablePerson> list1 = new ArrayList<>();
 list1.add(new ImmutablePerson("Piasy"));
 List<ImmutablePerson> list2 = new ArrayList<>(list1);
-~~~
+```
 
 `list2 = new ArrayList<>(list1)` 是否是一次深拷贝呢？实际情况是这样的：
 

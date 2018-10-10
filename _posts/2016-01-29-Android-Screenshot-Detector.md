@@ -25,7 +25,7 @@ tags:
 
 核心代码如下：
 
-~~~ java
+``` java
 private static final String TAG = "RxScreenshotDetector";
 private static final String EXTERNAL_CONTENT_URI_MATCHER =
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString();
@@ -73,7 +73,7 @@ final ContentObserver contentObserver = new ContentObserver(null) {
 };
 contentResolver.registerContentObserver(
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver);
-~~~
+```
 
 主要有以下几点需要注意：
 
@@ -84,7 +84,7 @@ contentResolver.registerContentObserver(
 
 `RxScreenshotDetector`完整使用代码如下：
 
-~~~ java
+``` java
 RxScreenshotDetector.start(getApplicationContext())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -105,7 +105,7 @@ RxScreenshotDetector.start(getApplicationContext())
                 mTextView.setText(mTextView.getText() + "\nScreenshot: " + path);
             }
         });
-~~~
+```
 
 这里使用了[RxLifecycle](https://github.com/trello/RxLifecycle)，在Activity onPause之后unsubscribe，以保证不会发生内存泄漏。此外subscribe传入的是完整的Subscriber，是为了防止授权失败时没有onError处理器，导致crash。
 

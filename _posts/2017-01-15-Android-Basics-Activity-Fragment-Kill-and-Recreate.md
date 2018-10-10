@@ -72,7 +72,7 @@ GitHub OAuth 过程分为以下几步：
 
 这里我利用了 WeakReference：
 
-~~~ java
+``` java
 private static WeakReference<ReplaySubject<~>> sOAuthResultSubject;
 private ReplaySubject<~> mOAuthResultSubject;
 
@@ -96,7 +96,7 @@ protected void onDestroy() {
     // reduce reference
     mOAuthResultSubject = null;
 }
-~~~
+```
 
 + 利用 static 变量跨实例共享对象；
 + 利用 WeakReference 避免内存泄漏；

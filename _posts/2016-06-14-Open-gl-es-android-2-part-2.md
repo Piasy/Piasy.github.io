@@ -14,7 +14,7 @@ tags:
 
 绘制两个三角形时，我们可以指定 6 个顶点的坐标，但实际上只有 4 个不同的点，这样有点浪费，OpenGL 支持用另一种方式完成绘制：用一个数组保存顶点数据，用另一个数组保存顶点的绘制顺序：
 
-~~~ java
+``` java
 // ...
 private static final float[] VERTEX = {   // in counterclockwise order:
         1, 1, 0,   // top right
@@ -40,7 +40,7 @@ MyRenderer() {
     mVertexIndexBuffer.position(0);
 }
 // ...
-~~~
+```
 
 在上面的代码中，`VERTEX` 保存了 4 个顶点的坐标，`VERTEX_INDEX` 保存了顶点的绘制顺序。`0 -> 1 -> 2` 绘制的是 `右上 -> 左上 -> 左下` 上半个三角形，逆时针方向，而 `0 -> 2 -> 3` 则绘制的是 `右上 -> 左下 -> 右下` 下半个三角形，也是逆时针方向，这两个三角形则“拼接”成了一个矩形。
 
@@ -48,7 +48,7 @@ _顶点的绘制顺序重不重要？由于这里绘制的是纯颜色，看不�
 
 shader 代码、投影变换的逻辑都不需要更改（但为了让矩形能完整显示，我们把 `translateM` 移动的 z 值设为 -5f），我们只需要改一下绘制时调用的函数即可：
 
-~~~ java
+``` java
 @Override
 public void onDrawFrame(GL10 unused) {
     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
@@ -59,7 +59,7 @@ public void onDrawFrame(GL10 unused) {
     GLES20.glDrawElements(GLES20.GL_TRIANGLES, VERTEX_INDEX.length,
             GLES20.GL_UNSIGNED_SHORT, mVertexIndexBuffer);
 }
-~~~
+```
 
 绘制效果图：
 
@@ -73,7 +73,7 @@ public void onDrawFrame(GL10 unused) {
 
 首先我们需要加载图片并且保存在 OpenGL 纹理系统中：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     // ...
@@ -96,7 +96,7 @@ public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     bitmap.recycle();
 }
-~~~
+```
 
 我们需要先通过 `glGenTextures` 创建纹理，再通过 `glActiveTexture` 激活指定编号的纹理，再通过 `glBindTexture` 将新建的纹理和编号绑定起来。我们可以对图片纹理设置一系列参数，例如裁剪策略、缩放策略，这部分更详细的介绍，建议看看[《OpenGL ES 2 for Android A Quick - Start Guide (2013)》](http://home.agh.edu.pl/~alda/GRAFIKA_MOBILNE/OpenGL%20ES%202%20for%20Android%20A%20Quick%20-%20Start%20Guide%20(2013).pdf){:target="_blank"}这本书，里面有很详细的讲解。最后，我们通过 `texImage2D` 把图片数据拷贝到纹理中。
 
@@ -104,7 +104,7 @@ public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 
 此时，我们的 shader 代码当然也需要进行更改了：
 
-~~~ java
+``` java
 private static final String VERTEX_SHADER =
         "uniform mat4 uMVPMatrix;" +
         "attribute vec4 vPosition;" +
@@ -121,7 +121,7 @@ private static final String FRAGMENT_SHADER =
         "void main() {" +
         "  gl_FragColor = texture2D(s_texture, v_texCoord);" +
         "}";
-~~~
+```
 
 这里出现了更多的关键字，`uniform`，`attribute`，`varying`，GLSL 并不是我关注的重点，不过这三者的区别可以看看[这篇博客](http://blog.csdn.net/jackers679/article/details/6848085){:target="_blank"}，讲的非常清晰易懂：
 
@@ -131,7 +131,7 @@ private static final String FRAGMENT_SHADER =
 
 首先我们需要指定截取纹理的哪一部分绘制到图形上：
 
-~~~ java
+``` java
 private static final float[] TEX_VERTEX = {   // in clockwise order:
         1, 0,  // bottom right
         0, 0,  // bottom left
@@ -149,11 +149,11 @@ MyRenderer(final Context context) {
             .put(TEX_VERTEX);
     mTexVertexBuffer.position(0);
 }
-~~~
+```
 
 接着我们需要修改初始化和绘制的代码：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     // ...
@@ -185,7 +185,7 @@ public void onDrawFrame(GL10 unused) {
     GLES20.glDrawElements(GLES20.GL_TRIANGLES, VERTEX_INDEX.length,
             GLES20.GL_UNSIGNED_SHORT, mVertexIndexBuffer);
 }
-~~~
+```
 
 绘制效果如下：
 
@@ -197,14 +197,14 @@ OpenGL 的纹理坐标系是二维坐标系，原点在左下角，s（x）轴�
 
 我们在绘制时，`TEX_VERTEX` 指定了截取纹理区域的坐标，上面的代码是使用完整的区域。如果我们把它改成这样：
 
-~~~ java
+``` java
 private static final float[] TEX_VERTEX = {   // in clockwise order:
         0.5f, 0,  // bottom right
         0, 0,  // bottom left
         0, 0.5f,  // top left
         0.5f, 0.5f,  // top right
 };
-~~~
+```
 
 这时绘制效果就成了这样子：
 
@@ -222,7 +222,7 @@ private static final float[] TEX_VERTEX = {   // in clockwise order:
 
 在 `onDrawFrame` 方法执行完毕之后（实际上是 `glDrawElements` 执行完毕之后），我们就可以从显存中读取帧数据了。这里我们利用 `glReadPixels` 方法读取数据：
 
-~~~ java
+``` java
 static void sendImage(int width, int height) {
     ByteBuffer rgbaBuf = ByteBuffer.allocateDirect(width * height * 4);
     rgbaBuf.position(0);
@@ -256,7 +256,7 @@ static void saveRgb2Bitmap(Buffer buf, String filename, int width, int height) {
         }
     }
 }
-~~~
+```
 
 我们把保存的图片导出查看：
 
@@ -272,7 +272,7 @@ static void saveRgb2Bitmap(Buffer buf, String filename, int width, int height) {
 
 为了避免 activity pause 之后进行不必要的渲染，我们可以在 activity 的回调中调用 GLSurfaceView 的相应方法进行控制，而在 activity 销毁时，我们需要销毁 OpenGL 纹理：
 
-~~~ java
+``` java
 @Override
 protected void onPause() {
     super.onPause();
@@ -300,7 +300,7 @@ static class MyRenderer implements GLSurfaceView.Renderer {
 
     // ...
 }
-~~~
+```
 
 ## 5. 小结
 

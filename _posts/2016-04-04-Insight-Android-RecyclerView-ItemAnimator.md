@@ -27,7 +27,7 @@ BaseItemAnimator 实现了父类的 `animateRemove`, `animateAdd`, `animateMove`
 
 例如 animateRemove 的实现如下：
 
-~~~ java
+``` java
 @Override
 public boolean animateRemove(final ViewHolder holder) {
     endAnimation(holder);
@@ -35,11 +35,11 @@ public boolean animateRemove(final ViewHolder holder) {
     mPendingRemovals.add(holder);
     return true;
 }
-~~~
+```
 
 那么下面重点看看 runPendingAnimations。
 
-~~~ java
+``` java
   @Override 
   public void runPendingAnimations() {
     boolean removalsPending = !mPendingRemovals.isEmpty();
@@ -127,7 +127,7 @@ public boolean animateRemove(final ViewHolder holder) {
       }
     }
   }
-~~~
+```
 
 在这里，remove 最先执行，remove 执行完毕后，再同时开始 move 和 change，而它俩都结束后，最后再执行 add。BaseItemAnimator 对 add 和 remove 这两个动画的播放进行了再一次的封装，定义了 `animateAddImpl` 和 `animateRemoveImpl` 这两个 API，以及 `preAnimateAddImpl` 和 `preAnimateRemoveImpl` 供动画开始前进行需要的操作，而这个库内置的多种 animator，都只是在这两个 API 中实现了不同的出现和消失的逻辑。add 和 remove 这两个动画的进一步封装，再次简化了编写 animator 的代码，具体的 animator 只需要专注于自己的动画显示逻辑即可。而 move 和 change 这两类动画，则是直接使用了 DefaultItemAnimator 的代码，move 就是通过 TranslationX 和 TranslationY 把 item view 从老位置移动到新位置，change 就是通过 TranslationX, setTranslationY 和 alpha 来完成内容的改变效果。
 

@@ -19,7 +19,7 @@ tags:
 
 核心代码如下：
 
-~~~ java
+``` java
 static Observable<Integer> detect(Observable<Void> clicks, final long maxIntervalMillis,
         final int minComboTimesCared) {
     return clicks.map(new Func1<Void, Integer>() {
@@ -52,7 +52,7 @@ static Observable<Integer> detect(Observable<Void> clicks, final long maxInterva
             }
         });
 }
-~~~
+```
 
 具体实现上采用了多个RxJava的operator：
 
@@ -67,7 +67,7 @@ static Observable<Integer> detect(Observable<Void> clicks, final long maxInterva
 
 `RxComboDetector`的创建采用builder模式进行创建，完整使用代码如下：
 
-~~~ java
+``` java
 new RxComboDetector.Builder()
     .maxIntervalMillis(500)
     .minComboTimesCared(3)
@@ -80,7 +80,7 @@ new RxComboDetector.Builder()
             // do something
         }
     });
-~~~
+```
 
 使用builder来配置连击判断最大时间间隔，以及过滤掉低连击事件的阈值。
 

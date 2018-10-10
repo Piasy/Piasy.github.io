@@ -92,6 +92,8 @@ _注意：WebRTC 及其依赖的源码，需要自行下载，上述变量是为
 
 对了，我使用的 Android Studio 版本是 3.1.4。
 
+注意：请使用和 WebRTC 代码库里同版本的安卓 SDK 和 NDK，否则会有编译错误。
+
 好了，为了表达我激动的心情，放上一个录屏视频：
 
 <iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=s07598pk9fr&tiny=0&auto=0" allowfullscreen></iframe>

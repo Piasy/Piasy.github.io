@@ -102,11 +102,7 @@
     }
 </script>
 
-<!-- Highlight.js -->
 <script>
-    async("/css/highlight.min.js", function(){
-        hljs.initHighlightingOnLoad();
-    })
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
         async("/js/jquery.tagcloud.js",function(){
@@ -122,7 +118,7 @@
 
 <!--fastClick.js -->
 <script>
-    async("/css/fastclick.min.js", function(){
+    async("/js/fastclick.min.js", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })

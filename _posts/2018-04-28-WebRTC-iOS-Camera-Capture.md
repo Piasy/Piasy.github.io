@@ -32,15 +32,15 @@ AVCaptureSession 的使用主要分为以下几步：
 
 创建 session 很简单，就是构造一个对象即可：
 
-~~~ objective-c
+``` objective-c
 session = [[AVCaptureSession alloc] init];
-~~~
+```
 
 ### 配置 session
 
 由于配置 session 是多步操作，为了保证原子性，AVCaptureSession 提供了事务机制，即先 `beginConfiguration`，再添加 device，最后 `commitConfiguration`：
 
-~~~ objective-c
+``` objective-c
 // 开始配置
 [session beginConfiguration];
 
@@ -92,19 +92,19 @@ if ([session canAddOutput:movieFileOutput]) {
 
 // 提交配置
 [session commitConfiguration];
-~~~
+```
 
 ### 启停 session
 
 启停 session 也比较简单，就是一个接口的调用：
 
-~~~ objective-c
+``` objective-c
 // 启动 session
 [session startRunning];
 
 // 停止 session
 [session stopRunning];
-~~~
+```
 
 ### 操作线程
 
@@ -135,7 +135,7 @@ iOS 的视频采集接口定义为 `RTCVideoCapturer`，目前只有 `RTCCameraV
 
 iOS 获取图像方向的逻辑还是比安卓要简单得多，这主要得益于 Apple 对硬件和系统的强硬控制：
 
-~~~ objective-c
+``` objective-c
 #if TARGET_OS_IPHONE
   switch (_orientation) {
     case UIDeviceOrientationPortrait:
@@ -160,15 +160,15 @@ iOS 获取图像方向的逻辑还是比安卓要简单得多，这主要得益�
   // No rotation on Mac.
   _rotation = RTCVideoRotation_0;
 #endif
-~~~
+```
 
 不过 iOS 获取图像时间戳则比安卓麻烦：
 
-~~~ objective-c
+``` objective-c
 int64_t timeStampNs =
     CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)) *
     kNanosecondsPerSecond;
-~~~
+```
 
 采集到视频数据后，会封装为 `RTCVideoFrame` 对象，通过 `RTCVideoCapturerDelegate` 回调出去，至于之后的处理，且听下回分解 :)
 

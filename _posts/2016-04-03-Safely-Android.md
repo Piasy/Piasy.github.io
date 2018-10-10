@@ -10,7 +10,7 @@ tags:
 ## 安全地启动 Activity
 在[ Developer 官方教程](http://developer.android.com/training/basics/intents/sending.html#StartActivity){:target="_blank"}里面有这样一段代码：
 
-~~~ java
+``` java
 // Verify it resolves
 PackageManager packageManager = getPackageManager();
 List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
@@ -20,11 +20,11 @@ boolean isIntentSafe = activities.size() > 0;
 if (isIntentSafe) {
     startActivity(mapIntent);
 }
-~~~
+```
 
 以此确保 intent 对应的 activity 存在，从而避免 ActivityNotFoundException，SafelyAndroid 根据此建议，封装了一系列安全启动 activity 的接口：
 
-~~~ java
+``` java
 StartActivityDelegate.startActivitySafely(fragment, intent)
 
 StartActivityDelegate.startActivitySafely(fragment, intent, options)
@@ -40,14 +40,14 @@ StartActivityDelegate.startActivitySafely(context, intent, options)
 StartActivityDelegate.startActivityForResultSafely(activity, intent, requestCode)
 
 StartActivityDelegate.startActivityForResultSafely(activity, intent, requestCode, options)
-~~~
+```
 
 可以从 context, fragment, support v4 fragment 安全的调用 startActivity，或者 startActivityForResult。
 
 ## 安全地 dismiss dialog fragment
 dismiss 一个 dialog fragment 实际上就是进行了一次 fragment transaction，本文开头提到的 Activity State Loss 就是在 activity onSaveInstanceState 函数被调用之后进行了 fragment transaction 导致的。SafelyAndroid 对 dismiss dialog fragment 进行了单独的封装，以保证安全地 dismiss ，而更一般的 fragment transaction，则请见下节。
 
-~~~ java
+``` java
 dialogFragmentDismissDelegate.safeDismiss(dialogFragment)
 
 dialogFragmentDismissDelegate.onResumed(dialogFragment)
@@ -55,7 +55,7 @@ dialogFragmentDismissDelegate.onResumed(dialogFragment)
 supportDialogFragmentDismissDelegate.safeDismiss(dialogFragment)
 
 supportDialogFragmentDismissDelegate.onResumed(dialogFragment)
-~~~
+```
 
 同样，SafelyAndroid 提供了针对 fragment 和 support v4 fragment 的两套 API，调用 `safeDismiss` 时，如果当前 dialog fragment 处于 resumed 状态，则立即 dismiss，并返回 `false`，否则返回 `true`，并在 `onResumed` 函数被调用时再 dismiss。如此，就达到了既不会发生 Activity State Loss 错误，也不会存在 dialog fragment 无法隐藏的 bug 了。
 
@@ -64,7 +64,7 @@ supportDialogFragmentDismissDelegate.onResumed(dialogFragment)
 ## 安全地进行 fragment transaction
 SafelyAndroid 提供了以下几个 API 用于安全地进行 fragment transaction：
 
-~~~ java
+``` java
 fragmentTransactionDelegate.safeCommit(transactionCommitter, transaction)
 
 fragmentTransactionDelegate.onResumed()
@@ -72,7 +72,7 @@ fragmentTransactionDelegate.onResumed()
 supportFragmentTransactionDelegate.safeCommit(transactionCommitter, transaction)
 
 supportFragmentTransactionDelegate.onResumed()
-~~~
+```
 
 使用时，进行 fragment transaction 的类（activity 或者 fragment），需要实现 `TransactionCommitter` 接口，用来检查其是否处于 resume 状态。commit 一个 fragment transaction 时，调用 delegate 对象的 `safeCommit` 方法，如果此时处于 resume 状态，则可以立即 commit，否则就会延迟到 `onResumed` 被调用时再 commit。
 

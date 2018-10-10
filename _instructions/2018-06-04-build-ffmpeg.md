@@ -4,15 +4,15 @@
 
 编译环境：
 
-~~~ bash
+``` bash
 macOS   10.13.4 (17E202)
 NDK     r15c
 ffmpeg  3.4.2
-~~~
+```
 
 编译命令：
 
-~~~ bash
+``` bash
 ./configure \
 --enable-cross-compile \
 --cross-prefix=$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi- \
@@ -70,7 +70,7 @@ make -j16 install
 --prefix=`pwd`/out
 
 make -j16 install
-~~~
+```
 
 `out/lib` 目录里会有动态库和静态库。
 
@@ -80,14 +80,14 @@ mac 下编译报错：`undefined reference to 'swr_alloc()'`，通过 `greadelf`
 
 使用静态库时 mac 下链接报错：
 
-~~~ bash
+``` bash
 libavformat/hls.c:773: error: undefined reference to 'atof'
 libavformat/hlsproto.c:149: error: undefined reference to 'atof'
 libavutil/file.c:85: error: undefined reference to 'mmap64'
 libavutil/log.c:188: error: undefined reference to 'stderr'
 libavutil/log.c:362: error: undefined reference to 'stderr'
 libavutil/log.c:362: error: undefined reference to 'stderr'
-~~~
+```
 
 是 NDK unified headers 导致，在创建 standalone toolchain 时加上 `--deprecated-headers` 即可。
 
@@ -99,15 +99,15 @@ libavutil/log.c:362: error: undefined reference to 'stderr'
 
 [FFmpeg iOS build script](https://github.com/kewlbear/FFmpeg-iOS-build-script) 亲测可用：
 
-~~~ bash
+``` bash
 macOS   10.13.4 (17E202)
 Xcode   9.4 (9F1027a)
 ffmpeg  3.4.2
-~~~
+```
 
 ## macOS
 
-~~~ bash
+``` bash
 ./configure \
 --arch=x86_64 \
 --enable-shared \
@@ -117,11 +117,11 @@ ffmpeg  3.4.2
 --prefix=`pwd`/out
 
 make -j16 install
-~~~
+```
 
 ## Windows
 
-~~~ bash
+``` bash
 ./configure \
 --toolchain=msvc \
 --arch=x86 \
@@ -130,7 +130,7 @@ make -j16 install
 --prefix=`pwd`/out
 
 make -j16 install
-~~~
+```
 
 ## 参考文章
 

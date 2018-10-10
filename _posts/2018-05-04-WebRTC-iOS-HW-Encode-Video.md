@@ -30,7 +30,7 @@ _不得不承认，iOS 的硬编码比 Android 要方便的多_。
 
 创建 session 时通常需要指定宽高、码流类型、未编码数据属性、编码数据回调。
 
-~~~ objective-c
+``` objective-c
 // Set source image buffer attributes. These attributes will be present on
 // buffers retrieved from the encoder's pixel buffer pool.
 const size_t attributesSize = 3;
@@ -60,7 +60,7 @@ OSStatus status =
                                nullptr,
                                &_compressionSession);
 // 检查 status，释放 ioSurfaceValue, pixelFormat, sourceAttributes
-~~~
+```
 
 WebRTC iOS demo 输入编码器的数据格式是 `kCVPixelFormatType_420YpCbCr8BiPlanarFullRange`，宽高可以在 demo 里面设置。
 
@@ -72,7 +72,7 @@ WebRTC iOS demo 输入编码器的数据格式是 `kCVPixelFormatType_420YpCbCr8
 
 WebRTC 对 session 的配置代码如下：
 
-~~~ objective-c
+``` Objective-C
 SetVTSessionProperty(_compressionSession, kVTCompressionPropertyKey_RealTime,
                      true);
 SetVTSessionProperty(_compressionSession,
@@ -104,7 +104,7 @@ SetVTSessionProperty(_compressionSession,
 SetVTSessionProperty(_compressionSession,
                      kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration,
                      240);
-~~~
+```
 
 `SetVTSessionProperty` 是 WebRTC 里的一个辅助函数，封装了对 `VTSessionSetProperty` 的调用。
 
@@ -124,7 +124,7 @@ SetVTSessionProperty(_compressionSession,
 
 数据输入就比较简单了，直接把 YUV 数据送入 session 即可：
 
-~~~ objective-c
+``` objective-c
 OSStatus status =
         VTCompressionSessionEncodeFrame(_compressionSession,
                                         pixelBuffer,
@@ -133,7 +133,7 @@ OSStatus status =
                                         frameProperties,
                                         encodeParams,
                                         nullptr);
-~~~
+```
 
 第二个参数 `pixelBuffer` 是 YUV 数据，当然 WebRTC 在把 YUV 数据送入编码器之前，支持做一个裁剪。此外，如果数据格式是 I420，还需要做一个 I420 转 NV12 的操作，格式转换的同时，也支持先裁剪一番。
 
@@ -147,7 +147,7 @@ OSStatus status =
 
 前面我们在创建 session 时设置了编码完成的回调，这个回调是一个函数指针，它接收的第一个参数，就是我们创建 session 时传入的第八个参数，它接收的第二个参数，就是我们在输入数据时传的第六个参数，后三个参数比较简单，这里就不展开解释了。
 
-~~~ objective-c
+``` objective-c
 // This is the callback function that VideoToolbox calls when encode is
 // complete. From inspection this happens on its own queue.
 void compressionOutputCallback(void *encoder,
@@ -171,11 +171,11 @@ void compressionOutputCallback(void *encoder,
                                 timestamp:encodeParams->timestamp
                                 rotation:encodeParams->rotation];
 }
-~~~
+```
 
 编码数据以及这一帧的基本信息都在 `CMSampleBufferRef` 中，相关信息的获取示例代码如下：
 
-~~~ objective-c
+``` objective-c
 // 检查是否关键帧
 BOOL isKeyframe = NO;
 CFArrayRef attachments =
@@ -215,7 +215,7 @@ CMBlockBufferRef data_buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
 size_t data_size = CMBlockBufferGetDataLength(data_buffer);
 uint8_t* data = new uint8_t[data_size];
 CMBlockBufferCopyDataBytes(data_buffer, 0, data_size, data);
-~~~
+```
 
 需要指出的是，编码器输出的数据是 AVCC 格式，WebRTC 将其转换为 Annex-B 格式后，再进行封装和发送。它们是两种 H.264 码流 NALU 存储的方式，简单来说 Annex-B 是 start code + NALU + start code + NALU 的形式，而 AVCC 则是 NALU length + NALU + NALU length + NALU 的形式，具体可以查阅规范，或者[这篇中文博客](https://blog.csdn.net/romantic_energy/article/details/50508332)。
 
@@ -250,7 +250,7 @@ _前两点援引自 [Twitch blog](https://blog.twitch.tv/better-broadcasting-wit
 
 前面我们已经提到了 `kVTCompressionPropertyKey_MaxKeyFrameInterval` 和 `kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration` 共同控制关键帧间隔。此外，在编码过程中，我们也可以在编某帧时，主动请求编出关键帧：
 
-~~~ objective-c
+``` Objective-C
 CFDictionaryRef frameProperties = nullptr;
 CFTypeRef keys[] = {kVTEncodeFrameOptionKey_ForceKeyFrame};
 CFTypeRef values[] = {kCFBooleanTrue};
@@ -264,7 +264,7 @@ OSStatus status =
                                         frameProperties,
                                         encodeParams,
                                         nullptr);
-~~~
+```
 
 ## 总结
 

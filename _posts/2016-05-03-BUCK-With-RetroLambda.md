@@ -11,17 +11,17 @@ tags:
 ## BUCK 编译 Java 8
 这一点 BUCK 确实已经支持了，只需要在 `java_library` 和 `android_library` 这两种 rule 中加入以下配置即可：
 
-~~~ python
+``` python
 	source = '8',
 	target = '8',
-~~~
+```
 
 然而就是这一步中出现的拦路虎，挡住了我们前进的脚步半年之久，简而言之，纯 Java library module 这样做没有任何问题，但是 Android library module 的编译却报告了错误：
 
-~~~ java
+``` java
 com.sun.tools.javac.code.Symbol$CompletionFailure: class file for 
 java.lang.invoke.MethodType not found.
-~~~
+```
 
 错误日志很明显对不对？然而，搜索出来的结果绝大部分都是指向了 [gradle-retrolambda 的一个 issue](https://github.com/evant/gradle-retrolambda/issues/126){:target="_blank"}，而这个 issue 的解决方案外部看来和这个问题没有任何联系。无奈之下只能再次向 BUCK 维护者求助：
 
@@ -36,12 +36,12 @@ java.lang.invoke.MethodType not found.
 ## BUCK 调用 RetroLambda
 RetroLambda 只是一个命令行工具，大家通常使用的可能是另一个 gradle 插件：[gradle-retrolambda](https://github.com/evant/gradle-retrolambda/){:target="_blank"}，利用上面提到的 `postprocess_classes_commands` 参数，我们可以在 `java_library` 和 `android_library` 这两种 rule 中加一个 class 编译完成之后的 hook，BUCK 会执行 `postprocess_classes_commands` 参数的命令，并把本次编译的 class 路径作为参数传入。所以我们就可以在这里执行 RetroLambda 程序把 java 8 的字节码编译为 java 6 的字节码了。这里因为需要为 shell 脚本传入参数，所以我们需要把命令封装到一个脚本文件中，脚本文件的内容如下：
 
-~~~ bash
+``` bash
 java \
 -Dretrolambda.inputDir=$1 \
 -Dretrolambda.classpath=$1 \
 -jar ./retrolambda-2.3.0.jar
-~~~
+```
 
 这里 RetroLambda 会直接覆盖 BUCK 编译生成的 class 文件，命令执行完毕之后，BUCK 会继续打包的后续步骤。
 
@@ -56,7 +56,7 @@ RetroLambda 可以把同样的代码先编译为 java 8 的字节码，BUCK 的�
 
 执行 `buck build -v 10 app/:src_release`，在控制台看到了一段红色的信息，就是出错的命令，错误就是上面提到的 `class file for java.lang.invoke.MethodType not found`，编译选项如下：
 
-~~~bash
+```bash
 javac \
 -source 8 -target 8 \
 -sourcepath  -g \
@@ -73,11 +73,11 @@ javac \
 /Users/piasy/src/BuckJava8RetroLambdaDemo/buck-out/gen/.okbuck/AFFB34D18189F4D10144A341628B7C81/jar__support-annotations-23.3.0.jar.jar:\
 /Users/piasy/src/BuckJava8RetroLambdaDemo/buck-out/gen/app/lib__build_config_release__output/build_config_release.jar \
 @buck-out/gen/app/__src_release__srcs
-~~~
+```
 
 执行 `./gradlew :app:compileDebugJavaWithJavac --debug`，查看输出找到编译选项：
 
-~~~ bash
+``` bash
 javac \
 -d /Users/piasy/src/BuckJava8RetroLambdaDemo/app/build/retrolambda/debug \
 -g -encoding UTF-8 \
@@ -95,7 +95,7 @@ javac \
 /Users/piasy/src/BuckJava8RetroLambdaDemo/app/build/generated/source/r/debug/com/github/piasy/buck/retrolambda/demo/R.java \
 /Users/piasy/src/BuckJava8RetroLambdaDemo/app/build/generated/source/buildConfig/debug/com/github/piasy/buck/retrolambda/demo/BuildConfig.java \
 -XDuseUnsharedTable=true
-~~~
+```
 
 差异最大的是两部分，一个是 `classpath` 选项，一个是最后一部分，BUCK 是一个 `@` 加一个文件路径，gradle 则是多个文件名，而查看 BUCK 命令中的那个文件内容，_基本上_ 就是 gradle 命令中传入的那几个文件名。那么很可能就是 `classpath` 部分了（当然，真实情况是我逐一替换了所有不同的部分，不幸的是最后才轮到 `classpath`）。
 
@@ -110,7 +110,7 @@ javac \
 
 上上节中的 RetroLambda 脚本对 Java library module 的 BUCK 与 RetroLambda 联编可以通过，但对 Android library module 却不行，因为还有许多 jar 包需要加入到 classpath 中，包括 android.jar。而这一点很好解决，把我们在上节中拿到的 BUCK 编译的 javac classpath 加入到 RetroLambda 执行的 classpath 中即可，完整的 RetroLambda 脚本如下：
 
-~~~ bash
+``` bash
 java \
 -Dretrolambda.inputDir=$1 \
 -Dretrolambda.classpath=$1:\
@@ -125,7 +125,7 @@ java \
 ./buck-out/gen/.okbuck/AFFB34D18189F4D10144A341628B7C81/jar__support-annotations-23.3.0.jar.jar:\
 ./buck-out/gen/app/lib__build_config_release__output/build_config_release.jar \
 -jar ./retrolambda-2.3.0.jar
-~~~
+```
 
 运行修改过后的 BUCK 编译，成功！
 

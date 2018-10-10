@@ -22,7 +22,7 @@ GitHub 神图：
 
 ### 单个 Activity + Fragment 的启动？
 
-~~~ java
+``` java
 Activity onCreate
 Fragment onAttach
 Fragment onCreate
@@ -41,23 +41,23 @@ Activity onPostResume
 Activity onResumeFragments
 // 下面一个由 super.onResumeFragments 触发
 Fragment onResume
-~~~
+```
 
 ### A 启动 B，A 和 B 的生命周期函数调用顺序？
 
-~~~ java
+``` java
 A onPause
 B onCreate
 B onStart
 B onResume
 A onStop
-~~~
+```
 
 onPause 之后，Activity 依然是可见的，onStop 之后，Activity 就不可见了；onResume 之后，Activity 才是可见的；A 启动 B 的时候，先让 B onResume，再让 A onStop，这就避免了“无可见 Activity”的问题。
 
 ### Aa 的 Fa 启动 Ab 的 Fb，生命周期函数调用顺序？
 
-~~~ java
+``` java
 // 启动 B
 Aa onPause
 // 下面一个由 super.OnPause 触发
@@ -91,7 +91,7 @@ Fb onDestroyView
 Fb onDestroy
 Fb onDetach
 Ab onDestroy
-~~~
+```
 
 ### Fragment transaction 时，Fragment 的生命周期
 

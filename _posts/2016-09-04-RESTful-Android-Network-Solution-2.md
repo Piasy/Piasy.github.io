@@ -46,7 +46,7 @@ JSON 应该是大部分项目 CS 通信的数据格式，相比于简单、调�
 
 ### 3.1，`EmptyJsonLenientConverterFactory`
 
-~~~ java
+``` java
 public class EmptyJsonLenientConverterFactory extends Converter.Factory {
 
     private final GsonConverterFactory mGsonConverterFactory;       // 1
@@ -82,7 +82,7 @@ public class EmptyJsonLenientConverterFactory extends Converter.Factory {
         };
     }
 }
-~~~
+```
 
 总的来说还是比较直观的：
 
@@ -100,7 +100,7 @@ public class EmptyJsonLenientConverterFactory extends Converter.Factory {
 
 我们先看一下测试要点：
 
-~~~ java
+``` java
 public class EmptyJsonLenientConverterFactoryTest {
 
     private Retrofit mRetrofit;
@@ -133,11 +133,11 @@ public class EmptyJsonLenientConverterFactoryTest {
         // 验证我们的 converter 可以处理空字符串
     }
 }
-~~~
+```
 
 再看 `convertNormalJson()`：
 
-~~~ java
+``` java
 public static ResponseBody stringBody(String body) {        // 1
     return ResponseBody.create(
             MediaType.parse("application/json"), body);
@@ -157,13 +157,13 @@ public void convertNormalJson()
     YLApiError apiError = (YLApiError) response;
     assertEquals(123, apiError.getErrcode());
 }
-~~~
+```
 
 测试代码也要保持简洁优雅，否则我们也会对编写测试产生抵触，所以这里我把从 String 创建 `ResponseBody` 的代码封装了一个函数（1）。
 
 再看 `gsonConverterFailOnEmptyJson()`：
 
-~~~ java
+``` java
 @Test(expected = EOFException.class)                    // 1
 public void gsonConverterFailOnEmptyJson()
         throws IOException {
@@ -173,13 +173,13 @@ public void gsonConverterFailOnEmptyJson()
                     YLApiError.class, EMPTY_ANNOTATIONS, mRetrofit);
     converter.convert(stringBody(emptyJson));
 }
-~~~
+```
 
 这里我们利用 JUnit 的注解来验证测例抛出了 `EOFException`（1）。
 
 最后我们看看 `convertEmptyJson()`，它就非常简单了：
 
-~~~ java
+``` java
 @Test
 public void convertEmptyJson()
         throws IOException {
@@ -190,13 +190,13 @@ public void convertEmptyJson()
     Object response = converter.convert(stringBody(emptyJson));
     assertNull(response);
 }
-~~~
+```
 
 ## 4，解析 API Error
 
 ### 4.1，`YLApiErrorAwareConverterFactory`
 
-~~~ java
+``` java
 public class YLApiErrorAwareConverterFactory extends Converter.Factory {
 
     private final Converter.Factory mDelegateFactory;           // 1
@@ -246,7 +246,7 @@ public class YLApiErrorAwareConverterFactory extends Converter.Factory {
                   .convert(ResponseBody.create(mediaType, stringBody));
     }
 }
-~~~
+```
 
 依然比较直观，不过有几点值得一提：
 
@@ -261,7 +261,7 @@ public class YLApiErrorAwareConverterFactory extends Converter.Factory {
 
 同样，先看测例结构：
 
-~~~ java
+``` java
 public class YLApiErrorAwareConverterFactoryTest {
 
     private Retrofit mRetrofit;
@@ -293,11 +293,11 @@ public class YLApiErrorAwareConverterFactoryTest {
         // 验证空字符串不会被解析为 API Error
     }
 }
-~~~
+```
 
 测试代码比较简单，我就只贴一下 `apiError()` 了：
 
-~~~ java
+``` java
 @Test
 public void apiError() throws IOException {
     String errorString = "{\"request\":\"req\"," 
@@ -313,7 +313,7 @@ public void apiError() throws IOException {
         assertEquals(123, apiError.getErrcode());       // 1
     }
 }
-~~~
+```
 
 这里我们没有利用 JUnit 注解来验证异常的抛出，而是手动编写了 `try-catch`，因为我们需要验证 API Error 对象的正确性（1）。
 

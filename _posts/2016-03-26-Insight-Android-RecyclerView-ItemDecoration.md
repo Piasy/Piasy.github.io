@@ -27,17 +27,17 @@ RecyclerView 已经推出了一年多了，日常开发中也已经彻底从 Lis
 ## getItemOffsets 
 [官方样例的 `DividerItemDecoration` ](https://android.googlesource.com/platform/development/+/master/samples/Support7Demos/src/com/example/android/supportv7/widget/decorator/DividerItemDecoration.java#101){:target="_blank"}里面是这样实现的：
 
-~~~ java
+``` java
 if (mOrientation == VERTICAL_LIST) {
     outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
 } else {
     outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
 }
-~~~
+```
 
 这个outRect设置的四个值是什么意思呢？先来看看它是在哪里调用的，它在RecyclerView中唯一被调用的地方就是 `getItemDecorInsetsForChild(View child)` 函数。
 
-~~~ java
+``` java
 Rect getItemDecorInsetsForChild(View child) {
     final LayoutParams lp = (LayoutParams) child.getLayoutParams();
     if (!lp.mInsetsDirty) {
@@ -58,7 +58,7 @@ Rect getItemDecorInsetsForChild(View child) {
     lp.mInsetsDirty = false;
     return insets;
 }
-~~~
+```
 
 可以看到，`getItemOffsets` 函数中设置的值被加到了 `insets` 变量中，并被该函数返回，那么 insets 又是啥呢？
 
@@ -69,7 +69,7 @@ Rect getItemDecorInsetsForChild(View child) {
 
 而在 RecyclerView 的 `measureChild(View child, int widthUsed, int heightUsed)` 函数中，调用了 getItemDecorInsetsForChild，并把它算在了 child view 的 padding 中。
 
-~~~ java
+``` java
 public void measureChild(View child, int widthUsed, int heightUsed) {
     final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
@@ -86,7 +86,7 @@ public void measureChild(View child, int widthUsed, int heightUsed) {
         child.measure(widthSpec, heightSpec);
     }
 }
-~~~
+```
 
 上面这段代码中调用 `getChildMeasureSpec` 函数的第三个参数就是 child view 的 padding，而这个参数就把 insets 的值算进去了。那么现在就可以确认了，**getItemOffsets 中为 outRect 设置的4个方向的值，将被计算进所有 decoration 的尺寸中，而这个尺寸，被用来计算 RecyclerView 每个 item view 的大小（包括 item view 的宽高，padding，以及这个 insets）**。
 
@@ -100,7 +100,7 @@ public void measureChild(View child, int widthUsed, int heightUsed) {
 ## onDraw
 先来看看[官方样例的 `DividerItemDecoration` ](https://android.googlesource.com/platform/development/%2B/master/samples/Support7Demos/src/com/example/android/supportv7/widget/decorator/DividerItemDecoration.java#66){:target="_blank"}实现：
 
-~~~ java
+``` java
 public void drawVertical(Canvas c, RecyclerView parent) {
     final int left = parent.getPaddingLeft();
     final int right = parent.getWidth() - parent.getPaddingRight();
@@ -116,7 +116,7 @@ public void drawVertical(Canvas c, RecyclerView parent) {
         mDivider.draw(c);
     }
 }
-~~~
+```
 
 drawVertical 是为纵向的 RecyclerView 绘制 divider，遍历每个 *child view* [^each-child-view] ，把 divider 绘制到 canvas 上，而 `mDivider.setBounds` 则设置了 divider 的绘制范围。其中，left 设置为 parent.getPaddingLeft()，也就是左边是 parent 也就是 RecyclerView 的左边界加上 paddingLeft 之后的位置，而 right 则设置为了 RecyclerView 的右边界减去 paddingRight 之后的位置，那这里左右边界就是 RecyclerView 的*内容区域* [^content-area]了。top 设置为了 child 的 bottom 加上 marginBottom 再加上 translationY，这其实就是 child view 的*下边界* [^child-bottom]，bottom 就是 divider 绘制的下边界了，它就是简单地 top 加上 divider 的高度。
 
@@ -145,7 +145,7 @@ drawVertical 是为纵向的 RecyclerView 绘制 divider，遍历每个 *child v
 
 2016.10.03 更新
 
-~~~ java
+``` java
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -214,7 +214,7 @@ public class LinearLayoutColorDivider extends RecyclerView.ItemDecoration {
         }
     }
 }
-~~~
+```
 
 ## 脚注
 [^three-method]: 不算被 Deprecated 的方法

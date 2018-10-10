@@ -18,17 +18,17 @@ tags:
 
 例如根据 id 获取用户信息的 API：
 
-~~~ json
+``` json
 {
   "uid": 1905378617,
   "username": "hahaha",
   "avatar_url": "https://frontend-yoloyolo-tv.alikunlun.com/official/v3/img/pc/logo.png"
 }
-~~~
+```
 
 这是非好友的情况，如果是好友，情况又还不一样：
 
-~~~ json
+``` json
 {
   "uid": 1905378617,
   "username": "hahaha",
@@ -37,13 +37,13 @@ tags:
   "friend_remark": "Remarkable",
   "starred": 0
 }
-~~~
+```
 
 好友比非好友多了 `is_friend`，`friend_remark` 和 `starred` 这三个字段。
 
 而如果获取自己的信息，又还不一样：
 
-~~~ json
+``` json
 {
   "uid": 1905378617,
   "username": "hahaha",
@@ -52,7 +52,7 @@ tags:
   "token": "wx:1905378617",
   "im_password": "6dbc987dffd33876"
 }
-~~~
+```
 
 相比于非好友，多了 `phone`、`token` 和 `im_password` 这三个字段。
 
@@ -74,7 +74,7 @@ tags:
 
 ### 3.1，用户信息接口
 
-~~~ java
+``` java
 public interface UserInfoModel {
   long uid();
   @NonNull
@@ -102,7 +102,7 @@ interface CredentialInfo {
     @Nullable
     String token();
 }
-~~~
+```
 
 其中 `UserInfoModel` 和 `FriendInfoModel` 是由 SqlDelight 生成，用于进行持久化，它们都需要靠 uid 进行查询，所以都包含一个 uid 字段。`RelationshipInfo` 用于区分是否是好友，`CredentialInfo` 则包含自己的信息。
 
@@ -112,7 +112,7 @@ interface CredentialInfo {
 
 我们的 `ApiUser` 要把所有的字段都包含进来，所以要实现上面的所有接口：
 
-~~~ java
+``` java
 @AutoValue
 abstract class ApiUser implements UserInfoModel, 
     RelationshipInfo, FriendInfoModel, CredentialInfo {
@@ -121,13 +121,13 @@ abstract class ApiUser implements UserInfoModel,
         return new AutoValue_ApiUser.GsonTypeAdapter(gson);
     }
 }
-~~~
+```
 
 尽管 `UserInfoModel` 和 `FriendInfoModel` 都包含 `uid()` 接口，但它们组合到一起的时候，`ApiUser` 只会获得一个 `uid()` 接口，所以没有问题。这边我们利用 auto-value 实现 immutable，利用 auto-value-gson 实现高效的 Gson 转换。
 
 ### 3.3，`NonFriend`
 
-~~~ java
+``` java
 @AutoValue
 public abstract class NonFriend implements UserInfoModel, Parcelable {
 
@@ -135,13 +135,13 @@ public abstract class NonFriend implements UserInfoModel, Parcelable {
         // ...
     }
 }
-~~~
+```
 
 NonFriend 只包含了基本的用户信息，它实现了 `Parcelable`，以便在 Activity/Fragment 之间进行传递。它还提供了一个从 ApiUser 转换的工厂方法。
 
 ### 3.4，`Friend`
 
-~~~ java
+``` java
 @AutoValue
 public abstract class FriendInfo implements FriendInfoModel, Parcelable {
 
@@ -168,13 +168,13 @@ public abstract class Friend implements UserInfoModel, Parcelable {
         // ...
     }
 }
-~~~
+```
 
 Friend 使用组合的方式加入 `FriendInfo`，因为 FriendInfo 是需要单独持久化的，所以它需要是一个单独的类型。
 
 ### 3.5，`Self`
 
-~~~ java
+``` java
 @AutoValue
 public abstract class Self implements UserInfoModel, 
     CredentialInfo, Parcelable {
@@ -183,13 +183,13 @@ public abstract class Self implements UserInfoModel,
         // ...
     }
 }
-~~~
+```
 
 至此，API model 和 Business model 都已经定义好了，接下来我们需要把 API 的结果转化为对应的 model。
 
 ### 3.6，API model -> Business model
 
-~~~ java
+``` java
 interface UserInfoApi {
 
     @GET("/users/{uid}")
@@ -242,7 +242,7 @@ public class UserRepo {
         mUserDbAccessor.put(user);
     };
 }
-~~~
+```
 
 API、DB、类型转换的逻辑也并不复杂：
 
@@ -258,7 +258,7 @@ API、DB、类型转换的逻辑也并不复杂：
 
 ## 4，单元测试
 
-~~~ java
+``` java
 public class UserRepoTest {
     // ...
 
@@ -287,13 +287,13 @@ public class UserRepoTest {
         // 刷新本地缓存、缓存命中、对方是好友的情形
     }
 }
-~~~
+```
 
 这边我们测例其实并没有做到覆盖所有情形，稍微偷了一下懒，但我们有信心，经过这样的测试，代码已经可靠了。万一真的出了错误，到时候再加上相应的测例，小概率事件到时再说嘛 :)
 
 这里测试代码比较类似，只展示“刷新本地缓存、缓存命中、对方是好友的情形”：
 
-~~~ java
+``` java
 @Test
 public void otherUserInfoRefreshCacheHitFriend() {
     long uid = 1905378617;
@@ -332,7 +332,7 @@ public void otherUserInfoRefreshCacheHitFriend() {
     verify(mUserDbAccessor, times(1)).put(friend);
     verifyNoMoreInteractions(mUserDbAccessor);
 }
-~~~
+```
 
 1. 我们准备好要返回的 ApiUser、FriendInfo、Friend、NonFriend 信息。
 2. 尽管让 mUserDbAccessor 返回 Friend 语法上没问题，但逻辑上是不会发生的，所以我们还是返回 NonFriend。

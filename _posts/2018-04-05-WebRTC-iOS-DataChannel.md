@@ -57,7 +57,7 @@ iceServers 配置的获取逻辑等同于下面的两次 HTTP 请求：
 
 创建了 RTCPeerConnection 之后（在 `ARDAppClient startSignalingIfReady` 里），我们就可以创建 DataChannel 了，代码如下：
 
-~~~ objective-c
+``` objective-c
 RTCDataChannelConfiguration* dcConfig = [[RTCDataChannelConfiguration alloc] init];
 dcConfig.isOrdered = YES;
 dcConfig.isNegotiated = YES; // NO is ok
@@ -67,29 +67,29 @@ dcConfig.channelId = 3; // must be set, and >= 0
 _dataChannel = [_peerConnection dataChannelForLabel:@"P2P MSG DC"
                                       configuration:dcConfig];
 _dataChannel.delegate = self;
-~~~
+```
 
 需要注意的是，从 22270~22642 之间的某次提交开始，必须设置 channelId（>= 0），且双方需要设置同一值，否则虽然消息在底层能收到，但会被丢弃掉，上层不会收到回调。
 
 建立好 DataChannel 之后，就可以收发数据了。
 
-~~~ objective-c
+``` objective-c
 - (void)sendMessage:(NSString *)message {
     RTCDataBuffer* buffer = [[RTCDataBuffer alloc]
         initWithData:[message dataUsingEncoding:NSUTF8StringEncoding]
             isBinary:NO];
     [_dataChannel sendData:buffer];
 }
-~~~
+```
 
 处理消息回调：
 
-~~~ objective-c
+``` objective-c
 - (void)dataChannel:(nonnull RTCDataChannel *)dataChannel
         didReceiveMessageWithBuffer:(nonnull RTCDataBuffer *)buffer {
     NSString* message = [[NSString alloc] initWithData:buffer.data
                                               encoding:NSUTF8StringEncoding]
 }
-~~~
+```
 
 _PS: 目前我对 iOS UI 编程尚不熟悉，所以 DataChannel 的使用没有 UI，代码在 [dc_text_chat 分支](https://github.com/Piasy/AppRTC-iOS/tree/dc_text_chat)_。

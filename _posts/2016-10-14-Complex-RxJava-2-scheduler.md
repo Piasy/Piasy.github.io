@@ -43,22 +43,22 @@ _下面的代码都是在 JUnit 测试中运行，所以我把主线程都替换
 
 我们先保证 `subscriber` 在 computation 线程执行，这大家应该都会：
 
-~~~ java
+``` java
 observable
     .observeOn(Schedulers.computation())
     .subscribe(this::print);
-~~~
+```
 
 ### `create` 在 io 线程
 
 我们再看怎么让 `create` 的代码在 io 线程执行。如果没有 `zip`，我想大家也都会：
 
-~~~ java
+``` java
 observable
     .subscribeOn(Schedulers.io())
     .observeOn(Schedulers.computation())
     .subscribe(this::print);
-~~~
+```
 
 但有了 `zip` 之后会有什么不一样？我们也不必一行行看 `zip` 的代码，我们只需要知道它最终会通过 `lift(OperatorZip)` 来实现合并功能即可。而 lift 和 Operator 的流程，我们在“拆 RxJava”中都是了解过的，就是**内部搞一个 subscriber 订阅上游，收到上游的数据之后，实现自己的逻辑，再转发给下游**。zip 有什么逻辑？当然是从每个上游都收集到一个数据之后，调用我们的 `FuncX` 进行合并，再发给下游。
 
@@ -82,7 +82,7 @@ _这里我也没有细看 zip 的源码，没必要。通过实验我发现，�
 
 所以我们的代码是这样的：
 
-~~~ java
+``` java
 Observable<Integer> odd = Observable
         .<Integer>create(subscriber -> {
             logThread("create 1");
@@ -99,13 +99,13 @@ Observable.zip(odd.observeOn(Schedulers.computation()),
         even.observeOn(Schedulers.computation()),
         this::add)
         // ...
-~~~
+```
 
 ### `map` 在 io 线程
 
 数据经过了 `zip` 之后到达了 `map`，这同样是数据向下传递的过程，所以我们依然用 `observeOn` 改变线程：
 
-~~~ java
+``` java
 // ...
 Observable.zip(odd.observeOn(Schedulers.computation()),
         even.observeOn(Schedulers.computation()),
@@ -113,13 +113,13 @@ Observable.zip(odd.observeOn(Schedulers.computation()),
         .observeOn(Schedulers.io())
         .map(this::triple)
         // ...
-~~~
+```
 
 ### 完整例子
 
 所以最后完整代码就是这样：
 
-~~~ java
+``` java
 @Test
 public void testZip4() {
     Observable<Integer> odd = Observable
@@ -144,17 +144,17 @@ public void testZip4() {
             .subscribe(this::print);
     Utils.sleep(2000);
 }
-~~~
+```
 
 最终运行的输出如下：
 
-~~~ bash
+``` bash
 create 1 from RxIoScheduler-2
 create 2 from RxIoScheduler-2
 add 1 and 2 from RxComputationScheduler-2
 triple 3 from RxIoScheduler-3
 print 9 from RxComputationScheduler-1
-~~~
+```
 
 可以看到，符合预期。
 
@@ -170,7 +170,7 @@ print 9 from RxComputationScheduler-1
 
 例如我们需要获取第三方头像，下载到本地，再上传到我们的服务器。我们可能会这样写代码：
 
-~~~ java
+``` java
 Observable.create(subscriber -> {
     umSocialService.getPlatformInfo(context, platform, 
             new SocializeListeners.UMDataListener() {
@@ -193,7 +193,7 @@ Observable.create(subscriber -> {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(/** success */);
-~~~
+```
 
 遗憾的是，上面的代码会抛出 `NetworkOnMainThreadException`，获取到第三方头像 url 之后，我们的下载、上传操作都是在主线程执行的，并不是 io 线程。
 
@@ -229,7 +229,7 @@ Observable.create(subscriber -> {
 
 理解了问题出在哪儿，也理清了执行流程，解决办法就很简单了，我们在 `create` 之后、`flatMap` 之前改变一下数据发往下游的线程即可！
 
-~~~ java
+``` java
 Observable.create(subscriber -> {
             // ...
         })
@@ -239,7 +239,7 @@ Observable.create(subscriber -> {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(/** success */);
-~~~
+```
 
 ## 总结
 

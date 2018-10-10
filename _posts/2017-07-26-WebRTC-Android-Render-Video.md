@@ -77,7 +77,7 @@ _在第一篇的结尾，我们提到了内存抖动的问题，内存抖动肯�
 
 `GlDrawer` 的实现是 `GlRectDrawer`，在这里我们终于见到了期待已久的 shader 代码、vertex 坐标和 texture 坐标。
 
-~~~ java
+``` java
 private static final String VERTEX_SHADER_STRING =
       "varying vec2 interp_tc;\n"
     + "attribute vec4 in_pos;\n"
@@ -107,7 +107,7 @@ private static final FloatBuffer FULL_RECTANGLE_BUF = GlUtil.createFloatBuffer(n
     -1.0f, 1.0f, // Top left.
     1.0f, 1.0f, // Top right.
 });
-~~~
+```
 
 正如其名，`GlRectDrawer` 封装了绘制矩形的操作，而我们的预览/渲染也确实只需要绘制一个矩形。WebRTC 用到的 shader 代码非常简单，几乎和我在[安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)中编写的代码一样简单。不过有一点不同寻常的是，这里并没有对 vertex 坐标进行变换，而是对 texture 坐标进行的变换，所以如果我们需要对图像进行旋转操作，直接使用 `Matrix.rotateM` 会导致十分诡异的效果，必须搭配 `Matrix.translateM` 才能正常。例如下图：
 
@@ -117,7 +117,7 @@ private static final FloatBuffer FULL_RECTANGLE_BUF = GlUtil.createFloatBuffer(n
 
 好了让我们继续看 `GlRectDrawer` 的代码。以 `drawOes` 为例，我们发现确实都是比较基础的 OpenGL 调用了：
 
-~~~ java
+``` java
 @Override
 public void drawOes(int oesTextureId, float[] texMatrix, int frameWidth, int frameHeight,
     int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
@@ -149,7 +149,7 @@ private void prepareShader(String fragmentShader, float[] texMatrix) {
   // Copy the texture transformation matrix over.
   GLES20.glUniformMatrix4fv(shader.texMatrixLocation, 1, false, texMatrix, 0);
 }
-~~~
+```
 
 为 uniform 变量赋值、为顶点 attribute 赋值、绑定 texture、绘制矩形……当然这里对代码做了适当的封装，增加了代码的复用性，使得 `drawYuv`/`drawRgb` 的流程也基本相同。
 

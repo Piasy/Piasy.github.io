@@ -32,19 +32,19 @@ tags:
 
 我们先看一个最简单的 Hello world 例子：
 
-~~~ java
+``` java
 Observable.just("Hello world")
         .subscribe(word -> {
             System.out.println("got " + word + " @ " 
                     + Thread.currentThread().getName());
         });
-~~~
+```
 
 ### 2.1，`just`
 
 逐行往下看显然是最自然的方式，那我们先看看 `just()`：
 
-~~~ java
+``` java
 // Observable.java
 public static <T> Observable<T> just(final T value) {
     return ScalarSynchronousObservable.create(value);
@@ -59,7 +59,7 @@ protected ScalarSynchronousObservable(final T t) {
     super(RxJavaHooks.onCreate(new JustOnSubscribe<T>(t))); // 2
     this.t = t;
 }
-~~~
+```
 
 这里一定要注意，不要沉迷于细节，否则上万行的代码绝不是一两天能看出个大概来的。
 
@@ -72,7 +72,7 @@ protected ScalarSynchronousObservable(final T t) {
 
 我们接着看 `subscribe()`：
 
-~~~ java
+``` java
 public final Subscription subscribe(final Action1<? super T> onNext) {
     // 省略参数检查代码
     Action1<Throwable> onError = 
@@ -103,7 +103,7 @@ static <T> Subscription subscribe(Subscriber<? super T> subscriber,
         // 省略错误处理代码
     }
 }
-~~~
+```
 
 我们抓住主要逻辑：
 
@@ -121,7 +121,7 @@ static <T> Subscription subscribe(Subscriber<? super T> subscriber,
 
 还记得 `just()` 的实现中，我们创建了一个 `JustOnSubscribe` 吗？这里我们执行的就是它实现的 `call()` 函数：
 
-~~~ java
+``` java
 // ScalarSynchronousObservable.java
 static final class JustOnSubscribe<T> implements OnSubscribe<T> {
     // ...
@@ -136,7 +136,7 @@ static <T> Producer createProducer(Subscriber<? super T> s, T v) {
     // ...
     return new WeakSingleProducer<T>(s, v);
 }
-~~~
+```
 
 这里我们就是为 subscriber 设置了一个 `WeakSingleProducer`。
 
@@ -146,7 +146,7 @@ static <T> Producer createProducer(Subscriber<? super T> s, T v) {
 
 我们接着看 `setProducer()` 的实现：
 
-~~~ java
+``` java
 // Subscriber.java
 public void setProducer(Producer p) {
     long toRequest;
@@ -170,7 +170,7 @@ public void setProducer(Producer p) {
         }
     }
 }
-~~~
+```
 
 这里逻辑比较复杂，但是我们理清我们当前所处的状态，就简单了：
 
@@ -182,7 +182,7 @@ public void setProducer(Producer p) {
 
 那我们再看 `WeakSingleProducer#request()` 的实现：
 
-~~~ java
+``` java
 // ScalarSynchronousObservable.java
 static final class WeakSingleProducer<T> implements Producer {
     // ...
@@ -208,7 +208,7 @@ static final class WeakSingleProducer<T> implements Producer {
         a.onCompleted();
     }
 }
-~~~
+```
 
 我们看到，在 `request()` 中，终于调用了 subscriber 的 `onNext()` 和 `onCompleted()`，那么，`Hello world` 就传递到了我们的 Action 中，并被打印出来了。
 
@@ -230,20 +230,20 @@ static final class WeakSingleProducer<T> implements Producer {
 
 我们把 Hello world 稍微变复杂一点，使用一个操作符：
 
-~~~ java
+``` java
 Observable.just("Hello world")
         .map(String::length)
         .subscribe(word -> {
             System.out.println("got " + word + " @ "
                     + Thread.currentThread().getName());
         });
-~~~
+```
 
 我们使用了一个 `map` 操作符，把字符串转换为它的长度。
 
 ### 3.1，`map`
 
-~~~ java
+``` java
 // Observable.java
 public final <R> Observable<R> map(Func1<? super T, ? extends R> func) {
     return create(new OnSubscribeMap<T, R>(this, func));
@@ -252,7 +252,7 @@ public final <R> Observable<R> map(Func1<? super T, ? extends R> func) {
 public static <T> Observable<T> create(OnSubscribe<T> f) {
     return new Observable<T>(RxJavaHooks.onCreate(f));
 }
-~~~
+```
 
 这里有两个小插曲，一是 `map` 的实现本来是利用 `lift` + `Operator` 实现的，但是后来改成了 `create` + `OnSubscribe`（[RxJava #4097](https://github.com/ReactiveX/RxJava/pull/4097){:target="_blank"}）；二是 `lift` 的实现本来是直接调用 observable 构造函数，后来改成了调用 `create`（[RxJava #4007](https://github.com/ReactiveX/RxJava/pull/4007){:target="_blank"}）。后者先发生，引入了新的 hook 机制，前者则是为了提升一点性能。
 
@@ -262,7 +262,7 @@ public static <T> Observable<T> create(OnSubscribe<T> f) {
 
 那我们看看 `OnSubscribeMap`：
 
-~~~ java
+``` java
 public final class OnSubscribeMap<T, R> implements OnSubscribe<R> {
 
     final Observable<T> source;
@@ -283,7 +283,7 @@ public final class OnSubscribeMap<T, R> implements OnSubscribe<R> {
         source.unsafeSubscribe(parent);                // 3
     }
 }
-~~~
+```
 
 它的实现很直观：
 
@@ -295,7 +295,7 @@ public final class OnSubscribeMap<T, R> implements OnSubscribe<R> {
 
 ### 3.3，`MapSubscriber`
 
-~~~ java
+``` java
 static final class MapSubscriber<T, R> extends Subscriber<T> {
     
     final Subscriber<? super R> actual;
@@ -328,7 +328,7 @@ static final class MapSubscriber<T, R> extends Subscriber<T> {
     
     // 省略 onError，onCompleted 和 setProducer
 }
-~~~
+```
 
 `MapSubscriber` 依然很直观：
 
@@ -351,7 +351,7 @@ static final class MapSubscriber<T, R> extends Subscriber<T> {
 
 我们先看看例子：
 
-~~~ java
+``` java
 Observable.just("Hello world")
         .map(String::length)
         .subscribeOn(Schedulers.computation())
@@ -360,13 +360,13 @@ Observable.just("Hello world")
             System.out.println("got " + len + " @ " 
                     + Thread.currentThread().getName());
         });
-~~~
+```
 
 ### 4.1，`subscribeOn`
 
 我们看看 `subscribeOn` 的实现：
 
-~~~ java
+``` java
 public final Observable<T> subscribeOn(Scheduler scheduler) {
     if (this instanceof ScalarSynchronousObservable) {
         return ((ScalarSynchronousObservable<T>)this)
@@ -374,7 +374,7 @@ public final Observable<T> subscribeOn(Scheduler scheduler) {
     }
     return create(new OperatorSubscribeOn<T>(this, scheduler));
 }
-~~~
+```
 
 还记得上面的 `just` 吗？它创建的就是 `ScalarSynchronousObservable`，但是这个特殊情况我们先跳过，我们看普通的情况：通过 `create` + `OperatorSubscribeOn` 实现。
 
@@ -387,7 +387,7 @@ public final Observable<T> subscribeOn(Scheduler scheduler) {
 + [调度器 Scheduler（三）：包装多线程 Executor](/AdvancedRxJava/2016/08/26/schedulers-3/){:target="_blank"}
 + [调度器 Scheduler（四，完结）：实现 GUI 系统的 Scheduler](/AdvancedRxJava/2016/09/02/schedulers-4/){:target="_blank"}
 
-~~~ java
+``` java
 public final class OperatorSubscribeOn<T> 
       implements OnSubscribe<T> {
 
@@ -443,7 +443,7 @@ public final class OperatorSubscribeOn<T>
         });
     }
 }
-~~~
+```
 
 1. `Worker` 也实现了 `Subscription`，所以可以加入到 `Subscriber` 中，用于集体取消订阅。
 2. 在匿名 `Subscriber` 中，收到上游的数据后，转发给下游。
@@ -463,7 +463,7 @@ public final class OperatorSubscribeOn<T>
 
 ### 4.3，`observeOn`
 
-~~~ java
+``` java
 public final Observable<T> observeOn(Scheduler scheduler) {
     return observeOn(scheduler, RxRingBuffer.SIZE);
 }
@@ -488,7 +488,7 @@ public final <R> Observable<R> lift(
     return create(new OnSubscribeLift<T, R>(onSubscribe, 
         operator));
 }
-~~~
+```
 
 `observeOn` 有好几个重载版本，支持指定 buffer 大小、是否延迟 Error 事件，这个 `delayError` 是从 `v1.1.1` 引入的，关于它还有一个小插曲。
 
@@ -500,7 +500,7 @@ public final <R> Observable<R> lift(
 
 ### 4.4，`OnSubscribeLift`
 
-~~~ java
+``` java
 public final class OnSubscribeLift<T, R> 
       implements OnSubscribe<R> {
 
@@ -523,7 +523,7 @@ public final class OnSubscribeLift<T, R>
         // 省略了异常处理代码
     }
 }
-~~~
+```
 
 我们先对下游 subscriber 用操作符进行处理（跳过 hook），然后通知处理后的 subscriber，它将要和 observable 连接起来了，最后把它和上游连接起来。
 
@@ -531,7 +531,7 @@ public final class OnSubscribeLift<T, R>
 
 ### 4.5，`OperatorObserveOn`
 
-~~~ java
+``` java
 public final class OperatorObserveOn<T> implements Operator<T, T> {
     // ...
 
@@ -553,7 +553,7 @@ public final class OperatorObserveOn<T> implements Operator<T, T> {
 
     // ...
 }
-~~~
+```
 
 作为操作符的逻辑，还是很简单的，如果 scheduler 是 `ImmediateScheduler`/`TrampolineScheduler`，就什么也不做，否则就把 subscriber 包装为 `ObserveOnSubscriber`，看来脏活累活都是 `ObserveOnSubscriber` 干的了。
 
@@ -567,7 +567,7 @@ public final class OperatorObserveOn<T> implements Operator<T, T> {
 
 我们来看看简化版的调度实现（摘自上面的译文）：
 
-~~~ java
+``` java
 Observable.create(subscriber -> {
     Worker worker = scheduler.createWorker();
     subscriber.add(worker);
@@ -589,7 +589,7 @@ Observable.create(subscriber -> {
         }            
     });
 });
-~~~
+```
 
 这里 `observeOn` 调度了每个单独的 `subscriber.onXXX()` 调用，使得数据向下游传递的时候可以切换到指定的线程。这也同样解释了网上随处可见的另一个结论：
 

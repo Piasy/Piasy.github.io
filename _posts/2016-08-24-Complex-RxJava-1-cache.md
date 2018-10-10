@@ -32,7 +32,7 @@ tags:
 
 这里主要展示核心代码，用到了 Java8 lambda 表达式，不熟悉的朋友要先看看 Java8 lambda 相关的内容。
 
-~~~ java
+``` java
 Observable<List<User>> batchUserInfoUnordered(long[] ids) {
     Observable<Pair<List<User>, long[]>> cacheResult =
             Observable.defer(() -> {                                      // 1
@@ -68,7 +68,7 @@ Observable<List<User>> batchUserInfoUnordered(long[] ids) {
         return merged;
     });
 }
-~~~
+```
 
 代码看起来非常优雅，如行云流水一般，对不对？其实写出这段代码也还是花了一番心思。下面稍微讲解一下：
 
@@ -96,16 +96,16 @@ Observable<List<User>> batchUserInfoUnordered(long[] ids) {
 
 鉴于即便我已经写过好多测试了，但是配置项目的测试依赖依然遇到了问题，所以这里我还是把依赖贴出来：
 
-~~~ gradle
+``` gradle
 testCompile 'junit:junit:4.12'
 testCompile 'org.mockito:mockito-core:2.0.71-beta'
-~~~
+```
 
 junit 依赖就不用说了，新建安卓项目默认就添加的这个依赖，mockito 是一个进行 mock 的框架，除了能 mock，还能 verify，很好很强大。另外还有一点值得一提的是，不要同时依赖 mockito 和 dexmaker，它们不能很好地一起工作。只添加这两个依赖，测例就可以编写和运行了。
 
 接下来看代码之前，不熟悉 junit 和 mockito 的朋友一定要先看看文档，不然会云里雾里。
 
-~~~ java
+``` java
 @Rule
 public MockitoRule mMockitoRule = MockitoJUnit.rule();                    // 1
 
@@ -143,7 +143,7 @@ public void batchUserInfoUnordered() {
         .put(Collections.singletonList(user));
     verifyNoMoreInteractions(mUserDbAccessor);
 }
-~~~
+```
 
 **测试代码千万不能写得丑**，不然我们只会更讨厌写测试代码，不过我自认为上面的测试代码也还是非常漂亮的。
 
@@ -165,14 +165,14 @@ public void batchUserInfoUnordered() {
 
 没有想象中的一次通过，我们“正常地”失败了：
 
-~~~ java
+``` java
 org.mockito.exceptions.verification.TooManyActualInvocations: 
 mUserDbAccessor.getIn(1, 2, 3);
 Wanted 1 time:
 -> at ~.model.user_info.UserRepoTest.batchUserInfoUnorderedCacheMiss(UserRepoTest.java:75)
 But was 2 times. Undesired invocation:
 -> at ~.model.user_info.UserRepo.lambda$batchUserInfoUnordered$3(UserRepo.java:108)
-~~~
+```
 
 这时候 mockito 的强大就体现出来了，非常简洁直观地告诉我们哪里出了什么问题：`getIn` 只应该调用一次，结果调用了两次！
 
@@ -198,14 +198,14 @@ But was 2 times. Undesired invocation:
 
 当然，你可能会选择查看 RxJava 手册，再次过一遍所有的操作符，并最终找到目标，不过由于我的脑海里残存了一点 Dan Lew 文章的印象，所以这种方式在我看来更快。
 
-~~~ java
+``` java
 Observable<Pair<List<User>, long[]>> cacheResult =
         Observable.defer(() -> {
             // ...
         });
         .publish()
         .autoConnect(2)
-~~~
+```
 
 用 `publish` 来 make it hot，用 `autoConnect` 来省去我们手动调用 `connect`，我们知道只会有两次 subscribe，所以我们就用 `autoConnect(2)`。这里还有一个关键点，就是 `publish` 的时机，不过在我们这里不是问题，因为我们有了明确的“分水岭”。
 
@@ -217,7 +217,7 @@ Observable<Pair<List<User>, long[]>> cacheResult =
 
 所以我们加上一个缓存全部命中的情况：
 
-~~~ java
+``` java
 @Test
 public void batchUserInfoUnorderedNoCacheMiss() {
     long[] uids = new long[]{1, 2, 3};
@@ -242,13 +242,13 @@ public void batchUserInfoUnorderedNoCacheMiss() {
     verify(mUserDbAccessor, times(1)).getIn(uids);                // 4
     verifyNoMoreInteractions(mUserDbAccessor);
 }
-~~~
+```
 
 我们这边让缓存全部命中（1），验证拿到了正确的数据（2）、没有调用 API（3）、只进行了一次数据库查询（4）。
 
 执行测试，再次“正常地”失败了：
 
-~~~ java
+``` java
 org.mockito.exceptions.verification.NoInteractionsWanted: 
 No interactions wanted here:
 -> at ~.model.user_info.UserRepoTest.batchUserInfoUnorderedNoCacheMiss(UserRepoTest.java:103)
@@ -258,23 +258,23 @@ But found this interaction on mock 'mUserDbAccessor':
 For your reference, here is the list of all invocations ([?] - means unverified).
 1. -> at ~.model.user_info.UserRepo.lambda$batchUserInfoUnordered$3(UserRepo.java:108)
 2. [?]-> at rx.Observable$11.onNext(Observable.java:4448)
-~~~
+```
 
 我们额外调用了一次 `mUserDbAccessor.put`，因为我们的代码是这样写的：
 
-~~~ java
+``` java
 Observable<List<User>> missed = cacheResult
         .flatMap(pair -> {
             // ...
         })
         .doOnNext(mUserDbAccessor::put);
-~~~
+```
 
 无论如何我们都 put 了一次，如果缓存完全命中，网络数据是空的，那我们当然不应该调用 put！
 
 所以我们把代码改成这样：
 
-~~~ java
+``` java
 Observable<List<User>> missed = cacheResult
         .flatMap(pair -> {
             // ...
@@ -284,7 +284,7 @@ Observable<List<User>> missed = cacheResult
                 mUserDbAccessor.put(users);
             }
         });
-~~~
+```
 
 再次运行测例，顺利通过。
 

@@ -18,7 +18,7 @@ tags:
 
 此时的代码是这样子的：
 
-~~~ java
+``` java
 @Override
 protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -46,14 +46,14 @@ protected void onCreate(final Bundle savedInstanceState) {
                 .commit();
         });
 }
-~~~
+```
 
 ## Activity State Loss
 第一次测试运行一切OK，但是当我在初始化过程中按下home键，过了10s后app crash了，报错：
 
-~~~ java
+``` java
 java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-~~~
+```
 
 原来是发生了Activity state loss。更多关于Activity state loss的细节[请阅读](http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html)。
 
@@ -68,7 +68,7 @@ java.lang.IllegalStateException: Can not perform this action after onSaveInstanc
 
 我采用了EasyFlow来实现上述自动机，这里有一点需要指出，由于Activity启动的时候，onResumeFragments也会被调用一次，所以仍需要用一个flag变量特殊处理一下，这里确实不太优雅，但我也没想到更好的办法，欢迎提建议！
 
-~~~ java
+``` java
 public class SplashActivity extends BaseActivity implements HasComponent<SplashComponent> {
 
     private static final String SPLASH_FRAGMENT = "SplashFragment";
@@ -194,7 +194,7 @@ public class SplashActivity extends BaseActivity implements HasComponent<SplashC
         Initialize, Pause, Resume, Finish
     }
 }
-~~~
+```
 
 EasyFlow通过enum定义状态和触发状态切换的事件，对于安卓平台来说，使用enum不是一个好的方式，会影响性能，这一点需要改进。
 

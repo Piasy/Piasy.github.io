@@ -42,16 +42,16 @@ tags:
 
 而实现 `Parcelable` 对于已经集成了 AutoValue 的我们来说，简直不能更简单了。我们只需要引入 [auto-value-parcel](https://github.com/rharter/auto-value-parcel){:target="_blank"}，并让我们的数据类型 `implements Parcelable` 即可：
 
-~~~ java
+``` java
 @AutoValue
 public abstract class GithubUser implements GithubUserModel, Parcelable {
     // ...
 }
-~~~
+```
 
 auto-value-parcel 和上篇中引入的 auto-value-gson 都是 AutoValue 的一个扩展，作者也是同一个人。经过上述修改之后，auto-value-parcel 会自动为我们生成实现 `Parcelable` 所需要的代码，在 `Activity` 之间传参的时候，我们直接调用 `putExtra` 和 `getParcelableExtra` 即可。
 
-~~~ java
+``` java
 final class AutoValue_GithubUser extends $AutoValue_GithubUser {
     public static final Parcelable.Creator<AutoValue_GithubUser> CREATOR =
             new Parcelable.Creator<AutoValue_GithubUser>() {
@@ -95,11 +95,11 @@ final class AutoValue_GithubUser extends $AutoValue_GithubUser {
     
     // ...
 }
-~~~
+```
 
 写过 `Activity` 传参代码的朋友肯定知道，读写 `Intent` 中的 extra 都需要指定一个 `String` 作为 key，代码比较繁琐，因此这里我们可以引入 [IntentBuilder](https://github.com/emilsjolander/IntentBuilder){:target="_blank"}，我们只需要为参数添加注解，就可以完成参数传递，让代码瞬间简洁不少，例如这样：
 
-~~~ java
+``` java
 @IntentBuilder
 class DetailActivity extends Activity {
     @Extra
@@ -120,14 +120,14 @@ class DetailActivity extends Activity {
 startActivity(new DetailActivityIntentBuilder("12345")
     .title("MyTitle")
     .build(context))
-~~~
+```
 
 ### 2.2. Fragment 传参
 `Fragment` 传参和 `Activity` 原理类似，`Fragment` 提供了 `setArguments()` 和 `getArguments` 方法，而这个 argument，就是 `Bundle` 对象，只要我们的数据类实现了 `Parcelable`，就可以通过 `Bundle` 进行传递了。
 
 同样，为了保持代码的简洁，我们可以引入 [FragmentArgs](https://github.com/sockeqwe/fragmentargs){:target="_blank"}，其使用例子如下：
 
-~~~ java
+``` java
 @FragmentWithArgs
 public class MyFragment extends Fragment {
     @Arg
@@ -144,14 +144,14 @@ public class MyFragment extends Fragment {
 // ...
 
 MyFragment fragment = MyFragmentBuilder.newMyFragment(101);
-~~~
+```
 
 可能有朋友在想，Activity 传参和 Fragment 传参需要使用两个不同的库，能不能把它们统一起来？好消息是这个问题早就有人想到，并且已经造好轮子等着我们来用了：[AutoBundle](https://github.com/yatatsu/AutoBundle){:target="_blank"}。实际上 AutoBundle 所做的就是把上述两个库整合了起来，因此 AutoBundle 的用法也和它们类似，这里就不赘述了，大家可以自行查看其项目主页。
 
 ### 2.3. Activity，Fragment 和 View 的状态保存
 `Activity`，`Fragment` 和 `View` 的状态保存使用的同样是 `Bundle`，而同样也有一个好用的轮子让我们保存状态变得异常简洁：[Icepick](https://github.com/frankiesardo/icepick){:target="_blank"}。
 
-~~~ java
+``` java
 class ExampleActivity extends Activity {
   @State String username;
 
@@ -165,7 +165,7 @@ class ExampleActivity extends Activity {
     Icepick.saveInstanceState(this, outState);
   }
 }
-~~~
+```
 
 ## 3. ZonedDateTime
 细心地朋友可能已经注意到，在上篇中，我们 `GithubUser` 的 `created_at` 成员类型是个生面孔：`ZonedDateTime`。它是何方神圣？
@@ -179,7 +179,7 @@ ZonedDateTime 的具体使用以及 ThreeTenABP 的设置，我就不赘述了�
 ## 4. SqlDelight 的 null safety
 细心地朋友可能已经注意到在上篇中，`GithubUserModel` 和 `ZonedDateTimeDelightAdapter` 的代码有些奇怪之处：
 
-~~~ java
+``` java
 public interface GithubUserModel {
   // ...
   
@@ -204,7 +204,7 @@ public class ZonedDateTimeDelightAdapter implements ColumnAdapter<ZonedDateTime>
         values.put(key, mDateTimeFormatter.format(value));
     }
 }
-~~~
+```
 
 在 `GithubUserModel` 中，`created_at` 是 `Nullable`，但是在 `ZonedDateTimeDelightAdapter` 中，我们却使用了 `NonNull`，虽然这两个注解并没有强制作用，但我们当然需要遵守它们的语义。
 
@@ -212,7 +212,7 @@ public class ZonedDateTimeDelightAdapter implements ColumnAdapter<ZonedDateTime>
 
 生成的 `Mapper` 类已经很好地处理了 null safety 的问题了，但我们需要重写我们 `Marshal` 类的 `created_at` 方法，来实现处理 `created_at` 为空的逻辑：
 
-~~~ java
+``` java
 final class Mapper<T extends GithubUserModel> implements RowMapper<T> {
     // ...
 
@@ -244,7 +244,7 @@ public static class Marshal extends GithubUserMarshal<Marshal> {
         return super.created_at(createdAt);
     }
 }
-~~~
+```
 
 在上篇中我们提到，`Mapper` 负责把 `Cursor` 对象转换为 `GithubUser` 对象，`Marshal` 负责把一个 `GithubUser` 对象转化为一个 `ContentValues` 对象，用于保存到数据库中。`Mapper` 和 `Marshal` 处理好了 null safety 之后，数据库、转换过程、使用方，就都可以很好地处理 null 的问题了，让我们的代码从此少一些 `NullPointerException`。
 
@@ -257,7 +257,7 @@ public static class Marshal extends GithubUserMarshal<Marshal> {
 
 不过这并不是什么大问题，正好我们还可以把 handler 和 processor 统一起来。所以我们把错误判断与转换和统一处理逻辑都统一到 `Subscriber` 的 `onError` 方法中。我们的集中处理逻辑可以是这样的：
 
-~~~ java
+``` java
 @Singleton
 public class RxNetErrorProcessor implements Action1<Throwable> {
 
@@ -292,20 +292,20 @@ public class RxNetErrorProcessor implements Action1<Throwable> {
         return false;
     }
 }
-~~~
+```
 
 这里我们先判断异常是否为 `HttpException`，如果是则尝试把 error body 转化为 `ApiError` 对象，它是服务器定义的错误信息对象，如果是一个合法的 `ApiError` 对象，我们就使用传入的 `handler` 进行处理，否则我们就使用一个统一的处理方式处理。
 
 结合 lambda 表达式，我们的使用方代码将异常简洁：
 
-~~~ java
+``` java
 mGithubUserDao.searchUser(query)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(users -> getView().showSearchResult(users),
                 t -> mRxNetErrorProcessor.tryWithApiError(t,
                         e -> getView().showError(e.message())));
-~~~
+```
 
 ## 6. ProGuard
 虽然项目是开源的，但商业项目 ProGuard 还是不可或缺的，所以还是需要保证在开启 ProGuard 之后能够正常运行。
@@ -315,13 +315,13 @@ mGithubUserDao.searchUser(query)
 ### 6.1. AutoParcel
 安卓系统对 Parcelable 的序列化和反序列化，需要我们的类中有一个名为 `CREATOR` 的成员，并且它不能进行混淆，否则会报错。
 
-~~~
+```
 # AutoParcel
 -keep class **AutoValue_*$1 { }
 -keepclassmembers class * implements android.os.Parcelable {
     static ** CREATOR;
 }
-~~~
+```
 
 ## 7. Config Injection
 在 AndroidTDDBootStrap 项目中，`Retrofit`，`EventBus`，`SqlBriteDatabase` 等对象的创建都在 base module 中，它们的创建需要配置 base url，是否 debug 等参数，但是这些参数都是和业务具体相关的，当然不应该出现在 base module 中，怎么办呢？依赖注入呀！由于注入的是配置参数，所以我称之为 Config Injection。
@@ -330,7 +330,7 @@ mGithubUserDao.searchUser(query)
 
 下面我以 Retrofit 的配置注入为例，其他的配置注入都与之类似，可以参见[项目源码](https://github.com/Piasy/AndroidTDDBootStrap-base/tree/master/src/main/java/com/github/piasy/base/model/provider){:target="_blank"}。
 
-~~~ java
+``` java
 // RetrofitConfig.java，位于 base module 中：
 @AutoValue
 public abstract class RetrofitConfig {
@@ -384,7 +384,7 @@ public class ProviderConfigModule {
 
     // ...
 }
-~~~
+```
 
 然后我们把 `ProviderModule` 和 `ProviderConfigModule` 都添加到目标 component 的 modules 列表中，就可以利用 dagger2 来进行依赖创建和依赖注入了。 是不是非常优雅？
 
@@ -398,16 +398,16 @@ square way 的思路很简单，通过引入一层 delegate 接口，我们可�
 
 首先看看包结构：
 
-~~~
+```
 com.github.piasy.gh.model.users.dao -
         - DbUserDelegate.java
         - DbUserDelegateImpl.java
         - GithubUserRepo.java
-~~~
+```
 
 `DbUserDelegate` 就是负责代理数据库操作的，它的接口如下：
 
-~~~ java
+``` java
 public interface DbUserDelegate {
 
     void deleteAllGithubUser();
@@ -416,11 +416,11 @@ public interface DbUserDelegate {
 
     Observable<List<GithubUser>> getAllGithubUser();
 }
-~~~
+```
 
 `GithubUserRepo` 的方法如下：
 
-~~~ java
+``` java
 @NonNull
 public Observable<List<GithubUser>> searchUser(@NonNull final String query) {
     return mGithubApi.searchGithubUsers(query, GithubApi.GITHUB_API_PARAMS_SEARCH_SORT_JOINED,
@@ -428,11 +428,11 @@ public Observable<List<GithubUser>> searchUser(@NonNull final String query) {
             .map(GithubUserSearchResult::items)
             .doOnNext(mDbUserDelegate::putAllGithubUser);
 }
-~~~
+```
 
 那么我们需要测试一下正常情况下，搜索到结果之后，会不会被保存到数据库中，如果发生了错误，会不会调用 `mDbUserDelegate.putAllGithubUser` 接口。由于 delegate 层的存在，我们完全可以编写普通的 JUnit 测试了，测例之一如下：
 
-~~~ java
+``` java
 @Test
 public void testSearchUserSuccess() {
     // given
@@ -458,7 +458,7 @@ public void testSearchUserSuccess() {
     then(mGithubApi).should(timeout(100).only())
             .searchGithubUsers(anyString(), anyString(), anyString());
 }
-~~~
+```
 
 RxJava 也为我们提供了 `TestSubscriber` 供测试使用，让我们的测例非常简洁。
 
@@ -469,7 +469,7 @@ RxJava 也为我们提供了 `TestSubscriber` 供测试使用，让我们的测�
 
 它的配置方式类似于这样（完整例子请参考其项目主页）：
 
-~~~ gradle
+``` gradle
 unMock {
     downloadFrom 'https://oss.sonatype.org/content/groups/public/org/robolectric/android-all/6.0.0_r1-robolectric-0/android-all-6.0.0_r1-robolectric-0.jar'
 
@@ -477,7 +477,7 @@ unMock {
     keep "android.content.ContentValues"
     keepStartingWith "android.util."
 }
-~~~
+```
 
 首先指定了安卓代码的实现版本，我们使用了 Robolectric 提供的 jar 包，然后我们指定保留 `Looper` 和 `ContentValues` 类，以及 `android.util` 包及其子包中的类。
 
@@ -496,10 +496,10 @@ RestMock 是对 MockWebServer 的一层封装，让我们可以更加便捷地�
 
 一个简单地使用例子是这样（完整例子请参考其项目主页）：
 
-~~~ java
+``` java
 RESTMockServer.whenGET(pathStartsWith("/search/users?"))
         .thenReturnString(200, MockProvider.provideSimplifiedGithubUserSearchResultStr());
-~~~
+```
 
 是不是超级简洁？而 RestMock 还提供了网络请求路径匹配的强大 matcher，以及网络请求调用的 verifier，让我们 mock 网络请求和网络请求测试从此变得优雅而简洁。
 

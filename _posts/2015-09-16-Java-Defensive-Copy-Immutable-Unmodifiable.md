@@ -13,26 +13,26 @@ tags:
 ## 深拷贝
 这里需要弄清楚深浅拷贝的区别，用“=”号给非基本类型赋值，均是浅拷贝，例如List，以下代码就是浅拷贝，代码执行完毕之后，list2将包含整数1和2。
 
-~~~ java
+``` java
 List<Integer> list1 = new ArrayList<>();
 list1.add(1);
 List<Integer> list2 = list1;
 list1.add(2);
-~~~
+```
 
 而以下代码则是深拷贝，代码执行完毕之后，list2将只包含整数1，不包含整数2。
 
-~~~ java
+``` java
 List<Integer> list1 = new ArrayList<>();
 list1.add(1);
 List<Integer> list2 = new ArrayList<>(list1);
 list1.add(2);
-~~~
+```
 
 ## Immutable对象
 上述情形如果遇到immutable对象，即不可变对象，其实是不需要深拷贝的（不仅不需要，还应该杜绝拷贝，因为纯属浪费）。但是前提是对象是真正的immutable。反面例子为：
 
-~~~ java
+``` java
 public class NonStrictlyImmutable {
 	private final List<Integer> mList = new ArrayList<>();
 	
@@ -40,13 +40,13 @@ public class NonStrictlyImmutable {
 		return mList;
 	}
 }
-~~~
+```
 
 mList成员设置为了`private final`，NonStrictlyImmutable对象实例化完成后mList所引用的实际对象也不可再被改变，然而mList这个List的元素确是可以改变的，`nonStrictlyImmutable.getList().add(1)`并不会报编译错误，而这一行代码却实实在在改变了nonStrictlyImmutable对象的值！
 
 而如果`getList()`函数不直接返回`mList`引用，创建一个副本，或者使其不可被改变，则可以达到”严格意义上的“immutable。例如：
 
-~~~ java
+``` java
 public class StrictlyImmutable {
 	private final List<Integer> mList = new ArrayList<>();
 	
@@ -58,7 +58,7 @@ public class StrictlyImmutable {
 		return Collections.unmodifiableList(mList);
 	}
 }
-~~~
+```
 
 上面两种方式各有优劣：前者允许对新获取到的副本进行修改操作而不会抛出异常，但会把底层数组数据创建多份；后者不会创建多份底层数组数据，但是如果对`getList()`返回的引用进行修改操作，将会抛出异常；见仁见智。
 

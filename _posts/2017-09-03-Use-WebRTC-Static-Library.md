@@ -18,10 +18,10 @@ tags:
 
 苦于配置 WebRTC 开发环境的朋友，福音来了！[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)。
 
-~~~ bash
+``` bash
 gn gen out/android_arm/Debug --args=--args='target_os="android" target_cpu="arm"'
 ninja -C out/android_arm/Debug webrtc:webrtc
-~~~
+```
 
 编译完毕后，静态库路径为 `out/android_arm/Debug/obj/webrtc/libwebrtc.a`。
 
@@ -29,15 +29,15 @@ ninja -C out/android_arm/Debug webrtc:webrtc
 
 头文件可以从 [sourcey.com](https://sourcey.com/precompiled-webrtc-libraries/) 下载，如果没有对应 WebRTC 的版本，则可以自己提取（third party 变化应该不会太大，就用下载的好了）：
 
-~~~ bash
+``` bash
 find webrtc -name "*.h" | xargs -I {} cp --parents {} <path to store headers>
-~~~
+```
 
 ### 配置 AndroidStudio 工程
 
 #### 目录结构
 
-~~~ bash
+``` bash
 ├──app
    ├──libs
    |  └──webrtc
@@ -48,11 +48,11 @@ find webrtc -name "*.h" | xargs -I {} cp --parents {} <path to store headers>
    |        └──libwebrtc.a
    ├──build.gradle
    └──CMakeLists.txt
-~~~
+```
 
 #### 测试代码
 
-~~~ cpp
+``` cpp
 #include <jni.h>
 #include <android/log.h>
 #include <webrtc/rtc_base/thread.h>
@@ -80,7 +80,7 @@ Java_com_github_piasy_try_1webrtc_MainActivity_testWebrtc(JNIEnv *env, jclass ty
 }
 
 }
-~~~
+```
 
 要点：
 
@@ -89,7 +89,7 @@ Java_com_github_piasy_try_1webrtc_MainActivity_testWebrtc(JNIEnv *env, jclass ty
 
 #### `CMakeLists.txt`
 
-~~~ CMake
+``` CMake
 cmake_minimum_required(VERSION 3.4.1)
 
 set(CWD ${CMAKE_CURRENT_LIST_DIR})
@@ -107,7 +107,7 @@ target_link_libraries(try-webrtc
                       log
                       ${CWD}/libs/webrtc/lib/libwebrtc.a
                       )
-~~~
+```
 
 要点：
 
@@ -118,7 +118,7 @@ target_link_libraries(try-webrtc
 
 #### `build.gradle`
 
-~~~ gradle
+``` gradle
 android {
     //...
     defaultConfig {
@@ -138,7 +138,7 @@ android {
     }
     //...
 }
-~~~
+```
 
 要点：
 
@@ -181,7 +181,7 @@ android {
 
 因此我们需要交叉编译到安卓目标平台，[NDK 为我们提供了 `make_standalone_toolchain.py` 工具](https://developer.android.com/ndk/guides/standalone_toolchain.html)，可以创建 standalone toolchain，然后我们在 configure 和 make 时使用我们创建的 toolchain 即可。其中最关键的一步就是环境变量的设置（把创建好的 toolchain 目录加入到 PATH 中，且确保环境变量中正确设置 `CC`，`CXX` 等）。
 
-~~~ bash
+``` bash
 # 生成 toolchain，放到 /vagrant/standalone-r15c-arm-libc++/ 目录下
 # 没错，我搞了一个 Linux 虚拟机进行编译
 $ANDROID_NDK/build/tools/make_standalone_toolchain.py \
@@ -213,13 +213,13 @@ LD=arm-linux-androideabi-ld \
 AR=arm-linux-androideabi-ar \
 CROSS_COMPILE=arm-linux-androideabi \
 make install
-~~~
+```
 
 `make install` 之后，编译好的库会在 `out` 中，可以直接用于 NDK 开发了（ndk-build 或者 CMake）。由于 restclient-cpp 依赖于 curl，而 curl 又依赖于 zlib，因此我们最终会编译三个库，[具体编译步骤见附录](#section-8)。
 
 ### 目录结构
 
-~~~ bash
+``` bash
 ├──app
    ├──libs
    |  ├──curl-7.55.1
@@ -236,11 +236,11 @@ make install
    |     └──lib
    ├──build.gradle
    └──CMakeLists.txt
-~~~
+```
 
 ### `CMakeLists.txt`
 
-~~~ CMake
+``` CMake
 cmake_minimum_required(VERSION 3.4.1)
 
 set(CWD ${CMAKE_CURRENT_LIST_DIR})
@@ -287,7 +287,7 @@ target_link_libraries(hack_webrtc
                       ${CWD}/src/main/jniLibs/armeabi-v7a/libcurl.so
                       ${CWD}/src/main/jniLibs/armeabi-v7a/libz.so
                       )
-~~~
+```
 
 要点：
 
@@ -302,7 +302,7 @@ target_link_libraries(hack_webrtc
 
 ### [STL 不匹配导致的 `undefined reference` 错误](#buildgradle)
 
-~~~ bash
+``` bash
 Error:error: undefined reference to 'std::__ndk1::ios_base::getloc() const'
 Error:error: undefined reference to 'std::__ndk1::locale::use_facet(std::__ndk1::locale::id&) const'
 Error:error: undefined reference to 'std::__ndk1::ctype<char>::id'
@@ -335,13 +335,13 @@ Error:error: undefined reference to 'std::__ndk1::ios_base::init(void*)'
 Error:error: undefined reference to 'std::__ndk1::ios_base::init(void*)'
 Error:error: undefined reference to 'std::__ndk1::ios_base::init(void*)'
 Error:error: undefined reference to 'std::__ndk1::num_put<char, std::__ndk1::ostreambuf_iterator<char, std::__ndk1::char_traits<char> > >::id'
-~~~
+```
 
 ### [交叉编译安卓平台库](#section-4)
 
 `librestclient-cpp.a`：
 
-~~~ bash
+``` bash
 cd /vagrant/restclient-cpp-0.4.4
 
 env PATH=/vagrant/standalone-r15c-arm-libc++/bin:$PATH \
@@ -365,11 +365,11 @@ LD=arm-linux-androideabi-ld \
 AR=arm-linux-androideabi-ar \
 CROSS_COMPILE=arm-linux-androideabi \
 make install
-~~~
+```
 
 `libcurl.a`：
 
-~~~ bash
+``` bash
 cd /vagrant/curl-7.55.1
 
 env PATH=/vagrant/standalone-r15c-arm-libc++/bin:$PATH \
@@ -391,11 +391,11 @@ LD=arm-linux-androideabi-ld \
 AR=arm-linux-androideabi-ar \
 CROSS_COMPILE=arm-linux-androideabi \
 make install
-~~~
+```
 
 `libz.a`：
 
-~~~ bash
+``` bash
 cd /vagrant/zlib-1.2.11
 
 env PATH=/vagrant/standalone-r15c-arm-libc++/bin:$PATH \
@@ -415,6 +415,6 @@ LD=arm-linux-androideabi-ld \
 AR=arm-linux-androideabi-ar \
 CROSS_COMPILE=arm-linux-androideabi \
 make install
-~~~
+```
 
 **2018.06.03 Update**: zlib 不需要自己编译，安卓系统已经带着了，在 `target_link_libraries` 里增加 `z` 即可。

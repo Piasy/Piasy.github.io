@@ -56,7 +56,7 @@ _Update 2017.07.16：时隔一年，工作再次涉及安卓平台 OpenGL 相关
 
 <img src="https://imgs.piasy.com/2017-07-18-open_gl_triangle.png" alt="open_gl_triangle.png" style="height:400px">
 
-~~~ java
+``` java
 public class MainActivity extends AppCompatActivity {
 
     private GLSurfaceView mGLSurfaceView;
@@ -163,18 +163,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-~~~
+```
 
 ### 3.1. set up
 
 首先我们需要一个 `GLSurfaceView`，它是让我们渲染的“画布”。然后我们需要一个 `GLSurfaceView.Renderer`，它将实现我们的渲染逻辑。此外我们还将设置 GL ES 版本，并将 GLSurfaceView 和 Renderer 连接起来：
 
-~~~ java
+``` java
 mGLSurfaceView.setEGLContextClientVersion(2);
 mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 mGLSurfaceView.setRenderer(new MyRenderer());
 mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-~~~
+```
 
 RenderMode 有两种，`RENDERMODE_WHEN_DIRTY` 和 `RENDERMODE_CONTINUOUSLY`，前者是懒惰渲染，需要手动调用 `glSurfaceView.requestRender()` 才会进行更新，而后者则是不停渲染。
 
@@ -182,13 +182,13 @@ RenderMode 有两种，`RENDERMODE_WHEN_DIRTY` 和 `RENDERMODE_CONTINUOUSLY`，�
 
 Renderer 包含三个接口：
 
-~~~ java
+``` java
 public interface Renderer {
     void onSurfaceCreated(GL10 gl, EGLConfig config);
     void onSurfaceChanged(GL10 gl, int width, int height);
     void onDrawFrame(GL10 gl);
 }
-~~~
+```
 
 `onSurfaceCreated` 在 surface 创建时被回调，通常用于进行初始化工作，只会被回调一次；`onSurfaceChanged` 在每次 surface 尺寸变化时被回调，注意，第一次得知 surface 的尺寸时也会回调；`onDrawFrame` 则在绘制每一帧的时候回调。
 
@@ -196,7 +196,7 @@ public interface Renderer {
 
 和普通的 view 利用 canvas 来绘制不一样，OpenGL 需要加载 GLSL 程序，让 GPU 进行绘制。所以我们需要定义 shader 代码，并在初始化时（也就是 `onSurfaceCreated` 回调中）加载：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -223,7 +223,7 @@ static int loadShader(int type, String shaderCode) {
     GLES20.glCompileShader(shader);
     return shader;
 }
-~~~
+```
 
 GLSL 的语法并不是本文的主要内容，这里就不深入展开了。
 
@@ -242,25 +242,25 @@ GLSL 的语法并不是本文的主要内容，这里就不深入展开了。
 
 我们可以利用 `glViewport` 设置 Screen space 的大小，通常在 `onSurfaceChanged` 中调用：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceChanged(GL10 unused, int width, int height) {
     GLES20.glViewport(0, 0, width, height);
 }
-~~~
+```
 
 ### 3.5. 绘制
 
 我们在 `onDrawFrame` 回调中执行绘制操作，绘制的过程其实就是为 shader 代码变量赋值，并调用绘制命令的过程：
 
-~~~ java
+``` java
 @Override
 public void onDrawFrame(GL10 unused) {
     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
     GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 }
-~~~
+```
 
 由于顶点坐标已经绑定过了，所以这里无需进行变量赋值，直接调用绘制指令即可。我们可以通过 `GLES20.glDrawArrays` 或者 `GLES20.glDrawElements` 开始绘制。注意，执行完毕之后，GPU 就在显存中处理好帧数据了，但此时并没有更新到 surface 上，是 `GLSurfaceView` 会在调用 `renderer.onDrawFrame` 之后，调用 `eglSwapBuffers`，来把显存的帧数据更新到 surface 上的。
 
@@ -278,18 +278,18 @@ public void onDrawFrame(GL10 unused) {
 
 使用较多的是正投影和透视投影，这里我们使用透视投影：`Matrix.perspectiveM`。通常坐标系的变换都是对顶点坐标进行矩阵左乘运算，因此我们需要修改我们的 vertex shader 代码：
 
-~~~ java
+``` java
 private static final String VERTEX_SHADER = 
         "attribute vec4 vPosition;\n"
         + "uniform mat4 uMVPMatrix;\n"
         + "void main() {\n"
         + "  gl_Position = uMVPMatrix * vPosition;\n"
         + "}";
-~~~
+```
 
 然后我们需要在 `onSurfaceCreated` 中获取 `uMVPMatrix` 的索引：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     // ...
@@ -299,11 +299,11 @@ public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 
     // ...
 }
-~~~
+```
 
 并在 `onSurfaceChanged` 中计算变换矩阵：
 
-~~~ java
+``` java
 @Override
 public void onSurfaceChanged(GL10 unused, int width, int height) {
     GLES20.glViewport(0, 0, width, height);
@@ -311,13 +311,13 @@ public void onSurfaceChanged(GL10 unused, int width, int height) {
     Matrix.perspectiveM(mMVPMatrix, 0, 45, (float) width / height, 0.1f, 100f);
     Matrix.translateM(mMVPMatrix, 0, 0f, 0f, -2.5f);
 }
-~~~
+```
 
 `Matrix.perspectiveM`，`Matrix.translateM`？先别急，我将在下文进行详细解释。
 
 最后我们在绘制的时候为 `uMVPMatrix` 赋值：
 
-~~~ java
+``` java
 @Override
 public void onDrawFrame(GL10 unused) {
     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
@@ -326,7 +326,7 @@ public void onDrawFrame(GL10 unused) {
 
     GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 }
-~~~
+```
 
 经过这样的变换之后，绘制的效果如图二：
 
@@ -336,12 +336,12 @@ public void onDrawFrame(GL10 unused) {
 
 perspectiveM 就是我们所说的透视投影了，我们只需要提供几个参数，就可以得到投影矩阵，用于投影变换了。下面我将详细分析每个参数的含义：
 
-~~~ java
+``` java
 public static void perspectiveM(float[] m, int offset,
         float fovy, float aspect, float zNear, float zFar)
         
 Matrix.perspectiveM(mMVPMatrix, 0, 45, (float) width / height, 0.1f, 100f);
-~~~
+```
 
 前两个参数不用多说，Javadoc 里面就有，`m` 是保存变换矩阵的数组，`offset` 是开始保存的下标偏移量。
 
@@ -355,13 +355,13 @@ fovy 是 y 轴的 field of view 值，也就是视角大小，视角越大，我
 
 前面我们顶点的 z 坐标都是 0，我们可以把它修改为 `-0.1f~-100f` 之间的值，也可以通过一个位移变换来达到此目的：
 
-~~~ java
+``` java
 public static void translateM(
         float[] m, int mOffset,
         float x, float y, float z)
 
 Matrix.translateM(mMVPMatrix, 0, 0f, 0f, -2.5f);
-~~~
+```
 
 我们沿着 z 轴的反方向移动 2.5，这样就能把 z 坐标移到 `-0.1f~-100f` 了。
 

@@ -16,7 +16,7 @@ _本文的分析基于 WebRTC 的 #23295 提交_。
 
 WebRTC iOS 的本地视频预览利用 `AVCaptureVideoPreviewLayer` 实现，Apple 官方文档有对这个类有简单的使用示例：
 
-~~~ objective-c
+``` objective-c
 AVCaptureSession* captureSession = <#Get a capture session#>;
 AVCaptureVideoPreviewLayer* previewLayer =
     [AVCaptureVideoPreviewLayer layerWithSession:captureSession];
@@ -24,7 +24,7 @@ UIView* aView = <#The view in which to present the layer#>;
 previewLayer.frame =
     aView.bounds;  // Assume you want the preview layer to fill the view.
 [aView.layer addSublayer:previewLayer];
-~~~
+```
 
 其实很简单，就是两步：把 session 设置给 layer；把 layer 加到 view 中。
 
@@ -36,12 +36,12 @@ previewLayer.frame =
 
 `setCaptureSession` 函数里切换了三次线程，前后两次是[为了确保 `UIView.layer` 的访问都在主线程](https://webrtc.googlesource.com/src/+/c288dab6e26f85b80b191b06beeffc1fcf3af5d8)，而中间这次切换则是为了保证 layer 设置 session 的操作和 session 启停的线程保持一致，我们可以在 `RTCCameraPreviewView.h` 的注释中看到这个说明：
 
-~~~ objective-c
+``` objective-c
 /** The capture session being rendered in the view. Capture session
  *  is assigned to AVCaptureVideoPreviewLayer async in the same
  *  queue that the AVCaptureSession is started/stopped.
  */
-~~~
+```
 
 ## 远端视频渲染
 
@@ -92,10 +92,10 @@ Apple 系统为我们提供了 MetalKit 库，其中的 `MTKView` 是核心类�
   - 把数据上传到 encoder 里；
 + 提交 frame：
 
-    ~~~ objective-c
+    ``` objective-c
     [commandBuffer presentDrawable:view.currentDrawable];
     [commandBuffer commit];
-    ~~~
+    ```
 
 Metal 的处理过程如图：
 

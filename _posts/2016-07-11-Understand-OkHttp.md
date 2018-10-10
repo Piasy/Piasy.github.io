@@ -23,21 +23,21 @@ tags:
 
 ### 2.1，创建 OkHttpClient 对象
 
-~~~ java
+``` java
 OkHttpClient client = new OkHttpClient();
-~~~
+```
 
 咦，怎么不见 builder？莫急，且看其构造函数：
 
-~~~ java
+``` java
 public OkHttpClient() {
   this(new Builder());
 }
-~~~
+```
 
 原来是方便我们使用，提供了一个“快捷操作”，全部使用了默认的配置。`OkHttpClient.Builder` 类成员很多，后面我们再慢慢分析，这里先暂时略过：
 
-~~~ java
+``` java
 public Builder() {
   dispatcher = new Dispatcher();
   protocols = DEFAULT_PROTOCOLS;
@@ -58,11 +58,11 @@ public Builder() {
   readTimeout = 10_000;
   writeTimeout = 10_000;
 }
-~~~
+```
 
 ### 2.2，发起 HTTP 请求
 
-~~~ java
+``` java
 String run(String url) throws IOException {
   Request request = new Request.Builder()
       .url(url)
@@ -71,7 +71,7 @@ String run(String url) throws IOException {
   Response response = client.newCall(request).execute();
   return response.body().string();
 }
-~~~
+```
 
 `OkHttpClient` 实现了 `Call.Factory`，负责根据请求创建新的 `Call`，在 [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}中我们曾和它发生过一次短暂的遭遇：
 
@@ -79,14 +79,14 @@ String run(String url) throws IOException {
 
 那我们现在就来看看它是如何创建 Call 的：
 
-~~~ java
+``` java
 /**
   * Prepares the {@code request} to be executed at some point in the future.
   */
 @Override public Call newCall(Request request) {
   return new RealCall(this, request);
 }
-~~~
+```
 
 如此看来功劳全在 `RealCall` 类了，下面我们一边分析同步网络请求的过程，一边了解 `RealCall` 的具体内容。
 
@@ -94,7 +94,7 @@ String run(String url) throws IOException {
 
 我们首先看 `RealCall#execute`：
 
-~~~ java
+``` java
 @Override public Response execute() throws IOException {
   synchronized (this) {
     if (executed) throw new IllegalStateException("Already Executed");  // (1)
@@ -109,7 +109,7 @@ String run(String url) throws IOException {
     client.dispatcher().finished(this);                                 // (4)
   }
 }
-~~~
+```
 
 这里我们做了 4 件事：
 
@@ -122,7 +122,7 @@ dispatcher 这里我们不过度关注，在同步执行的流程中，涉及到
 
 真正发出网络请求，解析返回结果的，还是 `getResponseWithInterceptorChain`：
 
-~~~ java
+``` java
 private Response getResponseWithInterceptorChain() throws IOException {
   // Build a full stack of interceptors.
   List<Interceptor> interceptors = new ArrayList<>();
@@ -141,7 +141,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
       interceptors, null, null, null, 0, originalRequest);
   return chain.proceed(originalRequest);
 }
-~~~
+```
 
 在 [OkHttp 开发者之一介绍 OkHttp 的文章里面](https://publicobject.com/2016/07/03/the-last-httpurlconnection/){:target="_blank"}，作者讲到：
 
@@ -175,7 +175,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
 ##### 2.2.1.1，建立连接：`ConnectInterceptor`
 
-~~~ java
+``` java
 @Override public Response intercept(Chain chain) throws IOException {
   RealInterceptorChain realChain = (RealInterceptorChain) chain;
   Request request = realChain.request();
@@ -188,7 +188,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
   return realChain.proceed(request, streamAllocation, httpCodec, connection);
 }
-~~~
+```
 
 实际上建立连接就是创建了一个 `HttpCodec` 对象，它将在后面的步骤中被使用，那它又是何方神圣呢？它是对 HTTP 协议操作的抽象，有两个实现：`Http1Codec` 和 `Http2Codec`，顾名思义，它们分别对应 HTTP/1.1 和 HTTP/2 版本的实现。
 
@@ -198,7 +198,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
 ##### 2.2.1.2，发送和接收数据：`CallServerInterceptor`
 
-~~~ java
+``` java
 @Override public Response intercept(Chain chain) throws IOException {
   HttpCodec httpCodec = ((RealInterceptorChain) chain).httpStream();
   StreamAllocation streamAllocation = ((RealInterceptorChain) chain).streamAllocation();
@@ -238,7 +238,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
   return response;
 }
-~~~
+```
 
 我们抓住主干部分：
 
@@ -255,7 +255,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
 #### 2.2.2，发起异步网络请求
 
-~~~ java
+``` java
 client.newCall(request).enqueue(new Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
@@ -285,7 +285,7 @@ synchronized void enqueue(AsyncCall call) {
     readyAsyncCalls.add(call);
   }
 }
-~~~
+```
 
 这里我们就能看到 dispatcher 在异步执行时发挥的作用了，如果当前还能执行一个并发请求，那就立即执行，否则加入 `readyAsyncCalls` 队列，而正在执行的请求执行完毕之后，会调用 `promoteCalls()` 函数，来把 `readyAsyncCalls` 队列中的 `AsyncCall` “提升”为 `runningAsyncCalls`，并开始执行。
 
@@ -304,13 +304,13 @@ synchronized void enqueue(AsyncCall call) {
 
 在 [2.2.1.2，发送和接收数据：CallServerInterceptor](#callserverinterceptor) 小节中，我们就看过了 body 相关的代码：
 
-~~~ java
+``` java
 if (!forWebSocket || response.code() != 101) {
   response = response.newBuilder()
       .body(httpCodec.openResponseBody(response))
       .build();
 }
-~~~
+```
 
 由 `HttpCodec#openResponseBody` 提供具体 HTTP 协议版本的响应 body，而 `HttpCodec` 则是利用 Okio 实现具体的数据 IO 操作。
 
@@ -324,9 +324,9 @@ if (!forWebSocket || response.code() != 101) {
 
 我们可以在构造 `OkHttpClient` 时设置 `Cache` 对象，在其构造函数中我们可以指定目录和缓存大小：
 
-~~~ java
+``` java
 public Cache(File directory, long maxSize);
-~~~
+```
 
 而如果我们对 OkHttp 内置的 `Cache` 类不满意，我们可以自行实现 `InternalCache` 接口，在构造 `OkHttpClient` 时进行设置，这样就可以使用我们自定义的缓存策略了。
 

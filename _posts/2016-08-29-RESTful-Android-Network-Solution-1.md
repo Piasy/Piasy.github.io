@@ -51,9 +51,9 @@ tags:
 
 这里我先讲一下额外校验的一种方式，例如每个请求加上 `timestamp` 和 `mac` 这两个参数，`timestamp` 就是当前时间戳，而 `mac` 则是一个认证码，`mac` 的计算取决于 `timestamp` 以及另外一个 `mac_key`，它只在登录成功时会返回。也就是：
 
-~~~ java
+``` java
 String mac = hash("timestamp=" + timestamp + "mac_key=" + macKey);
-~~~
+```
 
 那这里其实有一个问题，如果用户还没有登录，我们怎么做 mac 校验？我们可以暂且用 basic auth 来代替 macKey。
 
@@ -77,7 +77,7 @@ String mac = hash("timestamp=" + timestamp + "mac_key=" + macKey);
 
 #### 3.3.1，定义 API
 
-~~~ java
+``` java
 public interface Api {
     @POST("tokens")
     @FormUrlEncoded
@@ -88,13 +88,13 @@ public interface Api {
     @GET("/users/{uid}")                                        // 2
     Observable<User> user(@Path("uid") long uid);
 }
-~~~
+```
 
 这边我们用一个特殊的 header 来标记是 basic auth（1），这里为了代码简洁，就没有定义在常量中，其实是需要定义常量的。而 auth 类型默认是 token auth，为了减少代码量，我们就不显式加上对应的 header 了（2）。
 
 #### 3.3.2，YLAuthInterceptor 的结构
 
-~~~ java
+``` java
 public class YLAuthInterceptor implements Interceptor {
 
     private final String mBasicAuthId;
@@ -131,7 +131,7 @@ public class YLAuthInterceptor implements Interceptor {
         // ...
     }
 }
-~~~
+```
 
 1. 由于我们的 token 是会发生变化的（未登录 -> 登录 -> 退出登录 -> 重新登录），所以我们需要保证它的可见性，而由于 token 的更新不依赖旧的状态，`volatile` 关键字就足够了。
 2. basic auth 的用户名密码是固定不变的，我们直接构造函数传入即可。
@@ -142,7 +142,7 @@ public class YLAuthInterceptor implements Interceptor {
 
 先看 `intercept()` 的实现：
 
-~~~ java
+``` java
 @Override
 public Response intercept(Chain chain) throws IOException {
     Request origin = chain.request();
@@ -169,7 +169,7 @@ public Response intercept(Chain chain) throws IOException {
     }
     return chain.proceed(newRequest.build());                               // 4
 }
-~~~
+```
 
 1. 我们需要移除这个标记 header，所以我们要构造一个新的 header 集合。
 2. 对比 header name，来从中寻找 auth 类型，这里同样应该定义为常量。
@@ -178,7 +178,7 @@ public Response intercept(Chain chain) throws IOException {
 
 再看 `tokenAuth()` 和 `basicAuth()` 的实现：
 
-~~~ java
+``` java
 @VisibleForTesting
 void tokenAuth(Request.Builder newRequest, HttpUrl url, long timestamp) {
     if (TextUtils.isEmpty(mToken) || TextUtils.isEmpty(mMacKey)) {
@@ -216,7 +216,7 @@ String basicAuthHeader(String username, String pwd) {
     return "Basic " + Base64.encodeToString(
                     userAndPassword.getBytes("UTF-8"), Base64.NO_WRAP);
 }
-~~~
+```
 
 这段代码比较直观，主要是对 OkHttp 相关 API 的使用。
 
@@ -228,7 +228,7 @@ String basicAuthHeader(String username, String pwd) {
 
 从[前面一篇讲 RxJava 复杂场景](/2016/08/24/Complex-RxJava-1-cache/){:target="_blank"}的文章开始，我就在强调单元测试的重要性，上面的代码也不短，足有一百多行，不写几个测试用例，还真没有信心它一定能正确工作。
 
-~~~ java
+``` java
 public class YLAuthInterceptorTest {
 
     private YLAuthInterceptor mYLAuthInterceptor;
@@ -276,7 +276,7 @@ public class YLAuthInterceptorTest {
                 is(Collections.singletonList("Basic dGVzdF9jbGllbnQ6dGVzdF9wYXNz")));
     }
 }
-~~~
+```
 
 测试代码里面常量有点多，不过总的来说代码还是挺漂亮的：
 

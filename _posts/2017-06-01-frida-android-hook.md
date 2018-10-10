@@ -33,7 +33,7 @@ tags:
 
 MainActivity 的代码如下：
 
-~~~ java
+``` java
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         return i * i;
     }
 }
-~~~
+```
 
 ### 打日志
 
-~~~ python
+``` python
 import frida, sys
 
 package_name = "com.powersmarttv.www.livestreamp31"
@@ -111,13 +111,13 @@ def main():
 
 if __name__ == '__main__':
     main()
-~~~
+```
 
 退后台再切回前台，控制台日志如下：
 
-~~~ json
+``` json
 {'type': 'send', 'payload': 'onResume() com.github.piasy.fridademo.MainActivity@1645013'}
-~~~
+```
 
 ### 编写 Javascript 代码
 
@@ -125,13 +125,13 @@ if __name__ == '__main__':
 
 运行 Frida CLI 并 attach 到目标进程：
 
-~~~ bash
+``` bash
 frida -U com.github.piasy.fridademo -l log_on_resume.js
-~~~
+```
 
 `log_on_resume.js` 内容：
 
-~~~ javascript
+``` javascript
 Java.perform(function () {
     var Activity = Java.use("android.app.Activity");
     Activity.onResume.implementation = function () {
@@ -139,13 +139,13 @@ Java.perform(function () {
         this.onResume();
     };
 });
-~~~
+```
 
 onResume 时日志会在 CLI 命令行中打印出来。CLI 模式下还能重新加载 js 脚本，在 CLI 命令行中输入 `%reload` 指令，回车即可。不过我发现，Frida CLI 还有热加载功能，我们修改脚本保存后，它会自动重新加载脚本。
 
 ### hook 重载函数
 
-~~~ javascrpit
+``` javascrpit
 Java.perform(function () {
     var MainActivity = Java.use("com.github.piasy.fridademo.MainActivity");
     MainActivity.private_func.overload().implementation = function () {
@@ -165,16 +165,16 @@ Java.perform(function () {
         this.private_func(s, b);
     };
 });
-~~~
+```
 
 点击 TEST 按钮，控制台日志如下：
 
-~~~ json
+``` json
 {'type': 'send', 'payload': 'private_func()'}
 {'type': 'send', 'payload': 'private_func(int): 123'}
 {'type': 'send', 'payload': 'private_func(String): str'}
 {'type': 'send', 'payload': 'private_func(String,boolean): str, true'}
-~~~
+```
 
 要点：
 
@@ -183,7 +183,7 @@ Java.perform(function () {
 + primitive type 对应的 `overload` 参数名即为类型名，对象则为全引用名；
 + 如果 overload 找不到匹配的方法，frida 会给出错误日志，例如：
 
-~~~ json
+``` json
 {'type': 'error', 'description': "Error: private_func(): 
 argument count of 2 does not match any of:
 \n\t.overload()
@@ -205,14 +205,14 @@ at java.js:1369\n
 at script1.js:20", 
 'fileName': 'frida/node_modules/frida-java/lib/class-factory.js', 
 'lineNumber': 1449, 'columnNumber': 1}
-~~~
+```
 
 + 修改了 Java 代码之后，需要 build 安装，并运行起来，hook 代码才能感知到（其实废话，hook 的是手机，在电脑里面改了代码，手机里运行的代码当然没变化）；
 + 调用参数通过 `arguments` 数组访问，也可以在 `implementation` 函数中声明对应的形参；
 
 ### 修改函数调用
 
-~~~ javascript
+``` javascript
 Java.perform(function () {
     var MainActivity = Java.use("com.github.piasy.fridademo.MainActivity");
     MainActivity.private_func.overload("java.lang.String", "boolean").implementation = function (s, b) {
@@ -220,20 +220,20 @@ Java.perform(function () {
         this.private_func("HOOKED!")
     };
 });
-~~~
+```
 
 通过 logcat 日志，我们发现成功修改了调用的函数：
 
-~~~ bash
+``` bash
 06-01 11:38:33.993 8827-8827/com.github.piasy.fridademo I/System.out: private_func()
 06-01 11:38:33.994 8827-8827/com.github.piasy.fridademo I/System.out: private_func(int) 123
 06-01 11:38:33.994 8827-8827/com.github.piasy.fridademo I/System.out: private_func(String) str
 06-01 11:38:33.998 8827-8827/com.github.piasy.fridademo I/System.out: private_func(String) HOOKED!
-~~~
+```
 
 ### 返回指定函数值
 
-~~~ javascript
+``` javascript
 function print_args() {
     var str = "";
     for (var i = 0; i < arguments.length; i++) {
@@ -256,14 +256,14 @@ Java.perform(function () {
         return -1;
     };
 });
-~~~
+```
 
 通过 logcat 日志，我们发现成功修改了返回值：
 
-~~~ bash
+``` bash
 06-01 21:30:34.024 5597-5597/com.github.piasy.fridademo I/System.out: func_with_ret(4): 100
 06-01 21:30:34.027 5597-5597/com.github.piasy.fridademo I/System.out: getMinBufferSize(16000, 16, 2): -1
-~~~
+```
 
 ## 小结
 

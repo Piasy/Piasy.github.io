@@ -34,7 +34,7 @@ OkBuck的目标，是通过读取工程的gradle配置，自动生成BUCK脚本�
 ## 获取sub module的依赖
 gradle api内部定义了`Dependency`系统，提供了接口获取，但它并不完整，主要是缺乏libs目录下的jar/aar依赖。
 
-~~~ groovy
+``` groovy
 for (ResolvedDependency dependency : 
     project.configurations.getByName("compile").resolvedConfiguration
     .firstLevelModuleDependencies) {
@@ -42,16 +42,16 @@ for (ResolvedDependency dependency :
     // 包括maven依赖、本地子module依赖，间接依赖在dependency.children中，
     // 而这个依赖的本地文件则在dependency.moduleArtifacts中
 }
-~~~
+```
 
 下面的方式可以获取到最终所有的依赖的本地文件：
 
-~~~ groovy
+``` groovy
 for (File dependency : project.configurations.getByName("compile").resolve()) {
     // compile 是依赖选项（configuration）， dependency 就是各类依赖解
     // 析完毕之后的本地文件，包括直接与间接
 }
-~~~
+```
 
 考虑到后续buck编译以及依赖冲突检测的需求，OkBuck依赖获取的方式同时使用了上面这两种方式。
 
@@ -82,13 +82,13 @@ sub module依赖的分析工作分拆如下：
 ## annotation processor相关
 annotation processor依赖和module的普通依赖类似，只不过configuration是`apt`和`provided`，这两种是目前通用的惯例，Android module涉及到注解处理的，基本都是用的apt插件，而Java module，常用的做法也是声明一个`provided` configuration，并添加到classpath中，就像这样：
 
-~~~ groovy
+``` groovy
 sourceSets {
     main {
         compileClasspath += configurations.provided
     }
 }
-~~~
+```
 
 而annotation processor类的提取，则可以提取对应jar文件中的`META-INF/services/javax.annotation.processing.Processor`文件部分。需要注意的是，一个jar包里面可能会有多个annotation processor，需要全部解析出来。
 
@@ -112,7 +112,7 @@ OkBuck的做法是，任何rule都不要使用`exported_deps`参数，然后把�
 ## 获取工程的各种配置
 以`minSdkVersion`为例：
 
-~~~ groovy
+``` groovy
 project.extensions.getByName("android").metaPropertyValues.each { prop ->
     if ("defaultConfig".equals(prop.name)) {
         ProductFlavor defaultConfigs = (ProductFlavor) prop.value
@@ -133,7 +133,7 @@ project.extensions.getByName("android").metaPropertyValues.each { prop ->
         }
     }
 }
-~~~
+```
 
 ## multi product flavor支持
 BUCK原生不支持multi product flavor，OkBuck通过解析每个flavor的配置，同时为每种flavor + variant组合生成一套BUCK配置，达到支持multi product flavor的效果。

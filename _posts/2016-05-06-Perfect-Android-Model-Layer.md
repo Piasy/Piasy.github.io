@@ -32,7 +32,7 @@ tags:
 
 SqlDelight 可以**根据建表的 SQL 语句自动生成 Java model interface，interface 的每个方法就是这张表的每一列**。例如这样：
 
-~~~ SQL
+``` SQL
 CREATE TABLE GithubUsers (
   id INTEGER PRIMARY KEY,
   login TEXT NOT NULL,
@@ -40,11 +40,11 @@ CREATE TABLE GithubUsers (
   type TEXT NOT NULL,
   created_at TEXT AS 'org.threeten.bp.ZonedDateTime' NULL
 );
-~~~
+```
 
 SqlDelight 的具体设置步骤可以[参考其项目主页](https://github.com/square/sqldelight){:target="_blank"}，SqlDelight 生成的 Java interface 如下（简洁起见，只保留了部分代码）：
 
-~~~ java
+``` java
 public interface GithubUserModel {
   String TABLE_NAME = "GithubUsers";
   ...
@@ -80,13 +80,13 @@ public interface GithubUserModel {
     ...
   }
 }
-~~~
+```
 
 怎么样，是不是省了一大段代码？
 
 上面 SQL 语句中的 `AS` 语句是用来告知 SqlDelight，`created_at` 这一列是自定义类型，在数据库中以 `TEXT` 存储，但接口的类型是 `ZonedDateTime`。为此我们需要实现一个 `ColumnAdapter` 子类，用于 `String` 和 `ZonedDateTime` 的互相转换。adapter 代码很简单：
 
-~~~ java
+``` java
 public class ZonedDateTimeDelightAdapter implements ColumnAdapter<ZonedDateTime> {
 
     private final DateTimeFormatter mDateTimeFormatter;
@@ -107,7 +107,7 @@ public class ZonedDateTimeDelightAdapter implements ColumnAdapter<ZonedDateTime>
         values.put(key, mDateTimeFormatter.format(value));
     }
 }
-~~~
+```
 
 SqlDelight 生成的代码中，`Mapper` 用来把数据库 `Cursor` 对象转化为我们定义的 Java 类型，`GithubUserMarshal` 则用于把 Java 类型的对象转化为 `ContentValues` 对象，用于存储到数据库中。
 
@@ -116,7 +116,7 @@ Immutable/Value types 这个概念对有些朋友来说可能还比较陌生，�
 
 为了让我们的对象具有 immutable 的特性，我使用了 Google 的 [AutoValue](https://github.com/google/auto/tree/master/value){:target="_blank"} 库，**AutoValue 可以根据我们定义的 abstract 类自动生成具有 immutable 特性的实现类，还能替我们处理好 equals，null 安全性，以及实现 builder 模式**。为此我们需要创建一个 abstract 类来实现 SqlDelight 生成的接口：
 
-~~~ java
+``` java
 @AutoValue
 public abstract class GithubUser implements GithubUserModel {
     public static final Mapper<GithubUser> MAPPER = new Mapper<>
@@ -147,7 +147,7 @@ public abstract class GithubUser implements GithubUserModel {
       ...
     }
 }
-~~~
+```
 
 只需要给我们的类加上 `@AutoValue` 注解， 注解处理器就会为我们生成 abstract 类的实现类 `AutoValue_GithubUser`，至此就完成了和 AutoValue 的集成了。
 
@@ -181,7 +181,7 @@ SqlBrite 则和 StorIO 完全相反，几乎没有进行封装，我们使用的
 
 auto-value-gson 需要我们为 GithubUser 类加入一个静态方法：
 
-~~~ java
+``` java
 @AutoValue
 public abstract class GithubUser implements GithubUserModel {
   ...
@@ -190,11 +190,11 @@ public abstract class GithubUser implements GithubUserModel {
   }
   ...
 }
-~~~
+```
 
 auto-value-gson 会为我们生成一个 GsonTypeAdapter 类，用于进行 `GithubUser` 类的序列化反序列化。生成的代码是这样的：
 
-~~~ java
+``` java
   public static final class GsonTypeAdapter extends TypeAdapter<GithubUser> {
     private final TypeAdapter<Long> idAdapter;
     private final TypeAdapter<String> loginAdapter;
@@ -232,7 +232,7 @@ auto-value-gson 会为我们生成一个 GsonTypeAdapter 类，用于进行 `Git
       ...
     }
   }
-~~~
+```
 
 简洁起见，我省略了 `read` 方法的代码。这里我们可以看到，adapter 的实现完全避免了反射的使用，这一点对性能也将会有提升（具体有多大的提升，~~我打算做个测试~~ 可以参考文末的测试结果），关于反射的性能问题，感兴趣的朋友可以阅读[我翻译的 NimbleDroid 团队的这篇文章](http://blog.nimbledroid.com/2016/02/23/slow-Android-reflection-zh.html){:target="_blank"}。
 
@@ -242,7 +242,7 @@ auto-value-gson 会为我们生成一个 GsonTypeAdapter 类，用于进行 `Git
 
 生成的 adapter factory 代码如下：
 
-~~~ java
+``` java
 public final class AutoValueGsonTypeAdapterFactory implements TypeAdapterFactory {
   @Override
   public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
@@ -254,15 +254,15 @@ public final class AutoValueGsonTypeAdapterFactory implements TypeAdapterFactory
     }
   }
 }
-~~~
+```
 
 Gson 的构造过程中我们只需要注册一个 adapter factory 即可：
 
-~~~ java
+``` java
 new GsonBuilder()
     .registerTypeAdapterFactory(new AutoValueGsonTypeAdapterFactory())
     .create();
-~~~
+```
 
 完成！是不是很简洁！
 

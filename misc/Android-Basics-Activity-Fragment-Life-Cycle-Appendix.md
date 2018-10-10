@@ -8,7 +8,7 @@ permalink: /2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/
 
 ### 启动单个 Activity + Fragment
 
-~~~ java
+``` java
 01-08 13:51:12.594  CompatAActivity.onCreate / →☐
 01-08 13:51:12.610  CompatAActivity.onCreate / ☐→
 
@@ -68,11 +68,11 @@ permalink: /2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/
 
 01-08 13:51:13.151  CompatAActivity.onWindowFocusChanged / →☐
 01-08 13:51:13.151  CompatAActivity.onWindowFocusChanged / ☐→
-~~~
+```
 
 ### AActivity 启动 BActivity
 
-~~~ java
+``` java
 // 启动 B
 01-08 14:02:21.237  CompatAActivity.onUserInteraction / →☐
 01-08 14:02:21.237  CompatAActivity.onUserInteraction / ☐→
@@ -212,11 +212,11 @@ permalink: /2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/
 
 01-08 14:06:06.526  CompatBActivity.onDetachedFromWindow / →☐
 01-08 14:06:06.527  CompatBActivity.onDetachedFromWindow / ☐→
-~~~
+```
 
 ### singleTop 测试
 
-~~~ java
+``` java
 // 启动 Main
 01-07 23:42:39.743 3246-3246/com.github.piasy.taskdemo D/TaskDemo: Main onCreate
 01-07 23:42:39.757 3246-3246/com.github.piasy.taskdemo D/TaskDemo: Main onStart
@@ -240,11 +240,11 @@ permalink: /2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/
 // Home 键
 01-07 23:43:00.034 3246-3246/com.github.piasy.taskdemo D/TaskDemo: Main onPause
 01-07 23:43:00.429 3246-3246/com.github.piasy.taskdemo D/TaskDemo: Main onStop
-~~~
+```
 
 ### 非 support 组件的测试
 
-~~~ java
+``` java
 // 启动 A
 01-08 15:22:03.079  AActivity.onCreate / →☐
 01-08 15:22:03.079  AActivity.onCreate / ☐→
@@ -422,4 +422,4 @@ permalink: /2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/
 
 01-08 15:25:19.460  BActivity.onDetachedFromWindow / →☐
 01-08 15:25:19.461  BActivity.onDetachedFromWindow / ☐→
-~~~
+```

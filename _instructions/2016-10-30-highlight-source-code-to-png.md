@@ -1,5 +1,5 @@
 
-~~~ bash
+``` bash
 # inspired by http://stackoverflow.com/a/4252503/3077508
 
 # install fonts
@@ -25,4 +25,4 @@ gs -q -dBATCH -dNOPAUSE -dSAFER -dNOPROMPT -sDEVICE=png16m -dDEVICEXRESOLUTION=6
 convert -trim +repage -trim +repage -bordercolor "#f0f0f0" -border 25x25 1.png 1.trim.png
 
 # output is 1.trim.png
-~~~
+```
