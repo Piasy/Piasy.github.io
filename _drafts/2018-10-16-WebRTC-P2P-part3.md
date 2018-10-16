@@ -1,6 +1,6 @@
 ---
 layout: post
-title: WebRTC Native 源码导读（十三）：P2P 连接的使用
+title: WebRTC Native 源码导读（十五）：P2P 连接的使用
 tags:
     - 实时多媒体
     - WebRTC
@@ -8,6 +8,28 @@ tags:
 ---
 
 > 连接建立成功后，就可以收发应用层的数据了，数据的收发将会通过选出来的 Connection 对象完成，Connection 则是调用 Port，Port 则是调用 AsyncPacketSocket，而这里用到的 Port 和 AsyncPacketSocket 对象，都是在收集本地 candidate 过程中创建的，并不会重新创建。
+
+Unified Plan 模式下，transceiver 会在调用 AddTrack 时被创建，audio 和 video 各 add 一次，那就会创建两个 transceiver。
+
+sender, receiver, channel, 这三者是什么关系？
+
+transceiver 的 channel 会在 `PeerConnection::SetLocalDescription` 时被创建，transceiver 有个 media type 字段，用来表明是 audio 还是 video 类型（DataChannel 不走 transceiver 这套），创建 channel 时就会根据 media type 对应创建 `cricket::VoiceChannel` 或 `cricket::VideoChannel`。
+
+在 `PeerConnection::SetRemoteDescription` 时，执行 transceiver 的 channel 的 `BaseChannel::SetRemoteContent` 函数，其中会创建 `VideoSendStream`。
+
+视频数据：
+
++ 在 `RtpVideoSender::OnEncodedImage` 里，根据 `stream_index` 找到 `ModuleRtpRtcpImpl`，发送 RTP 报文；
+  - `stream_index` 默认是 0，如果有 simulcast，那不同的层可能有不同的 index；
+  - 不同的 RTP module、`RtpPayloadParams` 都用数组保存，通过 stream index 索引；
+  - RTP module 和 payload params 都在 `RtpVideoSender` 构造时准备好，
++ 
+
+PeerConnection 是全双工的，既可以发送数据，也可以接收数据，而且还有 bundle 机制，可以通过同一个 Socket 同时收发 audio/video/data 数据。
+
+音视频、data channel 的数据包的流动过程。
+
+socket/connection 的实际使用。
 
 DTLS？SRTP？
 
