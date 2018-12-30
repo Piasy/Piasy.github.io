@@ -42,7 +42,7 @@ high level 来看，AudioMixer 实际做的事情也只需要三步：
   - energy 的计算在 `AudioMixerCalculateEnergy` 函数中完成，就是计算 AudioFrame 的 `data_` 的前 `samples_per_channel_` 个样点值的平方和；
   - 首先这个计算可能溢出，源码里也有 TODO 注释；
   - 其次，多声道时，这个计算没有涵盖所有的样点；
-+ 从排序后的列表中，最多选出三路参与混音；
++ 从排序后的列表中，最多选出三路没有 mute 的参与混音；
 + 参与混音的 frame 可能还要做 Ramp（淡入）处理 `RampAndUpdateGain`；
   - 一个 source 被添加到 mixer 里时，它的 `gain` 为 0，如果需要参与混音，它的 `target_gain` 就为 1，Ramp 就是把 `gain` 从 0 更新为 1；
   - 如果 frame 的 `gain` 和 `target_gain` 不同，且没有静音，那就需要进行 Ramp 操作：frame 的第一个样点值乘以 `gain`，最后一个样点值乘以 `target_gain`，中间样点值乘以的系数从 `gain` 到 `target_gain` 呈线性变化；
