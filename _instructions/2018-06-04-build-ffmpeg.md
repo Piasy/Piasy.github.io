@@ -134,4 +134,4 @@ make -j16 install
 
 ## 参考文章
 
-+ [Decoding audio files with ffmpeg](https://www.targodan.de/post/decoding-audio-files-with-ffmpeg/)
++ [Decoding audio files with ffmpeg](https://www.targodan.de/post/decoding-audio-files-with-ffmpeg)

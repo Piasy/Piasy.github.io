@@ -6,11 +6,11 @@ tags:
     - 架构
 ---
 
-在[拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/){:target="_blank"} 最后我曾说过会对 Retrofit、OkHttp、Okio 三者进行一个小结，并且整理一套网络层的“微架构”，今天终于得以完成，在这里一起奉送给大家 :)
+在[拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/index.html){:target="_blank"} 最后我曾说过会对 Retrofit、OkHttp、Okio 三者进行一个小结，并且整理一套网络层的“微架构”，今天终于得以完成，在这里一起奉送给大家 :)
 
 + 🏁 RESTful 安卓网络层解决方案（一）：概览与认证实现方案
-+ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/){:target="_blank"}
-+ [RESTful 安卓网络层解决方案（三）：API model 与 Business model 分离](/2016/09/04/RESTful-Android-Network-Solution-3/){:target="_blank"}
++ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/index.html){:target="_blank"}
++ [RESTful 安卓网络层解决方案（三）：API model 与 Business model 分离](/2016/09/04/RESTful-Android-Network-Solution-3/index.html){:target="_blank"}
 
 注：本来只打算写一篇文章，但篇幅太长，最后还是按照内容拆分为了三篇，也算是单一职责 :)
 
@@ -32,8 +32,8 @@ tags:
 
 基础的 API 定义、请求发起，这些内容就不在这里展开了，对 Retrofit、OkHttp 不熟悉的朋友一定要先看看官方教程和文档，不然后面可能会觉得云里雾里。当然也可以阅读我的两篇文章：
 
-+ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}
-+ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"}
++ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}
++ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"}
 
 在这套“微架构”里面主要涉及三大部分内容：
 
@@ -182,7 +182,7 @@ public Response intercept(Chain chain) throws IOException {
 @VisibleForTesting
 void tokenAuth(Request.Builder newRequest, HttpUrl url, long timestamp) {
     if (TextUtils.isEmpty(mToken) || TextUtils.isEmpty(mMacKey)) {
-        throw new YLApiError(/**...*/);                             // 1
+        throw new YLApiError(/**...*/ );                             // 1
     }
     String text = "token=" + mToken + "timestamp=" + timestamp;
     String mac = hash(text + "mac_key=" + mMacKey);
@@ -226,7 +226,7 @@ String basicAuthHeader(String username, String pwd) {
 
 #### 3.3.4，单元测试
 
-从[前面一篇讲 RxJava 复杂场景](/2016/08/24/Complex-RxJava-1-cache/){:target="_blank"}的文章开始，我就在强调单元测试的重要性，上面的代码也不短，足有一百多行，不写几个测试用例，还真没有信心它一定能正确工作。
+从[前面一篇讲 RxJava 复杂场景](/2016/08/24/Complex-RxJava-1-cache/index.html){:target="_blank"}的文章开始，我就在强调单元测试的重要性，上面的代码也不短，足有一百多行，不写几个测试用例，还真没有信心它一定能正确工作。
 
 ``` java
 public class YLAuthInterceptorTest {
@@ -288,18 +288,18 @@ public class YLAuthInterceptorTest {
 
 ## 4，小结
 
-好了，三板斧的回顾、网络层“微架构”的概览、以及认证功能的方案与实现就讲到这里。在接下来的第二篇中，我将讲讲 JSON 转换中的两点注意事项，欢迎继续阅读 [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/){:target="_blank"}。
+好了，三板斧的回顾、网络层“微架构”的概览、以及认证功能的方案与实现就讲到这里。在接下来的第二篇中，我将讲讲 JSON 转换中的两点注意事项，欢迎继续阅读 [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/index.html){:target="_blank"}。
 
 ## Bonus：拆轮子与 model 层架构推荐
 
 前段时间拆轮子系列的前三篇，分别对 [Retrofit](https://github.com/square/retrofit){:target="_blank"}，[OkHttp](https://github.com/square/okhttp){:target="_blank"} 和 [Okio](https://github.com/square/okio){:target="_blank"} 源码进行了分析和源码导读，发布之后大家反馈还不错，其中拆 OkHttp 篇成功登上[开发者头条榜首](http://toutiao.io/top/2016-07-14){:target="_blank"}。没有看过的朋友建议大家可以看一看：
 
-+ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}
-+ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"}
-+ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/){:target="_blank"}
++ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}
++ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"}
++ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/index.html){:target="_blank"}
 
 此外，之前整理的安卓 model 层架构，有幸还在 GDG 进行了一次分享，大家反响也还不错，在这里也推荐大家看一看：
 
-+ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/){:target="_blank"}
-+ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/){:target="_blank"}
++ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/index.html){:target="_blank"}
++ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/index.html){:target="_blank"}
 + [08/07 北京 GDG Android Meetup 活动回顾，讲义，照片](http://mp.weixin.qq.com/s?__biz=MzA5MDg3MjczMg==&mid=2652003543&idx=1&sn=849c06ac198cbfe9cdcfae90b2a17021&scene=1&srcid=0902QGgAZZKCpZbNNPD66mnu#rd){:target="_blank"}

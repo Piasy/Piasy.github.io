@@ -15,7 +15,7 @@ tags:
 
 ## 2，基本用例
 
-来自 [Retrofit 官方网站](http://square.github.io/retrofit/){:target="_blank"}。
+来自 [Retrofit 官方网站](http://square.github.io/retrofit){:target="_blank"}。
 
 ### 2.1，创建 Retrofit 对象
 
@@ -394,7 +394,7 @@ public void request(long n) {
 }
 ```
 
-producer 相关的逻辑非常简单，看看[Operator 并发原语： producers（二），SingleDelayedProducer](/AdvancedRxJava/2016/06/04/operator-concurrency-primitives-4/){:target="_blank"}就能懂了，这里就不在赘述。实际干活的逻辑就是执行 `call.execute()`，并把返回值发送给下游。
+producer 相关的逻辑非常简单，看看[Operator 并发原语： producers（二），SingleDelayedProducer](/AdvancedRxJava/2016/06/04/operator-concurrency-primitives-4/index.html){:target="_blank"}就能懂了，这里就不在赘述。实际干活的逻辑就是执行 `call.execute()`，并把返回值发送给下游。
 
 而 `OperatorMapResponseToBodyOrError#call` 也相当简短：
 

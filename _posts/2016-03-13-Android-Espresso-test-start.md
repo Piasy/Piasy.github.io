@@ -64,7 +64,7 @@ java.util.zip.ZipException: duplicate entry:      javax/annotation/Generated.cla
 但是dagger在涉及到继承的时候有一个细节需要注意：如果component定义的`inject`接口接受的是父类型，那么当子类型实例调用`inject(this)`时，子类型中需要注入的依赖（`@Inject`注解的成员）将无法注入！需要编写一个component的子类，把`inject`接口的参数类型声明为子类型，并且声称component子类的实例进行依赖注入。这种情况下父类中需要注入的依赖是可以成功注入的，因为dagger可以搜索父类并把依赖注入到父类中，但反过来是行不通的，dagger是无法搜索子类并注入依赖到子类中的（因为编译期间可能根本就无法获取到子类的符号呀，怎么能搜索子类呢？）。
 
 ## Mock网络请求
-可以说目前最流行的网络请求库就是[OkHttp](https://github.com/square/okhttp/)了，而且从安卓6.0开始它就是系统的默认实现了。而OkHttp还提供了另一个无比强大的工具：[MockWebServer](https://github.com/square/okhttp/blob/master/mockwebserver)。而OkHttp + [Retrofit](https://github.com/square/retrofit)应该是REST API请求的标配了，下面我就总结一下如何利用MockWebServer来进行网络请求mock，对APP进行集成测试。
+可以说目前最流行的网络请求库就是[OkHttp](https://github.com/square/okhttp)了，而且从安卓6.0开始它就是系统的默认实现了。而OkHttp还提供了另一个无比强大的工具：[MockWebServer](https://github.com/square/okhttp/blob/master/mockwebserver)。而OkHttp + [Retrofit](https://github.com/square/retrofit)应该是REST API请求的标配了，下面我就总结一下如何利用MockWebServer来进行网络请求mock，对APP进行集成测试。
 
 Retrofit 2.0中没有了end point的概念，取而代之的是base url，在创建Retrofit对象的时候可以配置，在测试中我们配置base url为`http://localhost:9876/`，同时在测试用例中我们配置MockWebServer运行在`9876`端口。这样任何通过Retrofit发起的API调用都是请求的MockWebServer了。
 

@@ -17,10 +17,10 @@ tags:
 
 接下来我们先看看有哪些可选方案：
 
-+ [React Native](https://facebook.github.io/react-native/) (Javascript)
-+ [Flutter](https://flutter.io/) (Dart)
-+ [J2ObjC](https://developers.google.com/j2objc/) + [GWT](http://www.gwtproject.org/) (Java)
-+ [Djinni](https://github.com/dropbox/djinni) + [WebAssembly](http://webassembly.org/) (C++)
++ [React Native](https://facebook.github.io/react-native) (Javascript)
++ [Flutter](https://flutter.io) (Dart)
++ [J2ObjC](https://developers.google.com/j2objc) + [GWT](http://www.gwtproject.org) (Java)
++ [Djinni](https://github.com/dropbox/djinni) + [WebAssembly](http://webassembly.org) (C++)
 
 其实如果要把小程序列入其中，也未尝不可，毕竟能在不同平台的微信和支付宝里运行，也堪称跨平台了。
 
@@ -47,7 +47,7 @@ RN 的主要优势有两大部分，一是 React 本身的优势，二是将「R
 
 + 写的是 JS 代码，实际运行的也是 JS 代码，在 JavaScriptCore VM 中运行（而不是 WebView）；
 + JS 代码里的 View 实际会使用 native View（在 RN 的上下文中，native 指的是原生），映射关系是可以控制的；
-  + 有一个 [native View 市场](https://react.parts/)，可以发现轮子、发布轮子；
+  + 有一个 [native View 市场](https://react.parts)，可以发现轮子、发布轮子；
 + 支持 JS 代码和 native 代码互相调用，三大特点：异步，批量，序列化；
   + 实际上 native 化靠的正是 JS 和 native 互相调用（RN 内部实现）；
   + 双向调用都是异步的；
@@ -73,7 +73,7 @@ Flutter 由 Google 开源，项目年龄比 RN 短大半年，目前仍处于 al
 + UI 代码的编写，借鉴了 React 的思想：组件化，声明式，集中的 build 函数（React 的 render）……
 + 利用 Flutter 自己的 GUI 引擎，高效实现所有的 2D GUI 开发；
 + 相机（拍照）、传感器、GPS、网络、持久化，都可以在 Flutter 里使用（利用 Dart 和 native 互调）；
-+ [Dart package 市场](https://pub.dartlang.org/)，也可以发现轮子、发布轮子；
++ [Dart package 市场](https://pub.dartlang.org)，也可以发现轮子、发布轮子；
 
 内部原理：
 
@@ -91,7 +91,7 @@ Flutter 由 Google 开源，项目年龄比 RN 短大半年，目前仍处于 al
 
 总结：Flutter 利用 Dart 代码可以预编译为机器码这一特性，实现了业务逻辑的跨平台；通过自己实现一套跨平台的 GUI 系统，实现了界面交互的跨平台。由于最终执行的代码都是机器码（C++，Dart），而且跨平台的实现基本不涉及 Dart 代码与 native 代码互相调用，所以 Flutter 的效率肯定是有保障的。在涉及到动画、手势等强交互 UI 特性时，Flutter 的性能应该比 RN 要高不少。Flutter 还自带了一套 Material Design 的跨平台控件库，简直良心。
 
-Web 端呢？[Dart 可是能运行在浏览器里的呢！](https://www.dartlang.org/)
+Web 端呢？[Dart 可是能运行在浏览器里的呢！](https://www.dartlang.org)
 
 > Dart runs fast in every modern browser, on the command line, on servers, and on mobile.
 
@@ -152,16 +152,16 @@ ReactNative 某个标签对应的 native view，如果修改 child view（增减
 React Native:
 
 + [Why React](https://github.com/reactjs/reactjs.org/blob/3c25e091555e24681e4571641742597e7ca990d1/docs/01-why-react.md)
-+ [The Good and the Bad of ReactJS and React Native](https://www.altexsoft.com/blog/engineering/the-good-and-the-bad-of-reactjs-and-react-native/)
++ [The Good and the Bad of ReactJS and React Native](https://www.altexsoft.com/blog/engineering/the-good-and-the-bad-of-reactjs-and-react-native)
 + [Removing User Interface Complexity, or Why React is Awesome](http://jlongster.com/Removing-User-Interface-Complexity,-or-Why-React-is-Awesome)
 + [Communication between native and React Native](https://facebook.github.io/react-native/docs/communication-ios.html)
 + [Under the hood of React Native, by Martin Konicek](https://speakerdeck.com/mkonicek/under-the-hood-of-react-native?slide=25)
 + [React Native: Under the Hood, by Alexander Kotliarskyi](https://speakerdeck.com/frantic/react-native-under-the-hood?slide=13)
-+ [Bridging in React Native: An in-depth look into React Native's core](https://tadeuzagallo.com/blog/react-native-bridge/)
++ [Bridging in React Native: An in-depth look into React Native's core](https://tadeuzagallo.com/blog/react-native-bridge)
 + [React Native Architecture Overview](https://speakerdeck.com/reactamsterdam/tadeu-zagallo-facebook-london-react-native-architecture-overview)
 
 Flutter:
 
 + [FAQ: Technology](https://flutter.io/faq/#technology)
-+ [Writing custom platform-specific code with platform channels](https://flutter.io/platform-channels/)
++ [Writing custom platform-specific code with platform channels](https://flutter.io/platform-channels)
 + [Does Dart have any useful features for web programmers?](https://softwareengineering.stackexchange.com/a/164304/291269)

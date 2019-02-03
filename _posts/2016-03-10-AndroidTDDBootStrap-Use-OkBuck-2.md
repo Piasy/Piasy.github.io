@@ -7,10 +7,10 @@ tags:
     - BUCK
 ---
 
-5个多月过去了，[OkBuck](https://github.com/Piasy/OkBuck)和[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)项目都发生了重大更新，[原文]({{ site.baseurl }}/AndroidTDDBootStrap-Use-OkBuck/)中的描述已经过时已久，今天趁着AndroidTDDBootStrap完成重构，更新AndroidTDDBootStrap的OkBuck配置过程，继续体验其畅快淋漓！
+5个多月过去了，[OkBuck](https://github.com/Piasy/OkBuck)和[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)项目都发生了重大更新，[原文]({{ site.baseurl }}/AndroidTDDBootStrap-Use-OkBuck/index.html)中的描述已经过时已久，今天趁着AndroidTDDBootStrap完成重构，更新AndroidTDDBootStrap的OkBuck配置过程，继续体验其畅快淋漓！
 
 ## 第一步，应用插件
-按照[OkBuck文档](http://blog.piasy.com/OkBuck/)的步骤，根据本工程的结构，在`/build.gradle`中加入配置，配置后`/build.gradle`是这样的：
+按照[OkBuck文档](http://blog.piasy.com/OkBuck)的步骤，根据本工程的结构，在`/build.gradle`中加入配置，配置后`/build.gradle`是这样的：
 
 ``` groovy
 ...

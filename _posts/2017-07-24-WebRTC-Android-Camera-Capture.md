@@ -6,7 +6,7 @@ tags:
     - WebRTC
 ---
 
-前面分享了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)，希望能给对 WebRTC 感兴趣的朋友带来帮助。不过有了开发环境只是迈出了万里长征第一步，后面的事情还得仔细研读源码才行，所以这里给大家先带来 WebRTC 的安卓 demo 工程—— AppRTC-Native 的源码导读系列。（[十个月前说好的拆 Dagger2](/2016/09/15/Understand-RxJava/) 看来又要等等了，海涵海涵...）
+前面分享了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/index.html)，希望能给对 WebRTC 感兴趣的朋友带来帮助。不过有了开发环境只是迈出了万里长征第一步，后面的事情还得仔细研读源码才行，所以这里给大家先带来 WebRTC 的安卓 demo 工程—— AppRTC-Native 的源码导读系列。（[十个月前说好的拆 Dagger2](/2016/09/15/Understand-RxJava/index.html) 看来又要等等了，海涵海涵...）
 
 WebRTC 的代码量不小，一次性看明白不太现实，在本系列中，我将试图搞清楚三个问题：
 
@@ -223,5 +223,5 @@ private static int getRotationDegree(int cameraId) {
 
 ## 后续文章
 
-+ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)
-+ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/)
++ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/index.html)
++ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html)

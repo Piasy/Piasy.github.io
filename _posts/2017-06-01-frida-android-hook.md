@@ -18,7 +18,7 @@ tags:
 + Frida 10.0.9
 + Nexus 5X
 + [Android 6.0 factory image MDA89E](https://dl.google.com/dl/android/aosp/bullhead-mda89e-factory-d716b566.zip)
-+ [卡刷 root](http://www.teamandroid.com/2016/08/04/root-nexus-5x-android-6-0-1-mtc20f-marshmallow-security-update/)
++ [卡刷 root](http://www.teamandroid.com/2016/08/04/root-nexus-5x-android-6-0-1-mtc20f-marshmallow-security-update)
 
 之前失败的手机系统：
 

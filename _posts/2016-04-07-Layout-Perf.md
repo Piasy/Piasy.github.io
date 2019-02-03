@@ -6,7 +6,7 @@ tags:
     - 性能优化
 ---
 
-一直以来，我们都在各种场合、各种文章中看到避免使用 RelativeLayout、避免使用过多的 layout 嵌套，因为它们存在很大的性能开销。开发的过程中也确实在留意这一点，然而每每编写 layout 文件时，都会怀疑，这样或者那样，到底会变快，还是变慢？本文就针对简单的 layout 和复杂的 layout，是否使用 RelativeLayout 的性能进行了测试，此外，还对最近很火的 [FlexLayout](https://github.com/mmin18/FlexLayout){:target="_blank"} 也进行了测试。测试代码和测试结果数据都可以在 [Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/perf/LayoutPerfDemo/){:target="_blank"}。
+一直以来，我们都在各种场合、各种文章中看到避免使用 RelativeLayout、避免使用过多的 layout 嵌套，因为它们存在很大的性能开销。开发的过程中也确实在留意这一点，然而每每编写 layout 文件时，都会怀疑，这样或者那样，到底会变快，还是变慢？本文就针对简单的 layout 和复杂的 layout，是否使用 RelativeLayout 的性能进行了测试，此外，还对最近很火的 [FlexLayout](https://github.com/mmin18/FlexLayout){:target="_blank"} 也进行了测试。测试代码和测试结果数据都可以在 [Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/perf/LayoutPerfDemo){:target="_blank"}。
 
 ## TL; DR
 + UI 简单时，RelativeLayout, FlexLayout 和其他 layout 的性能差异很小

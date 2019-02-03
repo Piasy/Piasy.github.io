@@ -7,7 +7,7 @@ tags:
     - 原理剖析
 ---
 
-[Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}，[OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"}，[Okio](https://github.com/square/okio){:target="_blank"} 是 Square 团队开源的安卓平台网络层三板斧，它们逐层分工，非常优雅地解决我们对网络请求甚至更广泛的 I/O 操作的需求。其中最底层的 Okio 堪称小而美，功能也更基础，应用更广泛。这次我们就对它进行一个详细的分析。本文的分析基于 [Okio 截至 2016.8.4 的最新源码](https://github.com/square/okio/tree/6b72ffd4137aa0a1f36b37b401ed3c10caeec50c){:target="_blank"}，非常建议大家下载 Okio 源码之后，跟着本文，过一遍源码。
+[Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}，[OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"}，[Okio](https://github.com/square/okio){:target="_blank"} 是 Square 团队开源的安卓平台网络层三板斧，它们逐层分工，非常优雅地解决我们对网络请求甚至更广泛的 I/O 操作的需求。其中最底层的 Okio 堪称小而美，功能也更基础，应用更广泛。这次我们就对它进行一个详细的分析。本文的分析基于 [Okio 截至 2016.8.4 的最新源码](https://github.com/square/okio/tree/6b72ffd4137aa0a1f36b37b401ed3c10caeec50c){:target="_blank"}，非常建议大家下载 Okio 源码之后，跟着本文，过一遍源码。
 
 ## 1，概览
 

@@ -6,7 +6,7 @@ tags:
     - 架构
 ---
 
-在[完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/){:target="_blank"}中，我主要介绍了网络请求、数据库持久化、Immutable/Value types、Json 序列化与反序列化这四部分内容，而剩下的关于 Parcelable，ZonedDateTime，null safety，rx error handling，config injection以及测试相关的内容，将在本篇中进行介绍。
+在[完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/index.html){:target="_blank"}中，我主要介绍了网络请求、数据库持久化、Immutable/Value types、Json 序列化与反序列化这四部分内容，而剩下的关于 Parcelable，ZonedDateTime，null safety，rx error handling，config injection以及测试相关的内容，将在本篇中进行介绍。
 
 声明：本文已独家授权微信公众号Android程序员（AndroidTrending）在微信公众号平台原创首发。
 
@@ -389,7 +389,7 @@ public class ProviderConfigModule {
 然后我们把 `ProviderModule` 和 `ProviderConfigModule` 都添加到目标 component 的 modules 列表中，就可以利用 dagger2 来进行依赖创建和依赖注入了。 是不是非常优雅？
 
 ## 8. 单元测试相关
-终于到了最后一部分了：单元测试。为什么要进行单元测试这个问题讲得太多了，我这里就不再多说了。测试相关的内容，主要启发自 [Square 团队分享的单元测试系列文章](http://www.philosophicalhacker.com/2015/05/01/how-to-make-our-android-apps-unit-testable-pt-1/){:target="_blank"}。
+终于到了最后一部分了：单元测试。为什么要进行单元测试这个问题讲得太多了，我这里就不再多说了。测试相关的内容，主要启发自 [Square 团队分享的单元测试系列文章](http://www.philosophicalhacker.com/2015/05/01/how-to-make-our-android-apps-unit-testable-pt-1){:target="_blank"}。
 
 ### 8.1. The Square Way
 square way 的思路很简单，通过引入一层 delegate 接口，我们可以把我们的业务逻辑代码和安卓系统隔离开来，这样我们的业务逻辑代码就和安卓系统没有耦合了，delegate 接口我们可以随意 mock，因此我们就完全可以编写在 JVM 上运行的测试用例。当然也存在 Robolectric 这样的框架，可以在 JVM 上运行安卓测例，但我更倾向于 square way 这样的方式。因为它不仅能让我们更快的执行测试用例，还会让我们的代码更加解耦，更 SOLID。
@@ -490,7 +490,7 @@ unMock {
 
 在编写测试的时候，我们应该尽可能少地进行 mock，尤其是在编写集成测试的时候。例如，能在 OkHttp 层提供 mock 的数据，就不要 mock OkHttpClient，也不要 mock Retrofit，更不要 mock 定义的 RESTful API。
 
-OkHttp 为我们提供了 [MockWebServer](https://github.com/square/okhttp/blob/master/mockwebserver){:target="_blank"}，让我们可以在 OkHttp 层提供 mock 数据。我曾在之前的文章 [（可能是）目前最全面的Android Espresso配置指南了](/2016/03/13/Android-Espresso-test-start/){:target="_blank"} 中介绍过如何使用 MockWebServer 来返回 mock 的数据，但今天我们有了更加便捷的工具：[RestMock](https://github.com/andrzejchm/RESTMock){:target="_blank"}。
+OkHttp 为我们提供了 [MockWebServer](https://github.com/square/okhttp/blob/master/mockwebserver){:target="_blank"}，让我们可以在 OkHttp 层提供 mock 数据。我曾在之前的文章 [（可能是）目前最全面的Android Espresso配置指南了](/2016/03/13/Android-Espresso-test-start/index.html){:target="_blank"} 中介绍过如何使用 MockWebServer 来返回 mock 的数据，但今天我们有了更加便捷的工具：[RestMock](https://github.com/andrzejchm/RESTMock){:target="_blank"}。
 
 RestMock 是对 MockWebServer 的一层封装，让我们可以更加便捷地定义 网络请求要返回的 mock 数据。
 

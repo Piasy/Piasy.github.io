@@ -6,7 +6,7 @@ tags:
 ---
 
 ## Activity finish过程
-分析安卓[6.0.1_r10源码](http://androidxref.com/6.0.1_r10/){:target="_blank"}
+分析安卓[6.0.1_r10源码](http://androidxref.com/6.0.1_r10){:target="_blank"}
 
 + Activity::finish() =>
 + Activity::finish(boolean) =>

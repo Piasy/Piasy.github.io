@@ -6,16 +6,16 @@ tags:
     - OpenGL
 ---
 
-我在去年六月份学习了 OpenGL 的一些基本概念，整理了一个 demo 和两篇文章，并在今年六月份复习修正了一番。不久前我进一步向[铁蕾兄](http://zhangtielei.com/)学习了四种常用 2D 纹理变换的实现思路（以及本文中的其他总结性文字），由于铁蕾兄实在太忙，无暇快速整理成文，因此我就在这里为他代笔了 :)
+我在去年六月份学习了 OpenGL 的一些基本概念，整理了一个 demo 和两篇文章，并在今年六月份复习修正了一番。不久前我进一步向[铁蕾兄](http://zhangtielei.com)学习了四种常用 2D 纹理变换的实现思路（以及本文中的其他总结性文字），由于铁蕾兄实在太忙，无暇快速整理成文，因此我就在这里为他代笔了 :)
 
 没有阅读过前两篇、对 OpenGL 基本概念不熟悉的朋友，下面是链接：
 
-+ [安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/)
-+ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)
++ [安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/index.html)
++ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/index.html)
 
 ## 整体思路
 
-在[基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/) 中我们提到着色器程序（Shader）的最终目的就是确定图形的顶点（Vertex）坐标和片元（Fragment）颜色。其实这正是 OpenGL 提供的最基本、最核心的操作原语，我们想要用 OpenGL 实现任何效果，无论是静止的光影、色彩、形状，还是运动的物理效果、粒子效果，归根结底都是要根据时间和位置确定顶点坐标和片元颜色。不过这个归根结底说得轻巧，但其实现方法在图形学相关的领域里却有大量的研究课题，是非常广阔的领域，这里我就没有能力展开了。
+在[基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/index.html) 中我们提到着色器程序（Shader）的最终目的就是确定图形的顶点（Vertex）坐标和片元（Fragment）颜色。其实这正是 OpenGL 提供的最基本、最核心的操作原语，我们想要用 OpenGL 实现任何效果，无论是静止的光影、色彩、形状，还是运动的物理效果、粒子效果，归根结底都是要根据时间和位置确定顶点坐标和片元颜色。不过这个归根结底说得轻巧，但其实现方法在图形学相关的领域里却有大量的研究课题，是非常广阔的领域，这里我就没有能力展开了。
 
 本文将要展开讲的四种常用 2D 纹理变换，**其核心思想就是调整纹理坐标和顶点坐标**。
 
@@ -83,9 +83,9 @@ tags:
 
 > Talk is cheap, show me the code.
 
-下面我将修改 [Grafika](https://github.com/google/grafika) 的预览代码，为其加上上述变换的功能，完整代码可以在[我的 GitHub 获取](https://github.com/Piasy/grafika/tree/dont_touch_fragment_coordinate/)。
+下面我将修改 [Grafika](https://github.com/google/grafika) 的预览代码，为其加上上述变换的功能，完整代码可以在[我的 GitHub 获取](https://github.com/Piasy/grafika/tree/dont_touch_fragment_coordinate)。
 
-Grafika 的绘制逻辑封装在 `Texture2dProgram#draw` 函数中，其 Shader 代码非常简单，已经基本被[矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)涵盖了，只是绘制矩形时用了另一种接口。我们之前使用的是 `GLES20.glDrawElements(GLES20.GL_TRIANGLES,,,)`，而 Grafika 使用的是 `GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,,)`。
+Grafika 的绘制逻辑封装在 `Texture2dProgram#draw` 函数中，其 Shader 代码非常简单，已经基本被[矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/index.html)涵盖了，只是绘制矩形时用了另一种接口。我们之前使用的是 `GLES20.glDrawElements(GLES20.GL_TRIANGLES,,,)`，而 Grafika 使用的是 `GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,,)`。
 
 `glDrawElements` 是给定顶点列表和绘制顺序（顶点索引列表）进行绘制，而 `glDrawArrays` 则只给定顶点列表。对于非常复杂的模型，需要很多三角形构成，顶点大量重复，而顶点坐标占用的空间比索引占用的空间大得多，因此 `glDrawElements` 空间效率会更高。
 
@@ -312,4 +312,4 @@ private void resolveScale(int inputWidth, int inputHeight, int outputWidth,
 
 ## 总结
 
-在本文中，我代铁蕾兄分享了 OpenGL 四种常用 2D 变换的实现思路，实现代码则基于 Grafika 项目，3D 变换相关的内容，我会在今后涉及到之后再进行总结，时间未定，不过铁蕾兄近期应该会分享 OpenGL 3D 坐标变换的内容，[大家敬请期待](http://zhangtielei.com/)！
+在本文中，我代铁蕾兄分享了 OpenGL 四种常用 2D 变换的实现思路，实现代码则基于 Grafika 项目，3D 变换相关的内容，我会在今后涉及到之后再进行总结，时间未定，不过铁蕾兄近期应该会分享 OpenGL 3D 坐标变换的内容，[大家敬请期待](http://zhangtielei.com)！

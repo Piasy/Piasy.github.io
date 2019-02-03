@@ -6,7 +6,7 @@ tags:
     - 架构
 ---
 
-前些日子在 [Android Weekly](http://androidweekly.net/){:target="_blank"} 上看到了一篇[介绍 SqlDelight 使用](http://blog.alexsimo.com/delightful-persistence-android/){:target="_blank"}的文章，虽然之前了解过 [SqlDelight](https://github.com/square/sqldelight){:target="_blank"} 和 [SqlBrite](https://github.com/square/sqlbrite){:target="_blank"}，但却一直没有尝试过。但这次我被文章中的例子惊艳到了，而且 SqlDelight 还能和 [AutoValue](https://github.com/google/auto/tree/master/value){:target="_blank"} 兼容使用，进一步打消了我的顾虑，我就赶紧在 [AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"} 项目进行了尝试，并且甩掉了之前使用的 [StorIO](https://github.com/pushtorefresh/storio){:target="_blank"} 这个 ORM 库。迁移完毕之后我不得不惊叹，我 _遇见_ 了一套完美的安卓 model 层架构。本文所有的代码均来自[我在 Github 上的 AndroidTDDBootStrap 项目](https://github.com/Piasy/AndroidTDDBootStrap/){:target="_blank"}。
+前些日子在 [Android Weekly](http://androidweekly.net){:target="_blank"} 上看到了一篇[介绍 SqlDelight 使用](http://blog.alexsimo.com/delightful-persistence-android){:target="_blank"}的文章，虽然之前了解过 [SqlDelight](https://github.com/square/sqldelight){:target="_blank"} 和 [SqlBrite](https://github.com/square/sqlbrite){:target="_blank"}，但却一直没有尝试过。但这次我被文章中的例子惊艳到了，而且 SqlDelight 还能和 [AutoValue](https://github.com/google/auto/tree/master/value){:target="_blank"} 兼容使用，进一步打消了我的顾虑，我就赶紧在 [AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"} 项目进行了尝试，并且甩掉了之前使用的 [StorIO](https://github.com/pushtorefresh/storio){:target="_blank"} 这个 ORM 库。迁移完毕之后我不得不惊叹，我 _遇见_ 了一套完美的安卓 model 层架构。本文所有的代码均来自[我在 Github 上的 AndroidTDDBootStrap 项目](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"}。
 
 声明：本文已独家授权微信公众号Android程序员（AndroidTrending）在微信公众号平台原创首发。
 
@@ -25,7 +25,7 @@ tags:
 这里面可能有很多新鲜词汇，不要紧张，请接着往下看，下面将对每部分进行详细的展开。
 
 ### 网络请求
-[OkHttp](http://square.github.io/okhttp/){:target="_blank"} 和 [Retrofit](http://square.github.io/retrofit/){:target="_blank"} 自是当仁不让了。这两尊大佛太有名了，我就不啰嗦了，一句话来说，**OkHttp 是安卓6.0以后的官方 Http Client**，而 **Retrofit 则让我们只需要定义一个 Java interface 就可以发起 RESTful API 请求**，它们都是 Square 公司的开源项目，这里我使用的分别是 Okhttp3 和 Retrofit2。
+[OkHttp](http://square.github.io/okhttp){:target="_blank"} 和 [Retrofit](http://square.github.io/retrofit){:target="_blank"} 自是当仁不让了。这两尊大佛太有名了，我就不啰嗦了，一句话来说，**OkHttp 是安卓6.0以后的官方 Http Client**，而 **Retrofit 则让我们只需要定义一个 Java interface 就可以发起 RESTful API 请求**，它们都是 Square 公司的开源项目，这里我使用的分别是 Okhttp3 和 Retrofit2。
 
 ### 持久化
 持久化模块当然就是这次新晋的主角 [SqlDelight](https://github.com/square/sqldelight){:target="_blank"} 和 [SqlBrite](https://github.com/square/sqlbrite){:target="_blank"} 了。
@@ -155,7 +155,7 @@ public abstract class GithubUser implements GithubUserModel {
 
 前面提到，mapper 是用来把数据库的 Query 对象 map 为数据对象的，为了省去我们每次进行这样的 map 操作时 new 一个 mapper，我们只需要在此处 new 一次即可。而 marshal 类则可以封装我们把数据对象 map 为 ContentValues 时的公用逻辑，也是非常有用的。marshal 的作用类似于 builder，但它的最终结果是 ContentValues 对象，用于保存到数据库，并不是 GithubUser 对象，所以我们仍需一个 builder。因为我们的数据类不仅仅用于反序列化 API 返回的数据以及从 DB 中读取数据，构造对象的需求是真实存在且必要的。
 
-这部分最后值得一提的就是 RetroLambda 了，使用了 method reference 之后，我们创建 MAPPER 对象的代码也变得简洁了不少。之前由于 BUCK 构建系统和 RetroLambda 不能一起工作，所以将近一年没有体验过 lambda 的简洁之美了，[几天前终于解决了这个问题](/2016/05/03/BUCK-With-RetroLambda/){:target="_blank"}，现在又能同时享受 BUCK 的飞速构建和 lambda 的极致简洁了！
+这部分最后值得一提的就是 RetroLambda 了，使用了 method reference 之后，我们创建 MAPPER 对象的代码也变得简洁了不少。之前由于 BUCK 构建系统和 RetroLambda 不能一起工作，所以将近一年没有体验过 lambda 的简洁之美了，[几天前终于解决了这个问题](/2016/05/03/BUCK-With-RetroLambda/index.html){:target="_blank"}，现在又能同时享受 BUCK 的飞速构建和 lambda 的极致简洁了！
 
 ### 数据库访问
 数据库访问使用的就是上文提到的 [SqlBrite](https://github.com/square/sqlbrite){:target="_blank"} 了。SqlBrite 对 SQLiteOpenHelper 和 ContentResolver 进行了轻量的封装，同时为查询操作提供 Reactive API（响应式编程），后续对数据表的操作，都会触发 Observable 的更新，让我们各个界面的数据同步问题得以优雅的解决。
@@ -177,7 +177,7 @@ SqlBrite 则和 StorIO 完全相反，几乎没有进行封装，我们使用的
 
 使用了 AutoValue 之后，我们的代码中引用的都是 `GithubUser` 这样的抽象类，而不是 `AutoValue_GithubUser` 这样的实现类，这当然是更好的，更 SOLID。但是 Gson 如何知道一段 Json 字符串应该反序列化为 `AutoValue_GithubUser` 这样的实现类呢？
 
-在这里我引入了 [auto-value-gson](https://github.com/rharter/auto-value-gson){:target="_blank"} 来解决这个问题，它是一个 AutoValue 的扩展，**可以自动生成 gson adapter 代码**。关于 AutoValue 的扩展，感兴趣的朋友可以阅读 [auto-value-gson 作者的这篇文章](http://ryanharter.com/blog/2016/03/22/autovalue/){:target="_blank"}。AutoValue 及其系列扩展可以大大减少我们要编写的代码，而且生成的代码正确性和效率都经过了广泛的测试，值得信赖，非常建议大家了解和使用。
+在这里我引入了 [auto-value-gson](https://github.com/rharter/auto-value-gson){:target="_blank"} 来解决这个问题，它是一个 AutoValue 的扩展，**可以自动生成 gson adapter 代码**。关于 AutoValue 的扩展，感兴趣的朋友可以阅读 [auto-value-gson 作者的这篇文章](http://ryanharter.com/blog/2016/03/22/autovalue){:target="_blank"}。AutoValue 及其系列扩展可以大大减少我们要编写的代码，而且生成的代码正确性和效率都经过了广泛的测试，值得信赖，非常建议大家了解和使用。
 
 auto-value-gson 需要我们为 GithubUser 类加入一个静态方法：
 

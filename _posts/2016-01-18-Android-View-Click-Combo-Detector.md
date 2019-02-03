@@ -88,4 +88,4 @@ new RxComboDetector.Builder()
 
 最后，`RxComboDetector`只是一个事件的检测类，并没有炫酷的UI效果，所以我使用了[rebound](https://github.com/facebook/rebound)库来实现具有物理真实感的View动画效果。
 
-最后的最后，demo中的小黄笑脸来自[YOLO](https://www.yoloyolo.tv/)的logo。
+最后的最后，demo中的小黄笑脸来自[YOLO](https://www.yoloyolo.tv)的logo。

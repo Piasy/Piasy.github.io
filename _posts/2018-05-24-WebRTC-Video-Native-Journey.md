@@ -14,7 +14,7 @@ _本文的分析基于 WebRTC 的 #23295 提交_。
 
 ## 基本概念
 
-扎到代码里之前，让我们先理清一些概念，下面这些内容都是总结自 [WebRTC 标准](http://w3c.github.io/webrtc-pc/)。
+扎到代码里之前，让我们先理清一些概念，下面这些内容都是总结自 [WebRTC 标准](http://w3c.github.io/webrtc-pc。
 
 ### PC stream track source sink
 
@@ -160,7 +160,7 @@ VideoStreamEncoder 开始接收视频数据后，会在 `VideoStreamEncoder::Rec
 
 至于怎么把它们关联起来，就需要在构造 VCM 的时候，把接口实现注入进去了，或者利用工厂模式，把 factory 注入进去，VCM 调用 factory 来创建接口的平台相关实现，显然 WebRTC 是用了工厂模式。
 
-这个套路其实我在[移动客户端跨平台开发方案探索](/2017/12/16/Mobile-Client-Cross-Platform-Development/)中提到过，看，WebRTC 也是这样的套路 :)
+这个套路其实我在[移动客户端跨平台开发方案探索](/2017/12/16/Mobile-Client-Cross-Platform-Development/index.html)中提到过，看，WebRTC 也是这样的套路 :)
 
 ## 总结
 

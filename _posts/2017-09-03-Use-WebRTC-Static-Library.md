@@ -6,7 +6,7 @@ tags:
     - WebRTC
 ---
 
-前面我们分析 [WebRTC P2P 连接过程](/2017/08/30/WebRTC-P2P-part1/)时，在 C++ 代码的世界里徜徉了那么久，其中有各种各样的功能模块，难道大家看着不心动？反正我是很想把它们剥离出来用的，第一个拿来开刀的当然就是 P2P 模块了。
+前面我们分析 [WebRTC P2P 连接过程](/2017/08/30/WebRTC-P2P-part1/index.html)时，在 C++ 代码的世界里徜徉了那么久，其中有各种各样的功能模块，难道大家看着不心动？反正我是很想把它们剥离出来用的，第一个拿来开刀的当然就是 P2P 模块了。
 
 不过在这之前，我还得好好补补 NDK 开发的相关知识，在这篇文章中，我不会涉及 WebRTC P2P 模块的代码，而是简单用一用它的多线程模块，力图先把路给趟平了。
 
@@ -16,7 +16,7 @@ tags:
 
 ### 编译
 
-苦于配置 WebRTC 开发环境的朋友，福音来了！[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)。
+苦于配置 WebRTC 开发环境的朋友，福音来了！[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/index.html)。
 
 ``` bash
 gn gen out/android_arm/Debug --args=--args='target_os="android" target_cpu="arm"'
@@ -27,7 +27,7 @@ ninja -C out/android_arm/Debug webrtc:webrtc
 
 ### 头文件
 
-头文件可以从 [sourcey.com](https://sourcey.com/precompiled-webrtc-libraries/) 下载，如果没有对应 WebRTC 的版本，则可以自己提取（third party 变化应该不会太大，就用下载的好了）：
+头文件可以从 [sourcey.com](https://sourcey.com/precompiled-webrtc-libraries) 下载，如果没有对应 WebRTC 的版本，则可以自己提取（third party 变化应该不会太大，就用下载的好了）：
 
 ``` bash
 find webrtc -name "*.h" | xargs -I {} cp --parents {} <path to store headers>
@@ -114,7 +114,7 @@ target_link_libraries(try-webrtc
 + `include_directories` 添加头文件查找路径，否则编译时会找不到头文件；
 + `add_definitions` 添加基础宏定义，否则编译时会报错：`Must define either WEBRTC_WIN or WEBRTC_POSIX.`；
 + `target_link_libraries` 添加预编译的静态库需要用绝对路径，可以通过 `CMAKE_CURRENT_LIST_DIR` 变量获取当前 CMakeLists 文件路径；
-+ 更多关于 CMake 的说明，可以查阅[安卓 NDK 入门指南：CMake 基本使用](/2017/08/26/NDK-Start-Guide/#cmake-)，或 [Developer 官网](https://developer.android.com/studio/projects/add-native-code.html)，以及 [CMake 官网](https://cmake.org/)；
++ 更多关于 CMake 的说明，可以查阅[安卓 NDK 入门指南：CMake 基本使用](/2017/08/26/NDK-Start-Guide/#cmake-)，或 [Developer 官网](https://developer.android.com/studio/projects/add-native-code.html)，以及 [CMake 官网](https://cmake.org)；
 
 #### `build.gradle`
 

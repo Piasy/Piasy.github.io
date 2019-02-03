@@ -8,7 +8,7 @@ tags:
 
 做安卓开发满打满算也有 3 年了，OpenGL 这块之前完全没有涉及过，这两周一直在整理安卓相机预览、用 GPUImage 进行美颜处理以及美颜后的数据传输这块内容，结果 GPUImage 的美颜原理基本一窍不通，因此就把 OpenGL ES 好好入了个门，并且整理为 [安卓 OpenGL ES 2.0 完全入门](/tags/#OpenGL) 系列。本文是系列第一篇，主要是介绍了 OpenGL 的一些基本概念，并且包含了对一个 hello world 程序的完全解析，注意，并不是有一个 hello world，而是对其进行了完全解析！
 
-_Update 2017.07.16：时隔一年，工作再次涉及安卓平台 OpenGL 相关内容，趁此机会又学习了一次[基础知识](http://www.learnopengles.com/tag/opengl-es-2-for-android-a-quick-start-guide/)，并对本文做了[更新](https://github.com/Piasy/Piasy.github.io/commits/master/_posts/2016-06-07-Open-gl-es-android-2-part-1.md)。_
+_Update 2017.07.16：时隔一年，工作再次涉及安卓平台 OpenGL 相关内容，趁此机会又学习了一次[基础知识](http://www.learnopengles.com/tag/opengl-es-2-for-android-a-quick-start-guide)，并对本文做了[更新](https://github.com/Piasy/Piasy.github.io/commits/master/_posts/2016-06-07-Open-gl-es-android-2-part-1.md)。_
 
 ## 1. 基本概念
 
@@ -371,6 +371,6 @@ Matrix.translateM(mMVPMatrix, 0, 0f, 0f, -2.5f);
 
 ## 后续文章
 
-+ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)
-+ [安卓 OpenGL ES 2.0 完全入门（三）：2D 纹理的裁剪、翻转、旋转、缩放](/2017/10/06/Open-gl-es-android-2-part-3/)
-+ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)
++ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/index.html)
++ [安卓 OpenGL ES 2.0 完全入门（三）：2D 纹理的裁剪、翻转、旋转、缩放](/2017/10/06/Open-gl-es-android-2-part-3/index.html)
++ [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/index.html)

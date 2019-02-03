@@ -109,4 +109,4 @@ RxScreenshotDetector.start(getApplicationContext())
 
 这里使用了[RxLifecycle](https://github.com/trello/RxLifecycle)，在Activity onPause之后unsubscribe，以保证不会发生内存泄漏。此外subscribe传入的是完整的Subscriber，是为了防止授权失败时没有onError处理器，导致crash。
 
-最后，安利一发[YOLO直播APP](https://www.yoloyolo.tv/)。
+最后，安利一发[YOLO直播APP](https://www.yoloyolo.tv)。

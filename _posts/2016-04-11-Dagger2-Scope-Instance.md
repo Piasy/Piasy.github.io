@@ -7,7 +7,7 @@ tags:
     - PoC
 ---
 
-[Dagger2](https://github.com/google/dagger){:target="_blank"} 已经在项目中用了一年多了，之前曾看到过[一篇文章](http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes/){:target="_blank"}，里面说 Scope 注解可以保证依赖在每个 component 生命周期内的单例性，即局部单例。但上周一天和同事一起看生成的 injector 代码，却并未发现这一点是怎么做到的，于是得出“单例性需要 module 的 provide 方法实现来保证”的结论。但我依然对此不甚放心，决定仔细实验一番。测试代码可以在 [Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/showcase/Dagger2ScopeInstanceDemo/){:target="_blank"}。
+[Dagger2](https://github.com/google/dagger){:target="_blank"} 已经在项目中用了一年多了，之前曾看到过[一篇文章](http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes){:target="_blank"}，里面说 Scope 注解可以保证依赖在每个 component 生命周期内的单例性，即局部单例。但上周一天和同事一起看生成的 injector 代码，却并未发现这一点是怎么做到的，于是得出“单例性需要 module 的 provide 方法实现来保证”的结论。但我依然对此不甚放心，决定仔细实验一番。测试代码可以在 [Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/showcase/Dagger2ScopeInstanceDemo){:target="_blank"}。
 
 ## TL; DR
 + component 的 inject 函数不要声明基类参数；

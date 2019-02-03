@@ -16,7 +16,7 @@ _注意：这里我假设大家具备 Docker 的基本使用能力，如不具�
 
 ## WebRTC 编译环境
 
-一开始我是用的 [webrtc-build-scripts](https://github.com/Piasy/webrtc-build-scripts) 这个工具，它利用的是 Vagrant，为了和后面的其他工具统一，我就基于它构建了一个 Docker 镜像：[piasy/webrtc-build](https://hub.docker.com/r/piasy/webrtc-build/)。
+一开始我是用的 [webrtc-build-scripts](https://github.com/Piasy/webrtc-build-scripts) 这个工具，它利用的是 Vagrant，为了和后面的其他工具统一，我就基于它构建了一个 Docker 镜像：[piasy/webrtc-build](https://hub.docker.com/r/piasy/webrtc-build)。
 
 首先是 pull 镜像：
 
@@ -65,7 +65,7 @@ get_webrtc
 build_apprtc
 ```
 
-更多编译指令，可以参考 [webrtc-build-scripts](https://github.com/pristineio/webrtc-build-scripts) 和 [WebRTC 项目官网](https://webrtc.org/native-code/android/)。
+更多编译指令，可以参考 [webrtc-build-scripts](https://github.com/pristineio/webrtc-build-scripts) 和 [WebRTC 项目官网](https://webrtc.org/native-code/android)。
 
 ### 命令行使用 Shadowsocks 代理
 
@@ -130,11 +130,11 @@ Android demo 可以利用上面的 WebRTC 源码编译出 APK，但我们如何�
 + [webrtc/sdk/android/src/java/org/webrtc](https://chromium.googlesource.com/external/webrtc/+/master/webrtc/sdk/android/src/java/org/webrtc)
 + [webrtc/base/java/src/org/webrtc](https://chromium.googlesource.com/external/webrtc/+/master/webrtc/base/java/src/org/webrtc)
 + [webrtc/modules/audio_device/android/java/src/org/webrtc/voiceengine](https://chromium.googlesource.com/external/webrtc/+/master/webrtc/modules/audio_device/android/java/src/org/webrtc/voiceengine)
-+ [webrtc/examples/androidapp](https://chromium.googlesource.com/external/webrtc/+/master/webrtc/examples/androidapp/)
++ [webrtc/examples/androidapp](https://chromium.googlesource.com/external/webrtc/+/master/webrtc/examples/androidapp)
 
 ## AppRTC-Server
 
-AppRTC 是 WebRTC 的一个 demo 应用，它需要和 Server 配合才能运行。这个 Server 的搭建是最令人头疼的了，不过不用担心，咱这不是有开箱即用的工具嘛：[piasy/apprtc-server](https://hub.docker.com/r/piasy/apprtc-server/)。
+AppRTC 是 WebRTC 的一个 demo 应用，它需要和 Server 配合才能运行。这个 Server 的搭建是最令人头疼的了，不过不用担心，咱这不是有开箱即用的工具嘛：[piasy/apprtc-server](https://hub.docker.com/r/piasy/apprtc-server)。
 
 pull 镜像：
 

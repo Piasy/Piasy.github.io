@@ -6,7 +6,7 @@ tags:
     - 基础知识
 ---
 
-RESTful API 调用很多人都在用 Retrofit，说到 Retrofit 就不得不提动态代理，虽然这不是它唯一的亮点，而且也不是动态代理的典型使用场景，但大家就是爱问：说说动态代理是怎么回事吧？Retrofit 的解析请见 [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/)。
+RESTful API 调用很多人都在用 Retrofit，说到 Retrofit 就不得不提动态代理，虽然这不是它唯一的亮点，而且也不是动态代理的典型使用场景，但大家就是爱问：说说动态代理是怎么回事吧？Retrofit 的解析请见 [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html)。
 
 ## 动态代理的原理
 

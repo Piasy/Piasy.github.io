@@ -30,7 +30,7 @@ Task 内的 Activity 以栈的形式组织起来，这个 _栈_ 也就是 develo
 
 和默认模式相比，新启动一个 Activity 时，如果当前栈顶就是这个 Activity 的实例，那就不会创建新的 Activity，而是调用该实例的 `onNewIntent()` 方法。其他情况行为和默认模式一致。
 
-注意，如果 A 启动 B，在创建新的 B 实例过程中，如果用户按下返回键，A 是可以 resume 的，但如果 B 是 singleTop，且它再尝试启动 B，那么在 `onNewIntent()` 被调用之前，用户按下返回键，B 也不会 resume。更具体的过程，请参见[安卓基础：Activity/Fragment 生命周期](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/)。
+注意，如果 A 启动 B，在创建新的 B 实例过程中，如果用户按下返回键，A 是可以 resume 的，但如果 B 是 singleTop，且它再尝试启动 B，那么在 `onNewIntent()` 被调用之前，用户按下返回键，B 也不会 resume。更具体的过程，请参见[安卓基础：Activity/Fragment 生命周期](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/index.html)。
 
 ### singleTask
 

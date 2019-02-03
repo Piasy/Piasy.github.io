@@ -73,7 +73,7 @@ String run(String url) throws IOException {
 }
 ```
 
-`OkHttpClient` 实现了 `Call.Factory`，负责根据请求创建新的 `Call`，在 [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}中我们曾和它发生过一次短暂的遭遇：
+`OkHttpClient` 实现了 `Call.Factory`，负责根据请求创建新的 `Call`，在 [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}中我们曾和它发生过一次短暂的遭遇：
 
 > `callFactory` 负责创建 HTTP 请求，HTTP 请求被抽象为了 `okhttp3.Call` 类，它表示一个已经准备好，可以随时执行的 HTTP 请求
 
@@ -143,7 +143,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 }
 ```
 
-在 [OkHttp 开发者之一介绍 OkHttp 的文章里面](https://publicobject.com/2016/07/03/the-last-httpurlconnection/){:target="_blank"}，作者讲到：
+在 [OkHttp 开发者之一介绍 OkHttp 的文章里面](https://publicobject.com/2016/07/03/the-last-httpurlconnection){:target="_blank"}，作者讲到：
 
 > the whole thing is just a stack of built-in interceptors.
 
@@ -192,7 +192,7 @@ private Response getResponseWithInterceptorChain() throws IOException {
 
 实际上建立连接就是创建了一个 `HttpCodec` 对象，它将在后面的步骤中被使用，那它又是何方神圣呢？它是对 HTTP 协议操作的抽象，有两个实现：`Http1Codec` 和 `Http2Codec`，顾名思义，它们分别对应 HTTP/1.1 和 HTTP/2 版本的实现。
 
-在 `Http1Codec` 中，它利用 [Okio](https://github.com/square/okio/){:target="_blank"} 对 `Socket` 的读写操作进行封装，Okio 以后有机会再进行分析，现在让我们对它们保持一个简单地认识：它对 `java.io` 和 `java.nio` 进行了封装，让我们更便捷高效的进行 IO 操作。
+在 `Http1Codec` 中，它利用 [Okio](https://github.com/square/okio){:target="_blank"} 对 `Socket` 的读写操作进行封装，Okio 以后有机会再进行分析，现在让我们对它们保持一个简单地认识：它对 `java.io` 和 `java.nio` 进行了封装，让我们更便捷高效的进行 IO 操作。
 
 而创建 `HttpCodec` 对象的过程涉及到 `StreamAllocation`、`RealConnection`，代码较长，这里就不展开，这个过程概括来说，就是找到一个可用的 `RealConnection`，再利用 `RealConnection` 的输入输出（`BufferedSource` 和 `BufferedSink`）创建 `HttpCodec` 对象，供后续步骤使用。
 

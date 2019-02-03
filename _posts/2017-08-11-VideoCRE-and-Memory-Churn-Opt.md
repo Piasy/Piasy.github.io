@@ -7,7 +7,7 @@ tags:
     - WebRTC
 ---
 
-前面三篇中，我们依次分析了 WebRTC Android 的[视频采集](/2017/07/24/WebRTC-Android-Camera-Capture/)、[视频渲染](/2017/07/26/WebRTC-Android-Render-Video/)和[视频硬编码](/2017/08/08/WebRTC-Android-HW-Encode-Video/)，Live Streaming 视频的前段就已经全了。WebRTC 是个宝，初窥这部分代码时就被它的 Capturer 类的设计惊艳到了，仔细品鉴后越发佩服起来，里面简直填了太多坑了，如此宝贝，如不能为我所用，岂非一大憾事！而前三篇的解读，正是为了今天能将其剥离出来所做的铺垫，现在就有请我们今天的主角——[VideoCRE, _Video Capture, Render and Encode_](https://github.com/Piasy/VideoCRE)——闪亮登场。
+前面三篇中，我们依次分析了 WebRTC Android 的[视频采集](/2017/07/24/WebRTC-Android-Camera-Capture/index.html)、[视频渲染](/2017/07/26/WebRTC-Android-Render-Video/index.html)和[视频硬编码](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html)，Live Streaming 视频的前段就已经全了。WebRTC 是个宝，初窥这部分代码时就被它的 Capturer 类的设计惊艳到了，仔细品鉴后越发佩服起来，里面简直填了太多坑了，如此宝贝，如不能为我所用，岂非一大憾事！而前三篇的解读，正是为了今天能将其剥离出来所做的铺垫，现在就有请我们今天的主角——[VideoCRE, _Video Capture, Render and Encode_](https://github.com/Piasy/VideoCRE)——闪亮登场。
 
 ## VideoCRE 结构
 

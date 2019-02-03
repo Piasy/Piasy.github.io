@@ -11,10 +11,10 @@ tags:
 
 前面四篇没看过的朋友，下面是链接：
 
-+ [相机采集实现分析](/2017/07/24/WebRTC-Android-Camera-Capture/)
-+ [预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/)
-+ [视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/)
-+ [VideoCRE 与内存抖动优化](/2017/08/11/VideoCRE-and-Memory-Churn-Opt/)
++ [相机采集实现分析](/2017/07/24/WebRTC-Android-Camera-Capture/index.html)
++ [预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/index.html)
++ [视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html)
++ [VideoCRE 与内存抖动优化](/2017/08/11/VideoCRE-and-Memory-Churn-Opt/index.html)
 
 ## P2P 连接过程
 
@@ -114,7 +114,7 @@ candidate 的收集由设备网络连接变化触发：
 + message：类似于 Java 里面的 Handler 机制，也是提交消息，接收者进行相关处理，为啥有了 sig slot 还要 message 机制呢？sig slot 无法发送延迟消息是原因之一；
 + 网络：STUN/TURN Server 的访问都是网络请求，为了实现跨平台，网络相关的代码做了不少封装，并且使用的都是操作系统的 C/C++ 接口，这块我也还没有深入看； 
 
-另外这里推荐一个 STUN/TURN Server 测试工具：[Trickle ICE](https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/)，用来测试服务器是否正确部署，以便排查问题。
+另外这里推荐一个 STUN/TURN Server 测试工具：[Trickle ICE](https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice)，用来测试服务器是否正确部署，以便排查问题。
 
 ## 使用 candidate
 

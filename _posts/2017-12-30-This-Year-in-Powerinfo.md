@@ -41,7 +41,7 @@ tags:
 + 写代码：提前预处理，逻辑剪枝，简化核心处理逻辑；
 + 版本迭代兼容性处理；
 
-此外，出于项目需要，NDK 和 iOS 开发都简单搞了搞，Server 开发也投入了不少精力，[跨平台开发也趁机好好了解了一下](/2017/12/16/Mobile-Client-Cross-Platform-Development/)。
+此外，出于项目需要，NDK 和 iOS 开发都简单搞了搞，Server 开发也投入了不少精力，[跨平台开发也趁机好好了解了一下](/2017/12/16/Mobile-Client-Cross-Platform-Development/index.html)。
 
 ## 管理能力
 

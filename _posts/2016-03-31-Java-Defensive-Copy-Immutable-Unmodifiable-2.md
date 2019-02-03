@@ -5,7 +5,7 @@ tags:
     - Java
 ---
 
-[去年的一篇文章](http://blog.piasy.com/2015/09/16/Java-Defensive-Copy-Immutable-Unmodifiable/){:target="_blank"}总结了一下深浅拷贝，Immutable 和 unmodifiable 这三个概念，今天再看看 Java 的深浅拷贝。
+[去年的一篇文章](/2015/09/16/Java-Defensive-Copy-Immutable-Unmodifiable/index.html){:target="_blank"}总结了一下深浅拷贝，Immutable 和 unmodifiable 这三个概念，今天再看看 Java 的深浅拷贝。
 
 考虑以下代码：
 

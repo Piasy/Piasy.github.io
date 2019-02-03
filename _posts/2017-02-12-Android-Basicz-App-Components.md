@@ -8,15 +8,15 @@ tags:
 
 ## Activity
 
-Activity 是和用户交互的入口，几乎用户所有的交互操作都发生在 Activity 中，只有一个例外：通知栏，notification area (bar) 和 notification drawer 都由系统控制（SystemUI，一系列有界面的 Service，除了状态栏，还包括虚拟按键、最近任务、壁纸等，更多内容可以阅读[《深入理解Android 卷III》](https://book.douban.com/subject/26598458/)）。桌面组件（widget）也是被 launcher 利用，显示在 launcher 的 Activity 中。
+Activity 是和用户交互的入口，几乎用户所有的交互操作都发生在 Activity 中，只有一个例外：通知栏，notification area (bar) 和 notification drawer 都由系统控制（SystemUI，一系列有界面的 Service，除了状态栏，还包括虚拟按键、最近任务、壁纸等，更多内容可以阅读[《深入理解Android 卷III》](https://book.douban.com/subject/26598458)）。桌面组件（widget）也是被 launcher 利用，显示在 launcher 的 Activity 中。
 
 后来引入了 Fragment 以增强交互界面的复用，同时优化性能。Fragment 必须要有 host Activity。不需要单独入口的交互界面，都应该用 Fragment 实现，谷歌官方强调，Fragment over Activity。但也要按照业务逻辑把 Fragment 分成不同的组，每组一个 Activity，例如登录注册一个组，用户资料设置一个组，即便注册流程有一步资料设置，也不应该把它揉进登录中，可以通过 startActivities 实现返回导航。
 
 Activity 的一些要点：
 
-+ [安卓基础：task, launchMode, Intent flag](/2017/01/16/Android-Basics-Task-and-LaunchMode/)
-+ [安卓基础：Activity/Fragment 生命周期](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/)
-+ [安卓基础：Activity/Fragment 销毁与重建](/2017/01/15/Android-Basics-Activity-Fragment-Kill-and-Recreate/)
++ [安卓基础：task, launchMode, Intent flag](/2017/01/16/Android-Basics-Task-and-LaunchMode/index.html)
++ [安卓基础：Activity/Fragment 生命周期](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/index.html)
++ [安卓基础：Activity/Fragment 销毁与重建](/2017/01/15/Android-Basics-Activity-Fragment-Kill-and-Recreate/index.html)
 + 安卓基础：Activity 启动过程，TODO
 + 安卓基础：Activity/Fragment 导航，TODO
 + 安卓基础：Activity/Fragment 过场动画，TODO

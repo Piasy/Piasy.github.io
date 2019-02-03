@@ -7,7 +7,7 @@ tags:
     - OpenGL
 ---
 
-在[本系列第一篇](/2017/07/24/WebRTC-Android-Camera-Capture/)中，我们分析了 WebRTC-Android 相机采集的实现，本文中我们将分析预览的实现。
+在[本系列第一篇](/2017/07/24/WebRTC-Android-Camera-Capture/index.html)中，我们分析了 WebRTC-Android 相机采集的实现，本文中我们将分析预览的实现。
 
 有过一定相机开发经验的朋友可能会疑惑，预览还有什么好分析的，不是直接 `camera.setPreviewDisplay` 或者 `camera.setPreviewTexture` 就能在 `SurfaceView`/`TextureView` 上预览了吗？实际上预览还有更高级的玩法，尤其是需要加上图像处理功能（美颜、特效）时。WebRTC 使用了 OpenGL 进行渲染（预览），涉及下面三个问题：
 
@@ -109,11 +109,11 @@ private static final FloatBuffer FULL_RECTANGLE_BUF = GlUtil.createFloatBuffer(n
 });
 ```
 
-正如其名，`GlRectDrawer` 封装了绘制矩形的操作，而我们的预览/渲染也确实只需要绘制一个矩形。WebRTC 用到的 shader 代码非常简单，几乎和我在[安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/)中编写的代码一样简单。不过有一点不同寻常的是，这里并没有对 vertex 坐标进行变换，而是对 texture 坐标进行的变换，所以如果我们需要对图像进行旋转操作，直接使用 `Matrix.rotateM` 会导致十分诡异的效果，必须搭配 `Matrix.translateM` 才能正常。例如下图：
+正如其名，`GlRectDrawer` 封装了绘制矩形的操作，而我们的预览/渲染也确实只需要绘制一个矩形。WebRTC 用到的 shader 代码非常简单，几乎和我在[安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/index.html)中编写的代码一样简单。不过有一点不同寻常的是，这里并没有对 vertex 坐标进行变换，而是对 texture 坐标进行的变换，所以如果我们需要对图像进行旋转操作，直接使用 `Matrix.rotateM` 会导致十分诡异的效果，必须搭配 `Matrix.translateM` 才能正常。例如下图：
 
 <img src="https://imgs.piasy.com/2017-07-26-mk82T.png" alt="mk82T.png" style="height:400px">
 
-说到这里我就不得不提另一个开源项目 [Grafika](https://github.com/google/grafika) 了，那里面预览绘制的 shader 代码和 WebRTC 如出一辙，也对 texture 坐标做了变换，之前我尝试旋转图像时就遇到了上图的窘境，最后在一位商汤“老大哥”的帮助下才解决了问题，当然，他也是从 [StackOverflow](https://stackoverflow.com/a/34668611/3077508) 上找到的答案。如果大家打开了这个 StackOverflow 的链接，而且知道 fadden 这个 id，一定会感叹，原来大神也会瞎扯淡。fadden 在媒体开发领域的地位，应该不逊于 JakeWharton 在应用开发领域的地位，[bigflake](http://bigflake.com/mediacodec/)、[Grafika](https://github.com/google/grafika)、[Graphics architecture](https://source.android.com/devices/graphics/architecture) 都是 fadden 的大作，但 fadden 大神对这个问题的回答确实有失水准 :)
+说到这里我就不得不提另一个开源项目 [Grafika](https://github.com/google/grafika) 了，那里面预览绘制的 shader 代码和 WebRTC 如出一辙，也对 texture 坐标做了变换，之前我尝试旋转图像时就遇到了上图的窘境，最后在一位商汤“老大哥”的帮助下才解决了问题，当然，他也是从 [StackOverflow](https://stackoverflow.com/a/34668611/3077508) 上找到的答案。如果大家打开了这个 StackOverflow 的链接，而且知道 fadden 这个 id，一定会感叹，原来大神也会瞎扯淡。fadden 在媒体开发领域的地位，应该不逊于 JakeWharton 在应用开发领域的地位，[bigflake](http://bigflake.com/mediacodec)、[Grafika](https://github.com/google/grafika)、[Graphics architecture](https://source.android.com/devices/graphics/architecture) 都是 fadden 的大作，但 fadden 大神对这个问题的回答确实有失水准 :)
 
 好了让我们继续看 `GlRectDrawer` 的代码。以 `drawOes` 为例，我们发现确实都是比较基础的 OpenGL 调用了：
 
@@ -165,4 +165,4 @@ WebRTC 中 实现了 Renderer 的 View 只有 SurfaceView 版本，如果我们�
 
 ## 后续文章
 
-+ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/)
++ [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html)

@@ -6,7 +6,7 @@ tags:
     - WebRTC
 ---
 
-前两篇我们分析了 WebRTC 的[相机采集](/2017/07/24/WebRTC-Android-Camera-Capture/)和[预览](/2017/07/26/WebRTC-Android-Render-Video/)，接下来的环节就是编码和传输了。目前我对传输还不熟悉，本篇只关注编码相关的内容，同样也是聚焦于三个问题：
+前两篇我们分析了 WebRTC 的[相机采集](/2017/07/24/WebRTC-Android-Camera-Capture/index.html)和[预览](/2017/07/26/WebRTC-Android-Render-Video/index.html)，接下来的环节就是编码和传输了。目前我对传输还不熟悉，本篇只关注编码相关的内容，同样也是聚焦于三个问题：
 
 + 数据怎么送进编码器？
 + 怎么从编码器取数据？

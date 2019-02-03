@@ -112,4 +112,4 @@ public boolean shouldShowRequestPermissionRationale(
 
 好了，上面的实验和小结对上文提出的问题进行了一一解答，相信可以解开一部分开发者的疑惑，当然这个小结肯定是不全面的，如果有什么补充的建议，可以在下面评论，或者[发邮件给我](mailto:xz4215@gmail.com)。
 
-另外还有一位开发者的一篇译文写的还不错，可以参考一下，[链接](http://jijiaxin89.com/2015/08/30/Android-s-Runtime-Permission/)。
+另外还有一位开发者的一篇译文写的还不错，可以参考一下，[链接](http://jijiaxin89.com/2015/08/30/Android-s-Runtime-Permission)。

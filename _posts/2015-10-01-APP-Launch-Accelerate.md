@@ -11,7 +11,7 @@ tags:
 # 提升APP启动速度
 其实并不是所有的事情都需要在Application类的onCreate函数中执行，例如一些第三方库的初始化，可以专门增加一个SplashActivity来初始化这些第三方库，但是同样的道理，如果这些初始化工作放到SplashActivity的onCreate函数中执行，APP的冷启动依然很慢，进一步的尝试是把这些初始化工作异步化。
 
-另外如果使用[Dagger](https://github.com/google/dagger)来实现依赖注入，还应该避免在Application类中注入依赖，毕竟创建依赖对象也是需要时间的，更多关于这个细节[请阅读](http://frogermcs.github.io/dagger-graph-creation-performance/)。
+另外如果使用[Dagger](https://github.com/google/dagger)来实现依赖注入，还应该避免在Application类中注入依赖，毕竟创建依赖对象也是需要时间的，更多关于这个细节[请阅读](http://frogermcs.github.io/dagger-graph-creation-performance)。
 
 # 实践
 在我的[AndroidTDDBootStrap repo](https://github.com/Piasy/AndroidTDDBootStrap)中，我就尝试创建了一个SplashActivity，在其onCreate函数中首先显示一个SplashFragment，该Fragment用于显示启动页面，与此同时在后台线程进行初始化工作（使用[rx](https://github.com/ReactiveX/RxAndroid)），初始化完成后，再切换到新的GithubSearchFragment。

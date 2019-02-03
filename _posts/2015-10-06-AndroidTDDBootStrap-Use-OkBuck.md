@@ -7,7 +7,7 @@ tags:
     - BUCK
 ---
 
-【注：本文信息已经过时，请看[续章]({{ site.baseurl }}/AndroidTDDBootStrap-Use-OkBuck-2/)】在本文中，我将一步一步手把手记录如何在[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)项目中使用[OkBuck](https://github.com/Piasy/OkBuck)插件，使得AndroidTDDBootStrap支持BUCK构建，体验其畅快淋漓！
+【注：本文信息已经过时，请看[续章](/AndroidTDDBootStrap-Use-OkBuck-2/index.html)】在本文中，我将一步一步手把手记录如何在[AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap)项目中使用[OkBuck](https://github.com/Piasy/OkBuck)插件，使得AndroidTDDBootStrap支持BUCK构建，体验其畅快淋漓！
 
 ## 第一步，应用插件
 按照[OkBuck中文文档](https://github.com/Piasy/OkBuck/blob/master/README-zh.md)的步骤，根据本工程的结构，在`/build.gradle`中加入11行配置，配置后`/build.gradle`是这样的：

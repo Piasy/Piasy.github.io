@@ -7,11 +7,11 @@ tags:
     - 网络
 ---
 
-一年前我初步分析了 WebRTC 的 P2P 连接过程，并总结为了[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/)一文，那会儿我刚接触 WebRTC C++ 的代码，看起来着实头大，而且安卓的代码要调试、测试也很麻烦，所以很多细节就没有展开，今天就让我们在 iOS 的工程里，对 P2P 连接的过程进行一个彻底的剖析。
+一年前我初步分析了 WebRTC 的 P2P 连接过程，并总结为了[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/index.html)一文，那会儿我刚接触 WebRTC C++ 的代码，看起来着实头大，而且安卓的代码要调试、测试也很麻烦，所以很多细节就没有展开，今天就让我们在 iOS 的工程里，对 P2P 连接的过程进行一个彻底的剖析。
 
 ## 概览
 
-首先我们从宏观上了解一下 P2P 连接的过程，以及一些关键类之间的关系，这样在看代码时就不至于迷失在细节里。此外，没看过[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/)的朋友，也建议先看一下。
+首先我们从宏观上了解一下 P2P 连接的过程，以及一些关键类之间的关系，这样在看代码时就不至于迷失在细节里。此外，没看过[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/index.html)的朋友，也建议先看一下。
 
 _注：除非你对这个话题有很大兴趣，否则很可能无法读完，那我建议尽早放弃；如果确实需要研究这块内容，那我建议打开源码，反复阅读此文，应当会有些收获_。
 
@@ -96,7 +96,7 @@ AllocationSequence::Start
 AllocationSequence::OnMessage
 ```
 
-AllocationSequence 分配 port 分为三个 phase：UDP, RELAY, TCP。每个 phase 之间间隔一个 step delay。_一年前我在分析[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/)时还有一个 SslTcp phase，现在已经删掉了_。
+AllocationSequence 分配 port 分为三个 phase：UDP, RELAY, TCP。每个 phase 之间间隔一个 step delay。_一年前我在分析[安卓 P2P 连接过程和 DataChannel 使用](/2017/08/30/WebRTC-P2P-part1/index.html)时还有一个 SslTcp phase，现在已经删掉了_。
 
 ### UDP phase
 

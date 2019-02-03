@@ -7,7 +7,7 @@ tags:
 
 RxJava 最大的两个特点：事件流操作，异步。
 
-组合利用各种操作符，我们可以实现复杂的事件流处理需求，例如[前文中提到的缓存](/2016/08/24/Complex-RxJava-1-cache/){:target="_blank"}：根据一组 id，先从本地查询，本地缺失的部分再从服务器获取，再把两者合并起来返回，最后服务器获取的部分还要保存到本地。
+组合利用各种操作符，我们可以实现复杂的事件流处理需求，例如[前文中提到的缓存](/2016/08/24/Complex-RxJava-1-cache/index.html){:target="_blank"}：根据一组 id，先从本地查询，本地缺失的部分再从服务器获取，再把两者合并起来返回，最后服务器获取的部分还要保存到本地。
 
 而利用 `subscribeOn` 和 `observeOn` 这两个操作符，我们可以轻松地实现代码执行的异步调度。
 
@@ -192,7 +192,7 @@ Observable.create(subscriber -> {
         .flatMap(file -> uploader.upload(file))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(/** success */);
+        .subscribe(/** success */index.html);
 ```
 
 遗憾的是，上面的代码会抛出 `NetworkOnMainThreadException`，获取到第三方头像 url 之后，我们的下载、上传操作都是在主线程执行的，并不是 io 线程。
@@ -238,12 +238,12 @@ Observable.create(subscriber -> {
         .flatMap(file -> uploader.upload(file))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(/** success */);
+        .subscribe(/** success */ );
 ```
 
 ## 总结
 
-首先感谢 [Stay 兄](http://notes.stay4it.com/){:target="_blank"}对第二个例子提出了宝贵的改进建议。
+首先感谢 [Stay 兄](http://notes.stay4it.com){:target="_blank"}对第二个例子提出了宝贵的改进建议。
 
 在本文中，我举了两个复杂的调度场景，结合这两个场景，以及前面讲到的原理，大家对调度的原理应该有了更深刻的理解，后面面对更复杂的调度需求，相信也能轻松地解决了。
 

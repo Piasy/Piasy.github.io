@@ -232,5 +232,5 @@ Java_com_github_piasy_MainActivity_nativeGetSig(
 
 ## 参考文章
 
-+ [The Dangers of the Android FakeID Vulnerability](http://blog.trendmicro.com/trendlabs-security-intelligence/the-dangers-of-the-android-fakeid-vulnerability/)
++ [The Dangers of the Android FakeID Vulnerability](http://blog.trendmicro.com/trendlabs-security-intelligence/the-dangers-of-the-android-fakeid-vulnerability)
 + [Exception Handling in JNI](http://www.developer.com/java/data/exception-handling-in-jni.html)

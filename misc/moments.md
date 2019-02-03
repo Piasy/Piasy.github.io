@@ -12,7 +12,7 @@ permalink: /moments/
   
   * 2016 年 7 月 15 号，成功混进 [codeKK 友链](http://www.codekk.com/gays){:target="_blank"} 😁
   
-  * 2016 年 7 月 14 号，[文章 拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"} 登上 [开发者头条榜首](http://toutiao.io/posts/lh7zkk){:target="_blank"}，成就[文章被开发者头条邮件推送](/img/moments/understand_okhttp_top_at_toutiao_io.png){:target="_blank"}达成
+  * 2016 年 7 月 14 号，[文章 拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"} 登上 [开发者头条榜首](http://toutiao.io/posts/lh7zkk){:target="_blank"}，成就[文章被开发者头条邮件推送](/img/moments/understand_okhttp_top_at_toutiao_io.png){:target="_blank"}达成
   
   * 2016 年 5 月 30 号，follower 突破 300，dashboard star 超过再次逼近 1.5 K（transfer OkBuck 暴跌 300 多）
   
@@ -20,21 +20,21 @@ permalink: /moments/
   
   * 2016 年 4 月 6 号，follower 突破 200，dashboard star 超过 1.5 K，利用 JW 等大神打了两次广告后，被删代码鄙视了，以后再也不敢了-_-#
   
-  * 2016 年 3 月 12 号，更换博客主题，来自 [Hux](http://huangxuan.me/){:target="_blank"}
+  * 2016 年 3 月 12 号，更换博客主题，来自 [Hux](http://huangxuan.me){:target="_blank"}
   
-  * 2016 年 2 月 28 号，开启[安卓开发真经计划（Journey to the truth）](http://journey.piasy.com/){:target="_blank"}，逐步约见有经验的前辈取经
+  * 2016 年 2 月 28 号，开启[安卓开发真经计划（Journey to the truth）](http://journey.piasy.com){:target="_blank"}，逐步约见有经验的前辈取经
   
-  * 2016 年 2 月 23 号，安卓音频录制播放封装库 [RxAndroidAudio](https://github.com/Piasy/RxAndroidAudio){:target="_blank"} <a target="_blank" href="https://github.com/Piasy/RxAndroidAudio/stargazers" style="display: inline;"><img src="https://img.shields.io/github/stars/Piasy/RxAndroidAudio.svg?style=social&amp;label=Star" alt="GitHub stars" style="margin: 0;display: inline;"></a> <a target="_blank" href="https://github.com/Piasy/RxAndroidAudio/network" style="display: inline;"><img src="https://img.shields.io/github/forks/Piasy/RxAndroidAudio.svg?style=social&label=Fork" alt="GitHub forks" style="margin: 0;display: inline;"></a> 两周内收获 star 超过 200，感谢 [androidweekly.cn](http://androidweekly.cn/android-dev-weekly-issue-70/){:target="_blank"} 收录并带来大量流量
+  * 2016 年 2 月 23 号，安卓音频录制播放封装库 [RxAndroidAudio](https://github.com/Piasy/RxAndroidAudio){:target="_blank"} <a target="_blank" href="https://github.com/Piasy/RxAndroidAudio/stargazers" style="display: inline;"><img src="https://img.shields.io/github/stars/Piasy/RxAndroidAudio.svg?style=social&amp;label=Star" alt="GitHub stars" style="margin: 0;display: inline;"></a> <a target="_blank" href="https://github.com/Piasy/RxAndroidAudio/network" style="display: inline;"><img src="https://img.shields.io/github/forks/Piasy/RxAndroidAudio.svg?style=social&label=Fork" alt="GitHub forks" style="margin: 0;display: inline;"></a> 两周内收获 star 超过 200，感谢 [androidweekly.cn](http://androidweekly.cn/android-dev-weekly-issue-70){:target="_blank"} 收录并带来大量流量
   
-  * 2016 年 2 月 12 号，开始为贵系师兄/哥大教授的创业公司 [NimbleDroid](http://blog.nimbledroid.com/){:target="_blank"} 翻译博客
+  * 2016 年 2 月 12 号，开始为贵系师兄/哥大教授的创业公司 [NimbleDroid](http://blog.nimbledroid.com){:target="_blank"} 翻译博客
   
   * 2015 年 12 月 11 号，收到 [Snapchat 团队的面试邀请](/img/moments/interview-invite-from-snapchat.jpg){:target="_blank"}
   
-  * 2015 年 10 月 9 号，个人技术笔记项目 [notes](https://github.com/Piasy/notes){:target="_blank"} 被收录到[极客学院 wiki](http://wiki.jikexueyuan.com/project/notes/){:target="_blank"}，访问量[1.5W +](http://wiki.jikexueyuan.com/list/android/){:target="_blank"}
+  * 2015 年 10 月 9 号，个人技术笔记项目 [notes](https://github.com/Piasy/notes){:target="_blank"} 被收录到[极客学院 wiki](http://wiki.jikexueyuan.com/project/notes){:target="_blank"}，访问量[1.5W +](http://wiki.jikexueyuan.com/list/android){:target="_blank"}
   
   * 2015 年 10 月 7 号，在百度实习时的 mentor 左言哥为 [AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"} 带来了[第100个 star](/img/moments/android-tdd-bootstrap-100-star.jpg){:target="_blank"}，首次破百
   
-  * 2015 年 10 月 5 号，大神偶像 [sockeqwe](https://github.com/sockeqwe/){:target="_blank"} 带来励志，[star 了 OkBuck](/img/moments/okbuck-stared-by-sockeqwe.jpg){:target="_blank"}，无比感动
+  * 2015 年 10 月 5 号，大神偶像 [sockeqwe](https://github.com/sockeqwe){:target="_blank"} 带来励志，[star 了 OkBuck](/img/moments/okbuck-stared-by-sockeqwe.jpg){:target="_blank"}，无比感动
   
   * 2015 年 10 月 3 号，开启项目 [OkBuck](https://github.com/Piasy/OkBuck){:target="_blank"}，BUCK 配置自动生成 <a target="_blank" href="https://github.com/Piasy/OkBuck/stargazers" style="display: inline;"><img src="https://img.shields.io/github/stars/Piasy/OkBuck.svg?style=social&amp;label=Star" alt="GitHub stars" style="margin: 0;display: inline;"></a> <a target="_blank" href="https://github.com/Piasy/OkBuck/network" style="display: inline;"><img src="https://img.shields.io/github/forks/Piasy/OkBuck.svg?style=social&label=Fork" alt="GitHub forks" style="margin: 0;display: inline;"></a>
   

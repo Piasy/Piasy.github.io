@@ -6,7 +6,7 @@ tags:
     - BUCK
 ---
 
-从最初 OkBuck 发布时宣称 BUCK 与 RetroLambda 不兼容只能忍痛割爱（lambda），到 BUCK 维护者之一联系我声称 BUCK 可以编译 Java 8 结果遇到编译错误未解，到昨晚终于成功让 BUCK 与 RetroLambda 出双入对，时隔大半年终于臻至完美，怎一个爽字了得！如果你还不了解什么是 BUCK，可以参考我的两篇文章 [OkBuck, underneath the hood](/2016/02/01/OkBuck-Underneath-the-hood/){:target="_blank"}，[手把手OkBuck教程：应用到AndroidTDDBootStrap项目（续）](/2016/03/10/AndroidTDDBootStrap-Use-OkBuck-2/){:target="_blank"}，以及 [BUCK 官方文档](https://buckbuild.com/){:target="_blank"}。
+从最初 OkBuck 发布时宣称 BUCK 与 RetroLambda 不兼容只能忍痛割爱（lambda），到 BUCK 维护者之一联系我声称 BUCK 可以编译 Java 8 结果遇到编译错误未解，到昨晚终于成功让 BUCK 与 RetroLambda 出双入对，时隔大半年终于臻至完美，怎一个爽字了得！如果你还不了解什么是 BUCK，可以参考我的两篇文章 [OkBuck, underneath the hood](/2016/02/01/OkBuck-Underneath-the-hood/index.html){:target="_blank"}，[手把手OkBuck教程：应用到AndroidTDDBootStrap项目（续）](/2016/03/10/AndroidTDDBootStrap-Use-OkBuck-2/index.html){:target="_blank"}，以及 [BUCK 官方文档](https://buckbuild.com){:target="_blank"}。
 
 ## BUCK 编译 Java 8
 这一点 BUCK 确实已经支持了，只需要在 `java_library` 和 `android_library` 这两种 rule 中加入以下配置即可：
@@ -34,7 +34,7 @@ java.lang.invoke.MethodType not found.
 对于 Java library module，BUCK 能够成功使用 javac 编译出 java 8 的字节码，但是我们怎么把 RetroLambda 集成到 BUCK 的构建过程中呢？还是这个帅小伙出的主意（其实是 BUCK 的有些文档严重缺乏，只能自己看源码或者他们出主意）：`postprocess_classes_commands`。
 
 ## BUCK 调用 RetroLambda
-RetroLambda 只是一个命令行工具，大家通常使用的可能是另一个 gradle 插件：[gradle-retrolambda](https://github.com/evant/gradle-retrolambda/){:target="_blank"}，利用上面提到的 `postprocess_classes_commands` 参数，我们可以在 `java_library` 和 `android_library` 这两种 rule 中加一个 class 编译完成之后的 hook，BUCK 会执行 `postprocess_classes_commands` 参数的命令，并把本次编译的 class 路径作为参数传入。所以我们就可以在这里执行 RetroLambda 程序把 java 8 的字节码编译为 java 6 的字节码了。这里因为需要为 shell 脚本传入参数，所以我们需要把命令封装到一个脚本文件中，脚本文件的内容如下：
+RetroLambda 只是一个命令行工具，大家通常使用的可能是另一个 gradle 插件：[gradle-retrolambda](https://github.com/evant/gradle-retrolambda){:target="_blank"}，利用上面提到的 `postprocess_classes_commands` 参数，我们可以在 `java_library` 和 `android_library` 这两种 rule 中加一个 class 编译完成之后的 hook，BUCK 会执行 `postprocess_classes_commands` 参数的命令，并把本次编译的 class 路径作为参数传入。所以我们就可以在这里执行 RetroLambda 程序把 java 8 的字节码编译为 java 6 的字节码了。这里因为需要为 shell 脚本传入参数，所以我们需要把命令封装到一个脚本文件中，脚本文件的内容如下：
 
 ``` bash
 java \
@@ -50,7 +50,7 @@ java \
 也就是这个错误，困扰了我们半年之久。当初的困境感兴趣的朋友可以查看这个 [Github issue](https://github.com/Piasy/OkBuck/issues/32){:target="_blank"}。
 
 ## class file for java.lang.invoke.MethodType not found 问题的解决
-这个问题之前 RetroLambda 也遇见过，虽然他们的解决方法看上去和我们遇见的问题没有关系，但它毕竟解决了，所以深挖肯定有门路。[我在之前的文章中](/2016/03/16/Looper-crash/){:target="_blank"}曾总结过各种问题的解决思路，这次的问题还是通过“差异分析法”解决的。
+这个问题之前 RetroLambda 也遇见过，虽然他们的解决方法看上去和我们遇见的问题没有关系，但它毕竟解决了，所以深挖肯定有门路。[我在之前的文章中](/2016/03/16/Looper-crash/index.html){:target="_blank"}曾总结过各种问题的解决思路，这次的问题还是通过“差异分析法”解决的。
 
 RetroLambda 可以把同样的代码先编译为 java 8 的字节码，BUCK 的却不可以，但他们用的至少都是相同的 javac 程序吧？那问题肯定就出现了**编译选项**上。通过给两种方式加上日志输出选项，我拿到了它们各自的编译选项，这里，我以我发布到 [Github 的 demo 工程](https://github.com/Piasy/BuckJava8RetroLambdaDemo){:target="_blank"}为例。
 

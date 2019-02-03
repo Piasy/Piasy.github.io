@@ -26,9 +26,9 @@ tags:
 
 ## 准备模型
 
-在准备模型阶段，我们需要准备数据、定义模型、训练模型，最后导出模型，以便在安卓上使用。这里我们使用 Google 开源的深度学习库：[TensorFlow](https://www.tensorflow.org/)。TensorFlow 是深度学习领域最流行、使用最广泛的工具，既有 Google 官方团队的开发，又有广大社区的支持，是开发者们的不二之选。
+在准备模型阶段，我们需要准备数据、定义模型、训练模型，最后导出模型，以便在安卓上使用。这里我们使用 Google 开源的深度学习库：[TensorFlow](https://www.tensorflow.org)。TensorFlow 是深度学习领域最流行、使用最广泛的工具，既有 Google 官方团队的开发，又有广大社区的支持，是开发者们的不二之选。
 
-这里我们需要一些 Python、深度学习、TensorFlow 相关的知识，对此还不熟悉的朋友，建议看看 [TensorFlow 官网的教程](https://www.tensorflow.org/get_started/)，非常详细。下文中我基本不会对基本概念进行解释，对代码/概念有疑惑的朋友，请自行查阅相关文档。
+这里我们需要一些 Python、深度学习、TensorFlow 相关的知识，对此还不熟悉的朋友，建议看看 [TensorFlow 官网的教程](https://www.tensorflow.org/get_started)，非常详细。下文中我基本不会对基本概念进行解释，对代码/概念有疑惑的朋友，请自行查阅相关文档。
 
 MNIST 的数据准备工作 TensorFlow 已经帮我们完成了，直接代码导入即可：
 
@@ -221,7 +221,7 @@ TensorFlowInferenceInterface tfHelper = new TensorFlowInferenceInterface(assetMa
 
 ### 输入数据，执行推断，取出结果
 
-我们在训练时使用的数据都是 28*28 的图像，而且只有单一通道，因此我们运行模型时也要用同样的数据作为模型的输入，如何编写一个“手写板”类，以及把手写的数据转换为 `float[]` 这里就不展开了，感兴趣的朋友可以[查看源码](https://github.com/Piasy/mnist-android-tensorflow/blob/master/MnistAndroid/app/src/main/java/mariannelinhares/mnistandroid/views/)。
+我们在训练时使用的数据都是 28*28 的图像，而且只有单一通道，因此我们运行模型时也要用同样的数据作为模型的输入，如何编写一个“手写板”类，以及把手写的数据转换为 `float[]` 这里就不展开了，感兴趣的朋友可以[查看源码](https://github.com/Piasy/mnist-android-tensorflow/blob/master/MnistAndroid/app/src/main/java/mariannelinhares/mnistandroid/views)。
 
 另外，输入数据除了图像数据，还有一个 dropout 层的 `keep_prob` 值，这里我们需要模型发挥全部实力，就不需要 dropout 了，所以传 1 即可。
 

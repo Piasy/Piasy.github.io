@@ -194,7 +194,7 @@ But was 2 times. Undesired invocation:
 
 于是我限定了 site “site:androidweekly.net data cache”，因为我还依稀记得是在 AndroidWeekly 上看到的，改了 query 是因为第一下没有结果。但依然没有找到目标。
 
-于是我再次想了想，好像是 Dan Lew 写的文章，于是换个 site “site:danlew.net observable”，第一个结果就是苦苦追寻的：[Multicasting in RxJava](http://blog.danlew.net/2016/06/13/multicasting-in-rxjava/){:target="_blank"}。而且 google 也显示我在不久前访问过它。
+于是我再次想了想，好像是 Dan Lew 写的文章，于是换个 site “site:danlew.net observable”，第一个结果就是苦苦追寻的：[Multicasting in RxJava](http://blog.danlew.net/2016/06/13/multicasting-in-rxjava){:target="_blank"}。而且 google 也显示我在不久前访问过它。
 
 当然，你可能会选择查看 RxJava 手册，再次过一遍所有的操作符，并最终找到目标，不过由于我的脑海里残存了一点 Dan Lew 文章的印象，所以这种方式在我看来更快。
 

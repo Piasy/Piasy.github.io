@@ -6,7 +6,7 @@ tags:
     - 基础知识
 ---
 
-这一篇可以看做是 [Handler](/2017/01/12/Android-Basics-Handler/) 的番外篇。
+这一篇可以看做是 [Handler](/2017/01/12/Android-Basics-Handler/index.html) 的番外篇。
 
 ## ThreadLocal
 

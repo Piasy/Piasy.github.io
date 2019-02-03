@@ -42,7 +42,7 @@ private void flipImage(byte[] src, byte[] dst, int width, int height) {
 }
 ```
 
-其实这个操作可以就地实现，[LeetCode 上也有一道要求就地旋转图像的题：Rotate Image](https://leetcode.com/problems/rotate-image/)，但这里我们就不在这一点上纠结了。
+其实这个操作可以就地实现，[LeetCode 上也有一道要求就地旋转图像的题：Rotate Image](https://leetcode.com/problems/rotate-image)，但这里我们就不在这一点上纠结了。
 
 上下翻转的操作如下：
 
@@ -87,7 +87,7 @@ Java 最大的特点就是简单，没有 C++ 那样海量的语言特性难以�
 
 不过遗憾的是，13ms 和 23ms 已经是 native 化之后的测试结果，所以得另寻突破口了。
 
-这种情况下，最明显的思路就是找茬（差异）了，关于常见的解 bug 思路，可以看看[我之前的文章：从 A/Looper: Could not create epoll instance. errno=24 错误浅谈解决各种 bug 的思路](/2016/03/16/Looper-crash/)。
+这种情况下，最明显的思路就是找茬（差异）了，关于常见的解 bug 思路，可以看看[我之前的文章：从 A/Looper: Could not create epoll instance. errno=24 错误浅谈解决各种 bug 的思路](/2016/03/16/Looper-crash/index.html)。
 
 ### 优化思路二：乘除变加减
 

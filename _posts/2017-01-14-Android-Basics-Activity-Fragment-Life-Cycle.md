@@ -103,4 +103,4 @@ Ab onDestroy
 
 基本一致，但是不存在 Activity call super 的时候触发 Fragment 的生命周期函数，而是正向 Activity 在前，Fragment 在后，反向是 Fragment 在前，Activity 在后（并不完全这样，详见附录）。
 
-## [附录：完整 logcat](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/)
+## [附录：完整 logcat](/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle-Appendix/index.html)

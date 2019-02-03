@@ -6,10 +6,10 @@ tags:
     - 架构
 ---
 
-在[拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/){:target="_blank"} 最后我曾说过会对 Retrofit、OkHttp、Okio 三者进行一个小结，并且整理一套网络层的“微架构”，今天终于得以完成，在这里一起奉送给大家 :)
+在[拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/index.html){:target="_blank"} 最后我曾说过会对 Retrofit、OkHttp、Okio 三者进行一个小结，并且整理一套网络层的“微架构”，今天终于得以完成，在这里一起奉送给大家 :)
 
-+ [RESTful 安卓网络层解决方案（一）：概览与认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/){:target="_blank"}
-+ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/){:target="_blank"}
++ [RESTful 安卓网络层解决方案（一）：概览与认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/index.html){:target="_blank"}
++ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/index.html){:target="_blank"}
 + 🏁 RESTful 安卓网络层解决方案（三）：API model 与 Business model 分离
 
 ## 1，API model “碎片化”
@@ -106,7 +106,7 @@ interface CredentialInfo {
 
 其中 `UserInfoModel` 和 `FriendInfoModel` 是由 SqlDelight 生成，用于进行持久化，它们都需要靠 uid 进行查询，所以都包含一个 uid 字段。`RelationshipInfo` 用于区分是否是好友，`CredentialInfo` 则包含自己的信息。
 
-接下来的内容会涉及到 SqlDelight、AutoValue 及其扩展相关的内容，对这些不熟悉的朋友，强烈建议先看一下这篇文章：[完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/){:target="_blank"}。
+接下来的内容会涉及到 SqlDelight、AutoValue 及其扩展相关的内容，对这些不熟悉的朋友，强烈建议先看一下这篇文章：[完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/index.html){:target="_blank"}。
 
 ### 3.2，`ApiUser`
 
@@ -349,8 +349,8 @@ public void otherUserInfoRefreshCacheHitFriend() {
 
 这套微架构主要包含三部分内容：
 
-+ [认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/){:target="_blank"}
-+ [空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/){:target="_blank"}
++ [认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/index.html){:target="_blank"}
++ [空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/index.html){:target="_blank"}
 + 🏁 API model 与 Business model 分离
 
 而每一部分都包含了尽可能详尽的单元测试，目前看来是最好水平了，已经使出了洪荒之力 😄
@@ -361,12 +361,12 @@ public void otherUserInfoRefreshCacheHitFriend() {
 
 前段时间拆轮子系列的前三篇，分别对 [Retrofit](https://github.com/square/retrofit){:target="_blank"}，[OkHttp](https://github.com/square/okhttp){:target="_blank"} 和 [Okio](https://github.com/square/okio){:target="_blank"} 源码进行了分析和源码导读，发布之后大家反馈还不错，其中拆 OkHttp 篇成功登上[开发者头条榜首](http://toutiao.io/top/2016-07-14){:target="_blank"}。没有看过的朋友建议大家可以看一看：
 
-+ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}
-+ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"}
-+ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/){:target="_blank"}
++ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}
++ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"}
++ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/index.html){:target="_blank"}
 
 此外，之前整理的安卓 model 层架构，有幸还在 GDG 进行了一次分享，大家反响也还不错，在这里也推荐大家看一看：
 
-+ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/){:target="_blank"}
-+ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/){:target="_blank"}
++ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/index.html){:target="_blank"}
++ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/index.html){:target="_blank"}
 + [08/07 北京 GDG Android Meetup 活动回顾，讲义，照片](http://mp.weixin.qq.com/s?__biz=MzA5MDg3MjczMg==&mid=2652003543&idx=1&sn=849c06ac198cbfe9cdcfae90b2a17021&scene=1&srcid=0902QGgAZZKCpZbNNPD66mnu#rd){:target="_blank"}

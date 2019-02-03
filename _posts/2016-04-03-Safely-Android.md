@@ -5,7 +5,7 @@ tags:
     - 安卓开发
 ---
 
-开发安卓APP的过程中，肯定有不少人遇见过 Activity Not Found 错误和 Activity State Loss 错误，前者是由于启动的目标 intent 对应的 activity 不存在，后者则是由于在 activity onSaveInstanceState 函数被调用之后进行了 fragment transaction，关于后者[有一篇文章](http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html){:target="_blank"}总结得非常到位，[这一篇译文](http://jaredlam.github.io/blog/2015/12/23/android-fragment-transactions-and-activity-state-loss-yi/){:target="_blank"}翻译得也还不错，建议看看。本文则主要介绍我的一个开源库 [SafelyAndroid](https://github.com/Piasy/SafelyAndroid){:target="_blank"}，其中整合了解决这两类问题的最佳实践，让我们一起利用它打造鲁棒的安卓APP吧！
+开发安卓APP的过程中，肯定有不少人遇见过 Activity Not Found 错误和 Activity State Loss 错误，前者是由于启动的目标 intent 对应的 activity 不存在，后者则是由于在 activity onSaveInstanceState 函数被调用之后进行了 fragment transaction，关于后者[有一篇文章](http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html){:target="_blank"}总结得非常到位，[这一篇译文](http://jaredlam.github.io/blog/2015/12/23/android-fragment-transactions-and-activity-state-loss-yi){:target="_blank"}翻译得也还不错，建议看看。本文则主要介绍我的一个开源库 [SafelyAndroid](https://github.com/Piasy/SafelyAndroid){:target="_blank"}，其中整合了解决这两类问题的最佳实践，让我们一起利用它打造鲁棒的安卓APP吧！
 
 ## 安全地启动 Activity
 在[ Developer 官方教程](http://developer.android.com/training/basics/intents/sending.html#StartActivity){:target="_blank"}里面有这样一段代码：

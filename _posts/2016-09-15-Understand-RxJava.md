@@ -7,9 +7,9 @@ tags:
     - 原理剖析
 ---
 
-[RxJava](https://github.com/ReactiveX/RxJava/){:target="_blank"} 这个项目已经持续四年半了，第一个 commit 是在 2012 年 3 月 18 号。我从 14 年 11 月份开始使用 RxJava，应该算是比较早的，将近两年过去了，现在 RxJava 1.x 版本已经进入稳定期，2.0 版本也已经进入了 RC 阶段。
+[RxJava](https://github.com/ReactiveX/RxJava){:target="_blank"} 这个项目已经持续四年半了，第一个 commit 是在 2012 年 3 月 18 号。我从 14 年 11 月份开始使用 RxJava，应该算是比较早的，将近两年过去了，现在 RxJava 1.x 版本已经进入稳定期，2.0 版本也已经进入了 RC 阶段。
 
-原本打算把 Advanced RxJava 系列博客翻译完之后再拆 RxJava 的，但是前两周看了一个 [JW 讲 RxJava 的视频](http://jakewharton.com/demystifying-rxjava-subscribers/){:target="_blank"}，突然有种隐隐打通任督二脉的感觉，索性趁着中秋佳节，一鼓作气把 RxJava 好好拆开看个究竟。本文的分析基于 [RxJava 截至 2016.9.16 的最新源码](https://github.com/ReactiveX/RxJava/tree/010256b0e19bdb18f136f80a4dc48c0a53c3da41){:target="_blank"}，非常建议大家下载 RxJava 源码之后，跟着本文，过一遍源码。
+原本打算把 Advanced RxJava 系列博客翻译完之后再拆 RxJava 的，但是前两周看了一个 [JW 讲 RxJava 的视频](http://jakewharton.com/demystifying-rxjava-subscribers){:target="_blank"}，突然有种隐隐打通任督二脉的感觉，索性趁着中秋佳节，一鼓作气把 RxJava 好好拆开看个究竟。本文的分析基于 [RxJava 截至 2016.9.16 的最新源码](https://github.com/ReactiveX/RxJava/tree/010256b0e19bdb18f136f80a4dc48c0a53c3da41){:target="_blank"}，非常建议大家下载 RxJava 源码之后，跟着本文，过一遍源码。
 
 ## 1，整体思路
 
@@ -140,7 +140,7 @@ static <T> Producer createProducer(Subscriber<? super T> s, T v) {
 
 这里我们就是为 subscriber 设置了一个 `WeakSingleProducer`。
 
-在 RxJava 1.x 中，数据都是从 observable push 到 subscriber 的，但要是 observable 发得太快，subscriber 处理不过来，该怎么办？一种办法是，把数据保存起来，但这显然可能导致内存耗尽；另一种办法是，多余的数据来了之后就丢掉，至于丢掉和保留的策略可以按需制定；还有一种办法就是让 subscriber 向 observable 主动请求数据，subscriber 不请求，observable 就不发出数据。它俩相互协调，避免出现过多的数据，而协调的桥梁，就是 producer。producer 的内容这里不展开，大家可以看 ReactiveIO 的文档，或者 [Advanced RxJava](/AdvancedRxJava/){:target="_blank"} 这个系列博客。
+在 RxJava 1.x 中，数据都是从 observable push 到 subscriber 的，但要是 observable 发得太快，subscriber 处理不过来，该怎么办？一种办法是，把数据保存起来，但这显然可能导致内存耗尽；另一种办法是，多余的数据来了之后就丢掉，至于丢掉和保留的策略可以按需制定；还有一种办法就是让 subscriber 向 observable 主动请求数据，subscriber 不请求，observable 就不发出数据。它俩相互协调，避免出现过多的数据，而协调的桥梁，就是 producer。producer 的内容这里不展开，大家可以看 ReactiveIO 的文档，或者 [Advanced RxJava](/AdvancedRxJava/index.html){:target="_blank"} 这个系列博客。
 
 ### 2.4，`setProducer`
 
@@ -382,10 +382,10 @@ public final Observable<T> subscribeOn(Scheduler scheduler) {
 
 关于 scheduler/worker 的工作原理，不了解的朋友一定要先学习一下，不然下面的代码看起来估计会云里雾里，可以看 ReactiveIO 的文档，也可以看看下面几篇 Advanced RxJava 的译文：
 
-+ [调度器 Scheduler（一）：实现自定义 Scheduler](/AdvancedRxJava/2016/08/05/schedulers-1/){:target="_blank"}
-+ [调度器 Scheduler（二）：自定义 ExecutorService 使用逻辑的 Worker](/AdvancedRxJava/2016/08/19/schedulers-2/){:target="_blank"}
-+ [调度器 Scheduler（三）：包装多线程 Executor](/AdvancedRxJava/2016/08/26/schedulers-3/){:target="_blank"}
-+ [调度器 Scheduler（四，完结）：实现 GUI 系统的 Scheduler](/AdvancedRxJava/2016/09/02/schedulers-4/){:target="_blank"}
++ [调度器 Scheduler（一）：实现自定义 Scheduler](/AdvancedRxJava/2016/08/05/schedulers-1/index.html){:target="_blank"}
++ [调度器 Scheduler（二）：自定义 ExecutorService 使用逻辑的 Worker](/AdvancedRxJava/2016/08/19/schedulers-2/index.html){:target="_blank"}
++ [调度器 Scheduler（三）：包装多线程 Executor](/AdvancedRxJava/2016/08/26/schedulers-3/index.html){:target="_blank"}
++ [调度器 Scheduler（四，完结）：实现 GUI 系统的 Scheduler](/AdvancedRxJava/2016/09/02/schedulers-4/index.html){:target="_blank"}
 
 ``` java
 public final class OperatorSubscribeOn<T> 
@@ -492,7 +492,7 @@ public final <R> Observable<R> lift(
 
 `observeOn` 有好几个重载版本，支持指定 buffer 大小、是否延迟 Error 事件，这个 `delayError` 是从 `v1.1.1` 引入的，关于它还有一个小插曲。
 
-> 之前和 [Ryan Hoo](http://ryanhoo.github.io/){:target="_blank"} 碰到过一个问题，concat 两个 observable，第一个没有 error，第二个有 error，结果居然收不到第一个里面的数据，而是直接收到了第二个的 error。最后发现就是没有用 `delayError` 参数。
+> 之前和 [Ryan Hoo](http://ryanhoo.github.io){:target="_blank"} 碰到过一个问题，concat 两个 observable，第一个没有 error，第二个有 error，结果居然收不到第一个里面的数据，而是直接收到了第二个的 error。最后发现就是没有用 `delayError` 参数。
 
 这里我们依然关注普遍情况，即利用 `lift` + `operator` 实现的情况。
 
@@ -561,9 +561,9 @@ public final class OperatorObserveOn<T> implements Operator<T, T> {
 
 `ObserveOnSubscriber` 除了负责把向下游发送数据的操作调度到指定的线程，还负责 backpressure 支持，这导致它的实现比较复杂，所以这里只展示和分析最简单的调度功能。完整代码的分析大家可以自行阅读源码，其中还会涉及到串行访问相关的内容，建议大家先看看下面几篇 Advanced RxJava 译文：
 
-+ [Operator 并发原语：串行访问（serialized access）（一），emitter-loop](/AdvancedRxJava/2016/05/06/operator-concurrency-primitives/){:target="_blank"}
-+ [Operator 并发原语：串行访问（serialized access）（二），queue-drain](/AdvancedRxJava/2016/05/13/operator-concurrency-primitives-2/){:target="_blank"}
-+ [SubscribeOn 和 ObserveOn](/AdvancedRxJava/2016/09/16/subscribeon-and-observeon/){:target="_blank"}
++ [Operator 并发原语：串行访问（serialized access）（一），emitter-loop](/AdvancedRxJava/2016/05/06/operator-concurrency-primitives/index.html){:target="_blank"}
++ [Operator 并发原语：串行访问（serialized access）（二），queue-drain](/AdvancedRxJava/2016/05/13/operator-concurrency-primitives-2/index.html){:target="_blank"}
++ [SubscribeOn 和 ObserveOn](/AdvancedRxJava/2016/09/16/subscribeon-and-observeon/index.html){:target="_blank"}
 
 我们来看看简化版的调度实现（摘自上面的译文）：
 

@@ -19,36 +19,36 @@ _好了，自我感觉良好阶段结束，下面具体分享几个东西 :)_
 
 前期的文章比较简单，大抵都是“解决了什么问题 -> 解决问题的过程”这样的思路，但也不用觉得羞愧，圈内有一位热爱分享的前辈，Chiu-Ki Chan，
 
-> [http://chiuki.github.io/](http://chiuki.github.io/){:target="_blank"}
+> [http://chiuki.github.io/](http://chiuki.github.io){:target="_blank"}
 
 我看过她很多文章和演讲，她就鼓励大家多写写，多讲讲，即便内容不高深，分享的精神以及解决问题的思路，都是很有价值的。
 
 前期的文章中，我觉得还是有几篇大家看了不会骂我的：
 
-+ [（可能是）目前最全面的Android Espresso配置指南了](/2016/03/13/Android-Espresso-test-start/){:target="_blank"}
-+ [从 A/Looper: Could not create epoll instance. errno=24 错误浅谈解决各种 bug 的思路](/2016/03/16/Looper-crash/){:target="_blank"}
-+ [深入理解 RecyclerView 系列之一：ItemDecoration](/2016/03/26/Insight-Android-RecyclerView-ItemDecoration/){:target="_blank"}
-+ [深入理解 RecyclerView 系列之二：ItemAnimator](/2016/04/04/Insight-Android-RecyclerView-ItemAnimator/){:target="_blank"}
-+ [Dagger2 Scope 注解能保证依赖在 component 生命周期内的单例性吗？](/2016/04/11/Dagger2-Scope-Instance/){:target="_blank"}
-+ [安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/){:target="_blank"}
-+ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/){:target="_blank"}
++ [（可能是）目前最全面的Android Espresso配置指南了](/2016/03/13/Android-Espresso-test-start/index.html){:target="_blank"}
++ [从 A/Looper: Could not create epoll instance. errno=24 错误浅谈解决各种 bug 的思路](/2016/03/16/Looper-crash/index.html){:target="_blank"}
++ [深入理解 RecyclerView 系列之一：ItemDecoration](/2016/03/26/Insight-Android-RecyclerView-ItemDecoration/index.html){:target="_blank"}
++ [深入理解 RecyclerView 系列之二：ItemAnimator](/2016/04/04/Insight-Android-RecyclerView-ItemAnimator/index.html){:target="_blank"}
++ [Dagger2 Scope 注解能保证依赖在 component 生命周期内的单例性吗？](/2016/04/11/Dagger2-Scope-Instance/index.html){:target="_blank"}
++ [安卓 OpenGL ES 2.0 完全入门（一）：基本概念和 hello world](/2016/06/07/Open-gl-es-android-2-part-1/index.html){:target="_blank"}
++ [安卓 OpenGL ES 2.0 完全入门（二）：矩形、图片、读取显存等](/2016/06/14/Open-gl-es-android-2-part-2/index.html){:target="_blank"}
 
 后来，我花了更多的时间在 APP 架构方面的思考，以及必备开源库的源码导读这两件事情上面，产出的文章我还是觉得值得一看的。
 
 架构系列：
 
-+ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/){:target="_blank"}
-+ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/){:target="_blank"}
-+ [RESTful 安卓网络层解决方案（一）：概览与认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/){:target="_blank"}
-+ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/){:target="_blank"}
-+ [RESTful 安卓网络层解决方案（三）：API model 与 Business model 分离](/2016/09/04/RESTful-Android-Network-Solution-3/){:target="_blank"}
++ [完美的安卓 model 层架构（上）](/2016/05/06/Perfect-Android-Model-Layer/index.html){:target="_blank"}
++ [完美的安卓 model 层架构（下）](/2016/05/12/Perfect-Android-Model-Layer-2/index.html){:target="_blank"}
++ [RESTful 安卓网络层解决方案（一）：概览与认证实现方案](/2016/08/29/RESTful-Android-Network-Solution-1/index.html){:target="_blank"}
++ [RESTful 安卓网络层解决方案（二）：空 JSON 和 API Error 解析](/2016/09/04/RESTful-Android-Network-Solution-2/index.html){:target="_blank"}
++ [RESTful 安卓网络层解决方案（三）：API model 与 Business model 分离](/2016/09/04/RESTful-Android-Network-Solution-3/index.html){:target="_blank"}
 
 拆轮子系列：
 
-+ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/){:target="_blank"}
-+ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/){:target="_blank"}
-+ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/){:target="_blank"}
-+ [拆轮子系列：拆 RxJava](/2016/09/15/Understand-RxJava/){:target="_blank"}
++ [拆轮子系列：拆 Retrofit](/2016/06/25/Understand-Retrofit/index.html){:target="_blank"}
++ [拆轮子系列：拆 OkHttp](/2016/07/11/Understand-OkHttp/index.html){:target="_blank"}
++ [拆轮子系列：拆 Okio](/2016/08/04/Understand-Okio/index.html){:target="_blank"}
++ [拆轮子系列：拆 RxJava](/2016/09/15/Understand-RxJava/index.html){:target="_blank"}
 
 很多前辈都说过，教是最好的学，经过这一年多的实践，我也深感如此。**当然，纸上得来终觉浅，别人教的都不是自己的，只能作为一个参考，知识最终都还得经过自己的思考、实践，才能沉淀为自己的能力**。
 

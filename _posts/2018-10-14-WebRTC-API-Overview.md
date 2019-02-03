@@ -6,7 +6,7 @@ tags:
     - WebRTC
 ---
 
-第一次看到 WebRTC 这个词是 15 年[在一期 Android Weekly 中](http://androidweekly.net/issues/issue-155)，但当时完全看不懂它在讲什么，也就没有深究。两年后，我开始搞起 WebRTC，并整理出了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/)，距今又过了一年多。
+第一次看到 WebRTC 这个词是 15 年[在一期 Android Weekly 中](http://androidweekly.net/issues/issue-155)，但当时完全看不懂它在讲什么，也就没有深究。两年后，我开始搞起 WebRTC，并整理出了一套[开箱即用的 WebRTC 开发环境](/2017/06/17/out-of-the-box-webrtc-dev-env/index.html)，距今又过了一年多。
 
 按常理，这篇文章要介绍的内容本应最先呈现，但我搞 WebRTC 的路线略微反常，由于没有实际使用的需求，所以我先是研究了不少模块的实现原理。但随着接触到更多内容，我越来越意识到，如果没有一个清晰的全局观，那效率将会越来越低，因此也就有了这篇文章。
 
@@ -40,7 +40,7 @@ Plan B 是 SDP 里同类型的媒体流只有一个 m line，同类型的多个�
 
 WebRTC 标准采纳的是 Unified Plan，WebRTC 代码也已支持，所以我们就只关注 Unified Plan 的 API。
 
-参考：[Plan B](https://webrtcglossary.com/plan-b/), [Unified Plan](https://webrtcglossary.com/unified-plan/), [Unified Plan vs Plan B](https://www.douban.com/note/658626071/)。
+参考：[Plan B](https://webrtcglossary.com/plan-b), [Unified Plan](https://webrtcglossary.com/unified-plan), [Unified Plan vs Plan B](https://www.douban.com/note/658626071)。
 
 Plan B 在 WebRTC 源码里对应的是 PC 的 Stream/Sender/Receiver API，Unified Plan 对应的是 Track/Transceiver API。
 

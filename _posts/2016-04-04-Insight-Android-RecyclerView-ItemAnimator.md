@@ -6,7 +6,7 @@ tags:
     - RecyclerView
 ---
 
-本文继上篇 [ItemDecoration](http://blog.piasy.com/2016/03/26/Insight-Android-RecyclerView-ItemDecoration/){:target="_blank"} 之后，是深入理解 RecyclerView 系列的第二篇，关注于 ItemAnimator，主要是分析 [RecyclerView Animators](https://github.com/wasabeef/recyclerview-animators){:target="_blank"} 这个库的原理，然后总结如何自己编写自定义的 ItemAnimator。本文涉及到的完整代码可以在[ Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/effect/RecyclerViewAdvancedDemo/){:target="_blank"}。
+本文继上篇 [ItemDecoration](/2016/03/26/Insight-Android-RecyclerView-ItemDecoration/index.html){:target="_blank"} 之后，是深入理解 RecyclerView 系列的第二篇，关注于 ItemAnimator，主要是分析 [RecyclerView Animators](https://github.com/wasabeef/recyclerview-animators){:target="_blank"} 这个库的原理，然后总结如何自己编写自定义的 ItemAnimator。本文涉及到的完整代码可以在[ Github 获取](https://github.com/Piasy/AndroidPlayground/blob/master/effect/RecyclerViewAdvancedDemo){:target="_blank"}。
 
 ## 先看看类结构
 + `DefaultItemAnimator` extends `SimpleItemAnimator` extends `RecyclerView.ItemAnimator`
@@ -132,7 +132,7 @@ public boolean animateRemove(final ViewHolder holder) {
 在这里，remove 最先执行，remove 执行完毕后，再同时开始 move 和 change，而它俩都结束后，最后再执行 add。BaseItemAnimator 对 add 和 remove 这两个动画的播放进行了再一次的封装，定义了 `animateAddImpl` 和 `animateRemoveImpl` 这两个 API，以及 `preAnimateAddImpl` 和 `preAnimateRemoveImpl` 供动画开始前进行需要的操作，而这个库内置的多种 animator，都只是在这两个 API 中实现了不同的出现和消失的逻辑。add 和 remove 这两个动画的进一步封装，再次简化了编写 animator 的代码，具体的 animator 只需要专注于自己的动画显示逻辑即可。而 move 和 change 这两类动画，则是直接使用了 DefaultItemAnimator 的代码，move 就是通过 TranslationX 和 TranslationY 把 item view 从老位置移动到新位置，change 就是通过 TranslationX, setTranslationY 和 alpha 来完成内容的改变效果。
 
 ## 自定义的 move 和 change 实现
-这部分有一篇不错的文章：[InstaMaterial - RecyclerView animations done right ](http://frogermcs.github.io/instamaterial-recyclerview-animations-done-right/){:target="_blank"}。
+这部分有一篇不错的文章：[InstaMaterial - RecyclerView animations done right ](http://frogermcs.github.io/instamaterial-recyclerview-animations-done-right){:target="_blank"}。
 
 基本原理还是 RecyclerView.ItemAnimator 提供的 API，canReuseUpdatedViewHolder 控制动效时是否创建新的 ViewHolder，recordPreLayoutInformation/recordPostLayoutInformation 用来在 layout 之前/后记录需要的信息，animateChange/animateMove 来实现具体的动画逻辑，而这时可能会需要 layout 前后记录的信息。
 
