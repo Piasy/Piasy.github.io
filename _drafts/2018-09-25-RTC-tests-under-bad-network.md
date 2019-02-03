@@ -6,6 +6,20 @@ tags:
     - WebRTC
 ---
 
+## 弱网环境模拟
+
+有公司专门卖网损仪（制造网络丢包、延迟抖动，模拟各种网络环境），这种设备功能强大，支持各种丢包延迟策略，但也非常贵，一台设备得十几万人民币。其实利用 mac 电脑也可以搭建一个基本的网络模拟环境：使用 Mac Mini 或者 MacBook 加网卡转换器，使 mac 电脑通过以太网卡连接互联网，通过无线网卡创建一个共享 WiFi，再利用 Xcode Tools 里的 Network Link Conditioner 配置网络延迟和丢包。具体教程网上非常多，大家可以自行搜索，这里就不赘述了。
+
+不过这里我可以分享一下几种配置，和实际测出来的 ping 结果，测试环境为 Nexus 5X 和 iPhone 6 ping 一台阿里云华北服务器（ping 的结果每次都会有一定的差异，比如丢包 1~2% 的波动，延迟 20~30ms 的波动，应该都属于正常情况）。
+
+|                                                                         | Nexus 5X                                         | iPhone 6                                        |
+| ----------------------------------------------------------------------- | :----------------------------------------------: | :---------------------------------------------: |
+| 强网（关闭 Network Link Conditioner）                                     | 0% loss, RTT min/avg/max 7.51/13.21/311.51       | 0% loss, RTT min/avg/max 7.8/11.15/161.12       |
+| 中网（Downlink/Uplink/DNS delay 14ms, Downlink/Uplink packet drop 1%）   | 3.79% loss, RTT min/avg/max 69.92/106.02/931.58   | 3.4% loss, RTT min/avg/max 74.39/109.45/299.29 |
+| 弱网（Downlink/Uplink/DNS delay 45ms, Downlink/Uplink packet drop 2.8%） | 11.66% loss, RTT min/avg/max 234.52/263.53/731.27 | 10.7% loss, RTT min/avg/max 192.73/269.9/405.06 |
+
+---
+
 我们对卡顿进行如下分类：
 
 * 大卡：卡顿大于 5s
