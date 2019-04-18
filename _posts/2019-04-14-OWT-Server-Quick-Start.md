@@ -41,7 +41,7 @@ git clone https://github.com/Piasy/owt-server.git -b fix_build_pack
 说明：
 
 + git config 命令设置用户名和邮箱可自行替换，不替换也没问题，这个设置是为了可以成功给 Licode 打 patch；
-+ 由于官方现在的编译、打包、运行脚本均存在一点小问题，[我提的 PR](https://github.com/open-webrtc-toolkit/owt-server/pull/103) 尚未合并，所以大家可以先 clone 我的 fork；
++ 由于官方现在的编译脚本存在一点小问题，[我提的 PR](https://github.com/open-webrtc-toolkit/owt-server/pull/103) 尚未合并，所以大家可以先 clone 我的 fork；
 
 ### 编译 owt-server
 
@@ -76,7 +76,7 @@ grunt
 
 ``` bash
 cd ~/owt-server/ && \
-./scripts/pack.js -t all -f -a -s ~/owt-client-javascript-4.2/dist/
+./scripts/pack.js -t all -f -a -s ~/owt-client-javascript-4.2/dist/samples/conference/
 ```
 
 说明：
