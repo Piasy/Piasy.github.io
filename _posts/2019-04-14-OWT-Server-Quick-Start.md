@@ -35,13 +35,12 @@ source ~/.bashrc
 apt-get update && apt-get install -y git htop unzip && \
 git config --global user.name Piasy && \
 git config --global user.email xz4215@gmail.com && \
-git clone https://github.com/Piasy/owt-server.git -b fix_build_pack
+git clone https://github.com/open-webrtc-toolkit/owt-server.git
 ```
 
 说明：
 
 + git config 命令设置用户名和邮箱可自行替换，不替换也没问题，这个设置是为了可以成功给 Licode 打 patch；
-+ 由于官方现在的编译脚本存在一点小问题，[我提的 PR](https://github.com/open-webrtc-toolkit/owt-server/pull/103) 尚未合并，所以大家可以先 clone 我的 fork；
 
 ### 编译 owt-server
 
