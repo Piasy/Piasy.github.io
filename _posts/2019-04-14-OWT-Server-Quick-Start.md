@@ -22,9 +22,9 @@ _注：由于用于测试，所以下面的命令都是以 root 用户执行_。
 
 ``` bash
 cd ~ && \
-wget https://nodejs.org/dist/latest-v8.x/node-v8.15.1-linux-x64.tar.gz && \
-sudo mkdir -p /usr/local/lib/nodejs && \
-sudo tar xf node-v8.15.1-linux-x64.tar.gz -C /usr/local/lib/nodejs && \
+wget https://nodejs.org/dist/v8.15.1/node-v8.15.1-linux-x64.tar.gz && \
+mkdir -p /usr/local/lib/nodejs && \
+tar xf node-v8.15.1-linux-x64.tar.gz -C /usr/local/lib/nodejs && \
 echo 'export PATH=/usr/local/lib/nodejs/node-v8.15.1-linux-x64/bin:$PATH' >> ~/.bashrc && \
 source ~/.bashrc
 ```
