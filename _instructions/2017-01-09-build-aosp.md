@@ -1,17 +1,18 @@
 # 导入 AOSP 源码查看、开发、调试
 
-* https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
-* [Mac 10.12 编译 Android 源码](http://www.jianshu.com/p/1513fc9e1a74)
-* http://szysky.com/2016/07/12/mac%E7%B3%BB%E7%BB%9Fandroid%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81/
-* https://android.googlesource.com/platform/development/+/master/tools/idegen/README
-* http://ronubo.blogspot.jp/2016/01/debugging-aosp-platform-code-with.html
-* https://www.ibm.com/developerworks/cn/opensource/os-cn-android-build/
+macOS 10.14.4 (18E226), Xcode 9.4 (必须 9.4)
 
 ``` bash
-curl https://storage.googleapis.com/git-repo-downloads/repo > repo
+curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o repo
+chmod +x repo
 wget https://mirrors.tuna.tsinghua.edu.cn/aosp-monthly/aosp-latest.tar
 tar xf aosp-latest.tar
-cd AOSP
+cd aosp
+../repo sync
+
+# 切换分支（tag），只需重新执行 repo init && repo sync，
+# 具体 tag，需要去 https://source.android.com/setup/start/build-numbers 查看欲编译的设备支持哪些 tag
+../repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-9.0.0_r36
 ../repo sync
 
 bash
@@ -23,24 +24,27 @@ lunch
 make -j4
 
 mmm <path to the module>
-```
 
+# 刷入，需要继续在 make 所在的 bash 里
+fastboot flashall -w
+```
 
 ## 错误解决
 
-``` bash
-build/core/combo/mac_version.mk:26: none of the installed SDKs (wifi-serviceac_sdk_versions_installed) match supported versions (10.8 10.9 10.10 10.11), trying 10.8
-build/core/combo/mac_version.mk:36: no SDK 10.8 at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk, trying legacy dir
-build/core/combo/mac_version.mk:40: *****************************************************
-build/core/combo/mac_version.mk:41: * Can not find SDK 10.8 at /Developer/SDKs/MacOSX10.8.sdk
-build/core/combo/mac_version.mk:42: *****************************************************
-build/core/combo/mac_version.mk:43: *** Stop..  Stop.
-```
-
-```修改 `build/core/combo/mac_version.mk`，修改 `mac_sdk_versions_supported := 10.12`（系统安装的 XCode 版本，`ls /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/` 获得）```
-
-10.12 弃用了 syscall，所以还是得安装老的 SDK，[下载地址](https://github.com/phracker/MacOSX-SDKs/releases)，解压拷贝到`/Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs`。为了避免下次升级的时候再被删除，可以放到 `~/tools/MacOSX10.11.sdk`，再给它创建一个软链接：
+切换分支后，可能会报如下错：
 
 ``` bash
-ln -s ~/tools/MacOSX10.11.sdk /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk
+internal error: could not open symlink hardware/qcom/sdm710/Android.bp; its target (display/os_pickup.bp) cannot be opened
 ```
+
+删掉 `hardware/qcom/` 目录后，重新 sync，就可以了。
+
+make 报错：
+
+``` bash
+ld: in '/usr/local/lib/libunwind.dylib', file was built for x86_64 which is not the architecture being linked (i386): /usr/local/lib/libunwind.dylib for architecture i386
+```
+
+可能是 brew 安装了新的 llvm@4，通过 `brew uninstall --ignore-dependencies llvm@4` 先临时卸载之。另，遇到上述错误后，一定要 clean 后重新编译，否则可能刷入手机后，手机无法启动。
+
+刷入编出来的镜像之前，先刷一下对应版本的 factory image，因为编译出来的结果不包含 vendor.img，否则刷入手机后可能无法启动。

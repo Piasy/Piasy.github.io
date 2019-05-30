@@ -14,7 +14,7 @@ _本文的分析基于 WebRTC 的 #23295 提交_。
 
 ## 基本概念
 
-扎到代码里之前，让我们先理清一些概念，下面这些内容都是总结自 [WebRTC 标准](http://w3c.github.io/webrtc-pc。
+扎到代码里之前，让我们先理清一些概念，下面这些内容都是总结自 [WebRTC 标准](http://w3c.github.io/webrtc-pc)。
 
 ### PC stream track source sink
 
