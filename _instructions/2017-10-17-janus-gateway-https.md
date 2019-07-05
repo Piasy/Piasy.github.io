@@ -221,7 +221,7 @@ cd ~/ffmpeg_sources && \
 ``` bash
 brew install jansson libnice openssl srtp libusrsctp \
     cmake rabbitmq-c sofia-sip opus libogg curl \
-    glib pkg-config gengetopt autoconf automake libtool
+    glib pkg-config gengetopt autoconf automake libtool libconfig
 brew install libmicrohttpd --with-ssl
 
 # master 分支的才能正常工作
@@ -238,7 +238,7 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/libwebsockets \
 make && sudo make install
 
 sh autogen.sh && \
-ENV CPPFLAGS='-I/usr/local/libwebsockets/include' \
+env CPPFLAGS='-I/usr/local/libwebsockets/include' \
     LDFLAGS='-L/usr/local/libwebsockets/lib' \
 ./configure --prefix=`pwd`/build \
     PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig \

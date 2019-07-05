@@ -79,6 +79,10 @@ featured-condition-size: 0              # A tag will be featured if the size of 
 # Friends
 friends: [
     {
+        title: "陈文管的博客",
+        href: "https://www.chenwenguan.com/"
+    },
+    {
         title: "DiyCode",
         href: "http://www.diycode.cc/"
     },

@@ -103,6 +103,8 @@ libavutil/log.c:362: error: undefined reference to 'stderr'
 macOS   10.13.4 (17E202)
 Xcode   9.4 (9F1027a)
 ffmpeg  3.4.2
+
+env FFMPEG_VERSION=3.4.2 ./build-ffmpeg.sh arm64
 ```
 
 ## macOS
