@@ -227,7 +227,7 @@ CMBlockBufferCopyDataBytes(data_buffer, 0, data_size, data);
 
 iOS 有个东西倒是没有：bitrate mode。~~根据文档描述来看，应该是 VBR，因为允许码率在平均码率上下波动嘛。~~ 根据实际测试，从效果上看，应该是 CBR 才对，毕竟 CBR 也不是码率完全不变，小幅度波动还是存在的。
 
-之前在 [WebRTC Native 源码导读（三）：安卓视频硬编码实现分析](https://blog.piasy.com/2017/08/08/WebRTC-Android-HW-Encode-Video/#mediacodec-%E6%B5%81%E6%8E%A7%E6%B5%8B%E8%AF%95)中我对 VBR CBR 如何选择给出了一点看法，这里我想补充几点：
+之前在 [WebRTC Native 源码导读（三）：安卓视频硬编码实现分析](/WebRTC-Android-HW-Encode-Video/index.html#mediacodec-%E6%B5%81%E6%8E%A7%E6%B5%8B%E8%AF%95)中我对 VBR CBR 如何选择给出了一点看法，这里我想补充几点：
 
 + VBR 在画面内容保持静止时，码率会降得很低，一旦画面内容开始动起来，码率上升速度会跟不上，就会导致画面质量很差；
 + VBR 上调码率后，有可能导致中间网络路径的丢包/延迟增加，进而导致问题；
@@ -240,7 +240,7 @@ _前两点援引自 [Twitch blog](https://blog.twitch.tv/better-broadcasting-wit
 
 ![](https://imgs.piasy.com/2018-05-10-ios_no_update.png)
 
-上图是不调节码率时的码率变化曲线，对比 [MediaCodec 的测试结果](/2017/08/08/WebRTC-Android-HW-Encode-Video/#mediacodec-%E6%B5%81%E6%8E%A7%E6%B5%8B%E8%AF%95)，我们发现 VideoToolbox 的码率比 MediaCodec 的 VBR 还是要稳得多，和 CBR 差不多。
+上图是不调节码率时的码率变化曲线，对比 [MediaCodec 的测试结果](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html#mediacodec-%E6%B5%81%E6%8E%A7%E6%B5%8B%E8%AF%95)，我们发现 VideoToolbox 的码率比 MediaCodec 的 VBR 还是要稳得多，和 CBR 差不多。
 
 ![](https://imgs.piasy.com/2018-05-10-ios_step_100.png)
 

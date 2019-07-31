@@ -10,7 +10,7 @@ tags:
 
 本篇算是真正深入底层的第一篇，让我们深究一下之前没有深究的话题：视频数据 native 层之旅，以及 WebRTC 对视频数据的处理。最近对 iOS 上层的分析也不算白费，毕竟在 iOS 平台深入底层，无论是编译还是调试都更方便。
 
-_本文的分析基于 WebRTC 的 #23295 提交_。
+_本文的分析基于 WebRTC 的 #23295 提交；部分内容更新于 #28513 提交_。
 
 ## 基本概念
 
@@ -44,7 +44,7 @@ addTrack 时会为其分配 transceiver/sender（新建或复用已有 transceiv
 
 ### capturer => source => encoder
 
-![](https://imgs.piasy.com/2018-05-11-ios_video_capturer_to_encoder.png)
+![](https://imgs.piasy.com/2019-07-18-ios_video_capturer_to_encoder.png)
 
 + `RTCVideoSource` 实现了 `RTCVideoCapturerDelegate`，所以视频数据从 `RTCCameraVideoCapturer` 送到了 `RTCVideoSource`；
 + 紧接着数据被送到了 `ObjCVideoTrackSource`，它继承自 `AdaptedVideoTrackSource`，其主要责任是对视频数据做「适配」，包括裁剪缩放，旋转，甚至丢弃操作；
@@ -52,23 +52,21 @@ addTrack 时会为其分配 transceiver/sender（新建或复用已有 transceiv
 + 经过上面的处理后，视频数据已经由 `RTCVideoFrame` 变成了 `rtc::VideoFrame`，并交给了 `AdaptedVideoTrackSource`，由此正式开始 native 层之旅；之后如果视频需要旋转，那就做一个旋转操作（其他平台里此前可能未做旋转处理），然后交给 `VideoBroadcaster`；
 + 顾名思义，`VideoBroadcaster` 负责把视频数据“广播”出去（交给它的每个 sink），这里 broadcaster 还会检查 sink 对视频方向的需求，如果不匹配则丢弃数据，如果需要黑屏数据则传黑屏数据；另外，`AdaptedVideoTrackSource` 作为一个 source，可以添加 sink，但其实最终都是添加到了 `VideoBroadcaster` 里；
 + iOS 里只有一个 sink，那就是 `VideoStreamEncoder`，如果视频时间戳超过了当前时间，它会将其重置为当前时间，然后它会统计采集帧数、丢弃帧数（编码过慢导致），并定期输出日志（60s 一次），最后如果视频编码速度跟得上，就会把数据交给编码器，当然丢帧或编码的操作都是在编码线程（`encoder_queue_`）完成的；（`VideoStreamEncoder::OnFrame`）
-+ `VideoStreamEncoder` 支持每帧数据编码之前，先执行一个回调；开始编码之前我们要先启动编码，此外，如果视频尺寸发生变化，或者数据类型发生变化（是否 texture），那我们都要重启编码；最后如果视频数据量没有超标，编码器也没有暂停，就进入下一环节；（`VideoStreamEncoder::MaybeEncodeVideoFrame`）
-+ 在进行最后一次裁剪缩放检查后（_裁剪、缩放、旋转操作可能发生的位置确实有点多……_），把数据送给 `VideoSender`；（`VideoStreamEncoder::EncodeVideoFrame`）
-+ `VideoSender` 会根据帧率、分辨率和 buffer 类型决定是否需要丢弃视频帧，如果确定要编码，就再交给 `VCMGenericEncoder`；
-+ `VCMGenericEncoder` 检查了帧类型，并发出编码前回调之后（_回调也有点多……_），就把数据交给了 `ObjCVideoEncoder`，并最终交到了 `RTCVideoEncoderH264` 的手里；
++ 开始编码之前我们要先启动编码，此外，如果视频尺寸发生变化，或者数据类型发生变化（是否 texture），那我们都要重启编码；然后会根据帧率、分辨率和 buffer 类型决定是否需要丢弃视频帧，如果确定要编码，则进入下一步；（`VideoStreamEncoder::MaybeEncodeVideoFrame`）
++ 在进行最后一次裁剪缩放检查后（裁剪、缩放、旋转操作可能发生的位置确实有点多……），把帧交给 `ObjCVideoEncoder`，并最终交到了 `RTCVideoEncoderH264` 的手里；（`VideoStreamEncoder::EncodeVideoFrame`）
 
 这里简单小结一下：
 
 + 视频数据采集到之后，会在采集线程做裁剪缩放、旋转、黑屏、丢弃等处理；
-+ 随后视频数据提交到编码线程，可能做裁剪缩放操作，最后进行编码；
++ 随后视频数据提交到编码线程，如果不丢帧，就进行编码；
 
 ### encoder => sender
 
-![](https://imgs.piasy.com/2018-05-11-ios_rtp_encoder_to_sender.png)
+![](https://imgs.piasy.com/2019-07-19-ios_rtp_encoder_to_sender.png)
 
 + `RTCVideoEncoderH264` 在收到系统的编码完成回调后，除了转换 NALU 存储格式外，还会顺带产生每帧视频数据的所有 RTP header，每个 NALU 作为一个 RTP fragment；解码器实际使用的大多是 Annex-B 格式，但中途处理时 AVCC 更方便（不用统计 unit 长度），把 H.264 数据封装进 RTP 报文之后，我们可以从包头里得知 unit 大小，这样就可以让数据保持 Annex-B 格式了；
-+ `ObjCVideoEncoder` 在 `RegisterEncodeCompleteCallback` 函数里为 `RTCVideoEncoderH264` 设置了编码回调，它收到编码后的数据之后，会把 ObjC 的数据结构转换为 C++ 的数据结构，然后交给 `VCMEncodedFrameCallback`；
-+ `VCMEncodedFrameCallback` 是 `VCMGenericEncoder` 设置的编码回调，它会把传入的 `EncodedImage` 拷贝一份，因为传入的是 `const &`，而这里却需要对这个结构内容做修改（_为什么不传普通引用呢，是有点作……_），然后填充 timing info, experiment id, simulcast id，最后交给 `VideoStreamEncoder`；交出数据之后，会再调用 `media_optimization::MediaOptimization` 的相关接口，_应该是做帧率限制用的，但我并未在项目中搜到对 `drop_next_frame` 的使用_；
++ `ObjCVideoEncoder` 在 `RegisterEncodeCompleteCallback` 函数里为 `RTCVideoEncoderH264` 设置了编码回调，它收到编码后的数据之后，会把 ObjC 的数据结构转换为 C++ 的数据结构，然后交给 `VideoStreamEncoder`；
++ `VideoStreamEncoder` 会把传入的 `EncodedImage` 拷贝一份，因为传入的是 `const &`，而这里却需要对这个结构内容做修改（_为什么不传普通引用呢，是有点作……_），然后填充 timing info, experiment id, simulcast id，此外还会再调用 `media_optimization::MediaOptimization` 的相关接口，_应该是做帧率限制用的，但我并未在项目中搜到对 `drop_next_frame` 的使用_；
 + 好了，接收视频数据并发起编码的是 `VideoStreamEncoder`，接收编码完成回调的也是它，之后就该要封装 RTP 报文发送了，这个过程不涉及视频数据的处理，以后再做展开；
 
 ### 数据 pipeline 建立过程
@@ -87,38 +85,44 @@ addTrack 时会为其分配 transceiver/sender（新建或复用已有 transceiv
 
 VideoBroadcaster 是 AdaptedVideoTrackSource 自己构造的成员变量，它的作用就是把视频数据分发给多个 sink，给 AdaptedVideoTrackSource 添加 sink，实际上是给 VideoBroadcaster 添加 sink。
 
+在构造出 RTCVideoSource 和 RTCCameraVideoCapturer 后，我们就完成了上述对象的关联，数据从 iOS 系统 -> RTCCameraVideoCapturer -> RTCVideoSource -> ObjCVideoTrackSource -> AdaptedVideoTrackSource -> VideoBroadcaster 的通路就建立起来了。
+
 **VideoBroadcaster => VideoStreamEncoder**:
 
-+ `PeerConnection::AddTrack`：创建 sender, receiver, transceiver，并关联 track 和 sender；
-  - track 是 `VideoTrack`，它的 `video_source_` 是 `AdaptedVideoTrackSource`，此外它也实现了 `VideoSourceInterface` 接口；
-+ `PeerConnection::setLocalDescription`：在 `VideoRtpSender::SetVideoSend` 里关联 `media_channel_` 和 `track_`，不过 `media_channel_` 把 track 当做 `VideoSourceInterface` 使用；
-  - `WebRtcVideoChannel` 把 source 交给了它的 `send_streams_`，即 `WebRtcVideoSendStream`；
-+ `PeerConnection::SetRemoteDescription`：经由 VidelChannel（BaseChannel）、WebRtcVideoChannel（MediaChannel）、WebRtcVideoSendStream，创建 VideoSendStream，并关联 stream 和 source，最后给 source 绑定了 sink（VideoSendStream 的 VideoStreamEncoder）；
-  - 在这个过程中 WebRtcVideoChannel 当了个中间人，它也实现了 VideoSourceInterface，它利用中间人的身份，保证对 `VideoSourceInterface::AddOrUpdateSink` 的调用发生在 `worker_thread_`；
-  - WebRtcVideoChannel 的 `source_` 就是 `setLocalDescription` 里被绑定的 VideoTrack，给它添加 sink，实际上是给它的 source 添加 sink；
++ `PeerConnection::AddTrack`：创建 sender, receiver, transceiver, 关联 track 和 sender；
+  - track 和 sender 的关联，通过 `transceiver->sender()->SetTrack(track)` 或 `CreateSender(media_type, sender_id, track, stream_ids, {})` 完成；
+  - track 是 `VideoTrack`（`RTCVideoTrack` 的 native 层对象），创建 `RTCVideoTrack` 时，我们传入了 `RTCVideoSource` 对象，但数据并不会流经 `RTCVideoTrack`，`RTCVideoTrack` 只是充当一个牵线搭桥的角色；
+  - track 的 `video_source_` 是 `AdaptedVideoTrackSource`，此外 track 也实现了 `VideoSourceInterface` 接口，因此可以添加 sink，但 sink 实际上是添加给了 source，因此数据就会从 source 流经 sink 了，牵线搭桥正是在此处；
++ `PeerConnection::SetLocalDescription`：把 track 交给 channel，但 channel 把 track 当 source 用；
+  - `PeerConnection::setLocalDescription` ->
+  - `PeerConnection::ApplyLocalDescription` 的 `transceiver->internal()->sender_internal()->SetSsrc` ->
+  - `RtpSenderBase::SetSsrc` ->
+  - `VideoRtpSender::SetSend` ->
+  - `WebRtcVideoChannel::SetVideoSend` ->
+  - `WebRtcVideoChannel::WebRtcVideoSendStream::SetVideoSend`，channel 把 source 存了起来，但此时 channel 的 stream（`WebRtcVideoSendStream`）还没有创建，需要等 `SetRemoteDescription` 才会创建；
++ `PeerConnection::SetRemoteDescription`：关联 stream 和 source；
+  - `PeerConnection::ApplyRemoteDescription` ->
+  - `PeerConnection::UpdateSessionState` ->
+  - `PeerConnection::PushdownMediaDescription` ->
+  - `BaseChannel::SetRemoteContent` ->
+  - `VideoChannel::SetRemoteContent_w` ->
+  - `WebRtcVideoChannel::SetSendParameters` ->
+  - `WebRtcVideoChannel::ApplyChangedParams` ->
+  - `WebRtcVideoChannel::WebRtcVideoSendStream::SetSendParameters` ->
+  - `WebRtcVideoChannel::WebRtcVideoSendStream::SetCodec` ->
+  - `WebRtcVideoChannel::WebRtcVideoSendStream::RecreateWebRtcStream` ->
+  - `VideoSendStream::SetSource` ->
+  - `VideoStreamEncoder::SetSource` ->
+  - `VideoStreamEncoder::VideoSourceProxy` 的 `SetSource`，并在其中，把 `video_stream_encoder_` 作为 sink 添加到了 source 里；
   
-那么我们终于把 VideoStreamEncoder 交给 AdaptedVideoTrackSource 了。
+那么我们终于把 VideoStreamEncoder 交给 AdaptedVideoTrackSource 了，也就是添加到 VideoBroadcaster 中了，于是视频数据就能流到 encoder 了。
 
-**VideoStreamEncoder => VideoSender**:
-
-VideoSender 是 VideoStreamEncoder 自己构造的成员变量，构造 VideoSender 时，VideoStreamEncoder 还把自己作为编码数据的回调注册给了 VideoSender。
-
-**VideoSender => VCMGenericEncoder => ObjCVideoEncoder => RTCVideoEncoderH264**:
+**VideoStreamEncoder => RTCVideoEncoderH264**:
 
 VideoStreamEncoder 开始接收视频数据后，会在 `VideoStreamEncoder::ReconfigureEncoder` 里创建编码器。
 
-+ 调用 `ObjCVideoEncoderFactory::CreateVideoEncoder` 创建编码器，创建出来的是包装了 `RTCVideoEncoderH264` 的 `ObjCVideoEncoder`；
-+ 调用 `VideoSender::RegisterExternalEncoder` 把 ObjCVideoEncoder 注册给 VideoSender，进而注册给 VCMEncoderDataBase；
-+ 调用 `VideoSender::RegisterSendCodec`，其中会调用 `VCMEncoderDataBase::SetSendCodec` 把 VideoSender 包装成 VCMGenericEncoder，并调用 `VCMEncoderDataBase::GetEncoder` 将其取出保存；
-
-那么我们终于建立起了完整的编码数据通道了，不过还不能高兴得太早，编码后数据抛出的通道是怎么建立的？让我们再接再厉。
-
-**RTCVideoEncoderH264 => VCMEncodedFrameCallback => VideoStreamEncoder**:
-
-在 `VCMEncoderDataBase::SetSendCodec` 中，我们会调用 `InitEncode` 初始化编码，之后就会注册编码回调。
-
-+ 在 `ObjCVideoEncoder::RegisterEncodeCompleteCallback` 里，我们调用 `RTCVideoEncoderH264 setCallback` 注册回调，这样编码数据就会被交给 ObjCVideoEncoder，进而交给 VCMEncodedFrameCallback；
-+ 而 VCMEncodedFrameCallback 是在构造 VideoSender、VCMEncoderDataBase、VCMGenericEncoder 时，VideoStreamEncoder 把自己作为编码数据的回调一路传递过来的；
++ 调用 `ObjCVideoEncoderFactory::CreateVideoEncoder` 创建编码器，创建出来的是包装了 `RTCVideoEncoderH264` 的 `ObjCVideoEncoder`，之后收到帧后，就交给 `RTCVideoEncoderH264` 编码了；
++ 调用 `InitEncode` 初始化编码，之后调用 `ObjCVideoEncoder::RegisterEncodeCompleteCallback` 把自己注册给 `ObjCVideoEncoder`，所以编码完成后，数据也就会回调给 `VideoStreamEncoder` 了；
 
 好了，到这里我们就搞清楚了发送端视频数据的流动过程，以及这个数据通道的建立过程了，确实不容易，让我们先歇一口气 :)
 
@@ -132,12 +136,12 @@ VideoStreamEncoder 开始接收视频数据后，会在 `VideoStreamEncoder::Rec
 
 ![](https://imgs.piasy.com/2018-05-23-ios_rtp_stream_to_decoder.png)
 
-从 VideoReceiveStream 到 VideoRecenver，再到 VCMGenericDecoder，最后到 ObjCVideoDecoder 和 RTCVideoDecoderH264，都没有视频数据的处理，只是简单的透传、解码，以及打上时间戳（VideoReceiveStream, VCMGenericDecoder）。
+从 VideoReceiveStream 到 VideoReceiver，再到 VCMGenericDecoder，最后到 ObjCVideoDecoder 和 RTCVideoDecoderH264，都没有视频数据的处理，只是简单的透传、解码，以及打上时间戳（VideoReceiveStream, VCMGenericDecoder）。
 
 这条路径上的各个类名，我们都可以在发送端找到对应的类名：
 
 + VideoReceiveStream - VideoSendStream
-+ VideoRecenver - VideoSender
++ VideoReceiver - VideoSender
 + VCMGenericDecoder - VCMGenericEncoder
 + ObjCVideoDecoder - ObjCVideoEncoder
 + RTCVideoDecoderH264 - RTCVideoEecoderH264

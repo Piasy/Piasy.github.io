@@ -35,7 +35,8 @@ source ~/.bashrc
 apt-get update && apt-get install -y git htop unzip && \
 git config --global user.name Piasy && \
 git config --global user.email xz4215@gmail.com && \
-git clone https://github.com/open-webrtc-toolkit/owt-server.git
+wget https://github.com/open-webrtc-toolkit/owt-server/archive/v4.2.zip -O owt-server-4.2.zip && \
+unzip owt-server-4.2.zip
 ```
 
 说明：
@@ -45,7 +46,7 @@ git clone https://github.com/open-webrtc-toolkit/owt-server.git
 ### 编译 owt-server
 
 ``` bash
-cd owt-server && \
+cd owt-server-4.2 && \
 ./scripts/installDepsUnattended.sh && \
 npm install -g node-gyp graceful-fs grunt-cli && \
 ./scripts/build.js -t mcu --check
@@ -74,7 +75,7 @@ grunt
 ### 打包 owt-server
 
 ``` bash
-cd ~/owt-server/ && \
+cd ~/owt-server-4.2/ && \
 ./scripts/pack.js -t all -f -a -s ~/owt-client-javascript-4.2/dist/samples/conference/
 ```
 
@@ -95,7 +96,7 @@ cd ~/owt-server/ && \
 ### 运行 owt-server
 
 ``` bash
-cd ~/owt-server/dist && \
+cd ~/owt-server-4.2/dist && \
 ./bin/init-all.sh && \
 ./bin/start-all.sh
 ```
