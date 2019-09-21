@@ -103,25 +103,8 @@ _注意：WebRTC 及其依赖的源码，需要自行下载，上述变量是为
 Android Studio 的调试毕竟只是为了加断点做一些流程分析，而且写出来的 CMakeLists.txt 和 build.gradle 也只能算是一个临时解决方案，靠谱的编译方式，还得是 gn + ninja，那么接下来我就补上这道餐后甜点。
 
 + 先在 docker 镜像里 sync 好 linux 的版本（直接在 macOS 里下载我猜应该也可以，但我没试过，欢迎大家尝试后分享结果）；
-+ 创建 `src/third_party/android_tools_mac` 目录，并把 macOS 的 ndk 和 sdk 放入其中；
-+ 修改 `src/build/config/android/config.gni`:
-
-``` gn
-  declare_args() {
-    android_ndk_root = "//third_party/android_tools_mac/ndk"
-    android_ndk_version = "r16"
-    android_ndk_major_version = 16
-
-    android_sdk_root = "//third_party/android_tools_mac/sdk"
-    android_sdk_version = 28
-    android_sdk_build_tools_version = "27.0.3"
-    android_sdk_tools_version_suffix = "-26.0.0-dev"
-
-    lint_android_sdk_root = "//third_party/android_tools_mac/sdk"
-    lint_android_sdk_version = 26
-```
-
-+ 修改 `src/build/toolchain/gcc_solink_wrapper.py` 末尾部分：
++ 查看 `src/third_party/android_ndk/source.properties` 里 Linux NDK 的版本，然后下载对应版本的 macOS NDK，并替换原有 `src/third_party/android_ndk` 目录里的内容；当然这里建议大家把原有的 `src/third_party/android_ndk` 目录备份，sync 前还原为 Linux NDK，编译前替换为 macOS NDK，这样就不用每次都下载 NDK 了；
++ 修改 `src/build/toolchain/gcc_solink_wrapper.py` 末尾部分为：
 
 ``` python
   # Finally, strip the linked shared object file (if desired).
@@ -130,8 +113,8 @@ Android Studio 的调试毕竟只是为了加断点做一些流程分析，而�
         [args.readelf[:-7] + "strip", '-o', args.output, args.sofile]))
 ```
 
-+ 下载 `src/buildtools/mac` 下定义版本的 macOS 版的 `clang-format` 和 `gn`，下载方法见上文；
-+ 本地 build llvm，因为下载的 macOS 版本都没有 llvm-ar 这个程序，build 命令：`env LLVM_FORCE_HEAD_REVISION=1 ./src/tools/clang/scripts/update.py`；
++ 下载 `src/buildtools/mac` 下定义版本的 macOS 版的 `clang-format`（https://storage.googleapis.com/chromium-clang-format/0679b295e2ce2fce7919d1e8d003e497475f24a3）和 `gn`（https://storage.googleapis.com/chromium-gn/9be792dd9010ce303a9c3a497a67bcc5ac8c7666），替换 hash 值即可，其他 `download_from_google_storage` 的步骤都可以这样解决（替换 bucket 和 hash）；
++ 本地编译 llvm（因为下载的 macOS 版本都没有 llvm-ar 这个程序），编译命令：`./src/tools/clang/scripts/build.py --without-fuchsia`；
 + 把 `$JAVA_HOME/bin` 加到 PATH `/usr/bin` 的前面，这样找到的就会是正确的 jdk 路径，就能找到 rt.jar 了，否则会报错 `No such file or directory: '/System/Library/Frameworks/JavaVM.framework/Versions/A/jre/lib/rt.jar'`；
 + 确保在 Python 2.x 的 shell 里执行 gn 和 ninja 即可编译；
 

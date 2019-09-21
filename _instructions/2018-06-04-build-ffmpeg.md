@@ -91,9 +91,9 @@ libavutil/log.c:362: error: undefined reference to 'stderr'
 
 是 NDK unified headers 导致，在创建 standalone toolchain 时加上 `--deprecated-headers` 即可。
 
-`x86` 和 `x86_64` 使用静态库时报错：`ld: warning: shared library text segment is not shareable`。
+`x86` 和 `x86_64` 使用静态库时报错：`ld: warning: shared library text segment is not shareable`。使用 `--disable-asm` 选项禁用汇编优化即可。另外，网上有人建议通过 `--no-warn-shared-textrel` 来禁用这个警告，其实这是不妥的，链接时不警告，在安卓 23 及以后的系统上，运行时会给用户弹框警告的。而禁用汇编优化只是性能稍差一些，两害相较取其轻。
 
-使用 `--disable-asm` 选项禁用汇编优化即可。另外，网上有人建议通过 `--no-warn-shared-textrel` 来禁用这个警告，其实这是不妥的，链接时不警告，在安卓 23 及以后的系统上，运行时会给用户弹框警告的。而禁用汇编优化只是性能稍差一些，两害相较取其轻。
+`arm` 使用静态库时可能报错：`ld.lld: error: can't create dynamic relocation R_ARM_V4BX against local symbol in readonly segment`，同样使用 `--disable-asm` 选项禁用汇编优化即可。
 
 ## iOS
 

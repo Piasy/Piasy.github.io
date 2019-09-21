@@ -20,7 +20,7 @@ tags:
 
 首先是工作流程：
 
-![](https://imgs.piasy.com/2017-07-27-media_codec_workflow.png)
+![](https://imgs.piasy.com/2019-08-06-media_codec_workflow.svg)
 
 生产者不断把输入数据送进 codec，消费者则不断消费 codec 的输出数据。如果用于编码，则输入是原始数据，输出是压缩数据。如果用于解码，则反过来，输入是压缩数据，输出是原始数据。
 

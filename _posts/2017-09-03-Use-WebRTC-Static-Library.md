@@ -12,6 +12,20 @@ tags:
 
 所谓剥离使用，其实有好几种做法，最干净的就是把相关的源码文件摘出来单独进行编译，不过这件事工作量显然不小，而且未必能在不修改 WebRTC 源码的前提下做到。而最笨的办法就是带着完整的 `libjingle_peerconnection_so.so` 了，但这显然不太符合“剥离”这一词的含义。有没有折衷的办法？当然有，那就是使用 WebRTC 静态库作为依赖，这样我们的代码实际用到了哪些模块，相关源码编译出来的目标文件才会被带进我们的库里面。
 
+**2019.09.11 update**:
+
+WebRTC 从 m73~m74 之间的某个提交开始，安卓编译出来的静态库使用时会报如下错误：
+
+```bash
+../../modules/audio_processing/agc2/interpolated_gain_curve.cc:0:
+error: undefined reference to 'std::__1::basic_string<char, std::__1::char_traits<char>,
+std::__1::allocator<char> > std::__1::operator+<char, std::__1::char_traits<char>,
+std::__1::allocator<char> >(char const*, std::__1::basic_string<char, std::__1::char_traits<char>,
+std::__1::allocator<char> > const&)'
+```
+
+原因是 WebRTC 编译时不再使用 NDK 里的 libc++ 导致的，为了修复这个问题，需要给 src/build 目录[打个 patch](https://gist.github.com/Piasy/4effa9057eb0faff8231d34e589478c3)。相关讨论可以查看[这个 Google Group 讨论：Android libc++ namespace change__1 in m74](https://groups.google.com/forum/#!topic/discuss-webrtc/o-zDdrq09yk)。
+
 ## 使用 WebRTC 静态库
 
 ### 编译
