@@ -113,7 +113,7 @@ add_library(try-webrtc SHARED
             )
 
 include_directories(libs/webrtc/include)
-add_definitions(-DWEBRTC_POSIX)
+add_definitions(-DWEBRTC_POSIX=1 -DWEBRTC_ANDROID=1 -DWEBRTC_LINUX=1)
 
 # Include libraries needed for try-webrtc lib
 target_link_libraries(try-webrtc

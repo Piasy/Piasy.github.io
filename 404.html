@@ -13,6 +13,7 @@ permalink: /404.html
 			<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 				<div class="site-heading" id="tag-heading">
 					<h1>404</h1>
+					<h2><a href="#" onclick="tryIndex()" style="color: #03a9f4;">点我试试？</a></h2>
 					<span class="subheading">{{ page.description }}</span>
                     
                     <a href="{{ site.baseurl }}/archive/index.html" style="color:blue;"><p>查看历史文章</p></a>
@@ -21,6 +22,12 @@ permalink: /404.html
 		</div>
 	</div>
 </header>
+
+<script language="javascript" type="text/javascript">
+	function tryIndex() {
+		window.location.href = window.location.href + '/index.html';
+	}
+</script>
 
 <script>
 	document.body.classList.add('page-fullscreen');

@@ -5,4 +5,6 @@ node_modules
 */*/.DS_Store
 *.sh
 .jekyll-metadata
+.jekyll-cache
 /.vscode/
+
