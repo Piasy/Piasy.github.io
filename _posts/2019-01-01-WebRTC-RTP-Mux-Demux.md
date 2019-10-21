@@ -19,7 +19,7 @@ _注：本文是我对这块代码、协议理解的总结，如果你也打算�
 
 ### RTP 包结构
 
-包头有固定 12 个字节部分，以及可选的 `csrc` 和 `ext` 数据（在[为 janus-pp-rec 增加视频旋正功能](/2018/10/08/Janus-pp-rec-video-rotation/#rtp-报文格式简介)一文中有更详细的介绍）：
+包头有固定 12 个字节部分，以及可选的 `csrc` 和 `ext` 数据（在[为 janus-pp-rec 增加视频旋正功能](/2018/10/08/Janus-pp-rec-video-rotation/index.html#rtp-报文格式简介)一文中有更详细的介绍）：
 
 ```
     0                   1                   2                   3
