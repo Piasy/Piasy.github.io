@@ -13,6 +13,8 @@ _其他视频编码格式的封装和解封装大体思路应该是一样的，�
 
 _注：本文是我对这块代码、协议理解的总结，如果你也打算钻研这块代码，那本文可能有一点助益，如果你没有这个打算，那我建议趁早关闭本页面_。
 
+2019.11.3 update: 文章 URL 里有 Mux Demux 字样，实乃谬误，本文分析的是封包和解包，与 Mux/Demux（多路复用和解多路复用）完全是两回事，特此纠正。
+
 ## 再谈 RTP 协议
 
 我们首先了解一下 RTP H.264 相关的 RFC，下面的内容是对两篇 RFC 的总结：[RTP: A Transport Protocol for Real-Time Applications](https://tools.ietf.org/html/rfc3550), [RTP Payload Format for H.264 Video](https://tools.ietf.org/html/rfc6184)。
