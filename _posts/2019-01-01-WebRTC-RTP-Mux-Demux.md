@@ -7,7 +7,7 @@ tags:
     - 网络
 ---
 
-之前我在[为 janus-pp-rec 增加视频旋正功能](/2018/10/08/Janus-pp-rec-video-rotation/#rtp-报文格式简介)一文中简单介绍了一点 RTP 协议的内容，重点关注的是视频方向的 RTP header extension，这次我们更深入的了解一下 RTP 协议的内容，看看 H.264 视频数据是如何封装和解封装的。
+之前我在[为 janus-pp-rec 增加视频旋正功能](/2018/10/08/Janus-pp-rec-video-rotation/index.html#rtp-报文格式简介)一文中简单介绍了一点 RTP 协议的内容，重点关注的是视频方向的 RTP header extension，这次我们更深入的了解一下 RTP 协议的内容，看看 H.264 视频数据是如何封装和解封装的。
 
 _其他视频编码格式的封装和解封装大体思路应该是一样的，大家可以举一反三；音频数据的封装和解封装，日后可能我会再整理一篇文章_。
 
