@@ -271,3 +271,9 @@ OSStatus status =
 至此，iOS 的视频采集、渲染、编码都已经分析完毕了，原本我打算和 Android 一样把 WebRTC 这块代码摘出来，形成 iOS VideoCRE 库，但头文件实在太多，而且依赖关系太复杂，所以只得作罢 :(
 
 接下来我会尝试把完整的 WebRTC 带到 Flutter 的世界里，形成 FlutterRTC，毕竟我还是比较看好 Flutter 的，敬请期待 :)
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

@@ -111,3 +111,9 @@ Metal 的处理过程如图：
 + 把数据上传到 GPU 中（GL 绘制指令）；
 
 关于 OpenGL ES 的基本使用，可以查阅 [iOS 官方文档](https://developer.apple.com/library/content/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/Introduction/Introduction.html)，以及 [OpenGL ES Android 教程](/tags/index.html#OpenGL)。
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

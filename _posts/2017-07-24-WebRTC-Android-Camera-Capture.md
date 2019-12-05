@@ -225,3 +225,9 @@ private static int getRotationDegree(int cameraId) {
 
 + [WebRTC-Android 源码导读（二）：预览实现分析](/2017/07/26/WebRTC-Android-Render-Video/index.html)
 + [WebRTC-Android 源码导读（三）：视频硬编码实现分析](/2017/08/08/WebRTC-Android-HW-Encode-Video/index.html)
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

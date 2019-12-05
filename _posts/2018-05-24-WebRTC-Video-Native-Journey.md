@@ -186,3 +186,9 @@ modules/video_coding/video_coding_impl.cc
 modules/video_coding/video_sender.cc
 modules/video_coding/generic_encoder.cc
 ```
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

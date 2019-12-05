@@ -227,3 +227,9 @@ app.listen('3033', function () {
 + `8089` 用于 Signal Server；
 + `3033` 用于 ICE Server；
 + `3478` 和 `59000-65000` 用于 TURN/STUN Server，**注意一定要开放 3478 udp 端口，否则 STUN Binding 请求进不去**；
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

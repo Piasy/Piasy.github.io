@@ -432,3 +432,9 @@ make install
 ```
 
 **2018.06.03 Update**: zlib 不需要自己编译，安卓系统已经带着了，在 `target_link_libraries` 里增加 `z` 即可。
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

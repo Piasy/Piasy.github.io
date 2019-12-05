@@ -138,3 +138,9 @@ modules/audio_coding/acm2/acm_receiver.h(cc)
 modules/audio_processing/audio_processing_impl.h(cc)
 modules/audio_processing/agc2/fixed_gain_controller.h(cc)
 ```
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

@@ -198,3 +198,9 @@ transceiver 何时与 SDP 里的 m section 关联呢？offer 端在创建 offer 
   - sli: slice loss indication
   - ccm fir: codec control message, full intra refresh
 + fec 类似于 rtx，也由 rtpmap 指明，它的参数由 fmtp 指明；
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

@@ -207,3 +207,9 @@ AudioFramePacketizer::onFrame, VideoFramePacketizer::onFrame
 有了上述基础后，就可以开始加日志排查我最初的问题了，然而当我部署好之后请人测试时，却发现问题不复现了，看来是 4.1.1 到 4.2 之间的某些修改解决了我的问题 :)
 
 最后，上述源码分析并不全面，是出于排查问题的目的进行的，分享出来权当抛转好了。
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">
