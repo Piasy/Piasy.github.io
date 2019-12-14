@@ -4,6 +4,7 @@ title: OWT Server 快速入门
 tags:
     - 实时多媒体
     - WebRTC
+    - OWT
 ---
 
 去年做了一个多平台的（Android/iOS/Windows）基于 WebRTC 的多人音视频通话的项目，客户端基于 WebRTC 最新的客户端代码封装业务逻辑，自己写信令对接 SFU，SFU 最初是对接的 Janus Gateway（所以我才会去给 Janus 提 PR），但 Janus 在中弱网下（ping 4% 丢包 100ms RTT）的表现非常差，一直处于卡死状态。
