@@ -83,22 +83,37 @@ DtlsTransport::write                            // (11)
 
 搞清楚了音视频数据的转发流程后，我们发现 OWT 对音视频 RTP 包做了解包和重新封包。其实音频倒也谈不上解包和封包，因为音频数据编码后都比较小，一个 RTP 包就能容纳，所以没有像视频那样复杂的封包和解包逻辑。
 
-但实际上 SFU 是不需要做 RTP 解包的，收到发布端的 RTP 包后直接转发给订阅端即可，OWT 这里做解包，应该是给 MCU 功能用的。
+~~但实际上 SFU 是不需要做 RTP 解包的，收到发布端的 RTP 包后直接转发给订阅端即可，OWT 这里做解包，应该是给 MCU 功能用的。~~
+
+经 OWT 官方指正，OWT 做 RTP 解包并非是为了 MCU 功能考虑，而是一个基础设计原则：
+
+> 将传输层事务在接入节点终结掉，媒体在集群中流转以“媒体帧”为封装单元，所有操作均在“帧交互层”以上进行。
+
+SFU 是否组帧，效果上并没有简单明确的好坏之分：
+
+> 端到端的全程延迟取决于每一帧什么时候被完整拼出来，而不是第一个包什么时候到达。理论上看并不会因为中间组过一次帧而显著增加“最后一块拼图”的到达时间，增加的只是将收齐的rtp包序列拼装成帧及将帧打成包序列的CPU计算过程的时间，这个时间一般是毫秒以内。另一方面将传输拆成帧接力的两段的话，可以比盲转更早发现丢包并请求重传，实际上是帮助减小了“最后一块拼图”的延迟。但实际弱网环境时刻在变化，很难模拟，需要实际测试一下效果，并调整各阶段的对抗手段，来达到相对较好的抗丢包效果。
 
 ## 服务端录制
 
-启用服务端录制需要调用 RESTful API，其处理流程如下：
+启用服务端录制需要调用 RESTful API，其处理流程为：
 
 ```
-management_api/api.js 定义 RESTful API 的处理函数 ->
+management_api/api.js ->                                                // (1)
 management_api/resource/recordingsResource.js exports.add ->
-management_api/requestHandler.js exports.addServerSideSubscription ->
-（agent/conference/conference.js that.rpcAPI 注册了 RPC server）
+management_api/requestHandler.js exports.addServerSideSubscription ->   // (2)
 agent/conference/conference.js that.addServerSideSubscription ->
-agent/conference/accessController.js that.initiate 根据 sessionOptions.type 找到 RPC server node 为 recording node ->
-agent/conference/rpcRequest.js that.initiate: direction 是 out，故 RPC 调用（recording node 的）subscribe ->
-agent/recording/index.js that.subscribe 创建 AVStreamOut
+agent/conference/accessController.js that.initiate ->                   // (3)
+agent/conference/rpcRequest.js that.initiate ->                         // (4)
+agent/recording/index.js that.subscribe                                 // (5)
 ```
+
+要点如下：
+
+1. 定义 RESTful API 的处理函数；
+1. `agent/conference/conference.js that.rpcAPI` 注册了 RPC server；
+1. 根据 `sessionOptions.type` 找到 RPC server node 为 recording node；
+1. direction 是 out，故 RPC 调用（recording node 的）subscribe；
+1. 创建 AVStreamOut；
 
 `AVStreamOut` 是 `agent/addons/avstreamLib` 扩展里的类型，其 C++ 实现为 `agent/addons/avstreamLib/AVStreamOutWrap.cc`，在 `AVStreamOutWrap::New` 中, type 是 `file`，故实际创建的是 `owt_base::MediaFileOut`。另一种 type 是 `streaming`，用于转推 `rtsp`/`rtmp`/`hls`/`dash`。
 
@@ -158,3 +173,9 @@ build/Release/mediaFrameMulticaster.node: undefined symbol: _ZN7log4cxx6Logger9g
 这是因为该模块没有链接 `log4cxx`，在相应模块的 `binding.gyp` 的 `libraries` 中添加 `'-llog4cxx',` 即可。例如上面是 `agent/addons/mediaFrameMulticaster` 模块，那就修改 `agent/addons/mediaFrameMulticaster/binding.gyp` 即可。
 
 此外，每个模块下都有 `log4cxx.properties` 和 `log4js_configuration.json`，用于控制日志输出的级别，需要注意如果开的日志级别不够，可能在日志文件里看不到日志。
+
+---
+
+欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
+
+<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">
