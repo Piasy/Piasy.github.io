@@ -77,7 +77,7 @@ grunt
 
 ``` bash
 cd ~/owt-server-4.2/ && \
-./scripts/pack.js -t all -f -a -s ~/owt-client-javascript-4.2/dist/samples/conference/
+./scripts/pack.js -f -s ~/owt-client-javascript-4.2/dist/samples/conference/
 ```
 
 说明：

@@ -117,7 +117,7 @@ agent/recording/index.js that.subscribe                                 // (5)
 
 `AVStreamOut` 是 `agent/addons/avstreamLib` 扩展里的类型，其 C++ 实现为 `agent/addons/avstreamLib/AVStreamOutWrap.cc`，在 `AVStreamOutWrap::New` 中, type 是 `file`，故实际创建的是 `owt_base::MediaFileOut`。另一种 type 是 `streaming`，用于转推 `rtsp`/`rtmp`/`hls`/`dash`。
 
-`agent/recording/index.js createFileOut` 函数里，创建 `AVStreamOut` 时传入了一个状态回调函数（TODO：何时会触发回调？？？），如果没有发生错误，就会调用 `notifyStatus` 抛出 `ready` 消息，之后的处理流程为（在 [OWT Server 快速入门：subscribe 建立数据转发关系](/2019/04/14/OWT-Server-Quick-Start/index.html#subscribe-%E5%BB%BA%E7%AB%8B%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91%E5%85%B3%E7%B3%BB)曾分析过订阅端的流程，这里稍作更新即可得到录制的流程）：
+`agent/recording/index.js createFileOut` 函数里，创建 `AVStreamOut` 时传入了一个状态回调函数（_应该是由 `AVStreamOut::notifyAsyncEvent` 函数调用触发_），如果没有发生错误，就会调用 `notifyStatus` 抛出 `ready` 消息，之后的处理流程为（在 [OWT Server 快速入门：subscribe 建立数据转发关系](/2019/04/14/OWT-Server-Quick-Start/index.html#subscribe-%E5%BB%BA%E7%AB%8B%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91%E5%85%B3%E7%B3%BB)曾分析过订阅端的流程，这里稍作更新即可得到录制的流程）：
 
 ```
 agent/recording/index.js notifyStatus ->
