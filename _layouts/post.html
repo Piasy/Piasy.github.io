@@ -52,6 +52,18 @@ layout: default
 
 				{{ content }}
 
+                {% assign show_kpqr = false %}
+                {% for tag in site.tags %}
+                    {% if tag[0] == "WebRTC" or tag[0] == "实时多媒体" %}
+                        {% assign show_kpqr = true %}
+                    {% endif %}
+                {% endfor %}
+                {% if show_kpqr %}
+                    <hr>
+                    <p>欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。</p>
+                    <p><img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px"></p>
+                {% endif %}
+
                 <hr>
 
                 {% if site.duoshuo_share and site.duoshuo_username %}

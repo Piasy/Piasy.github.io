@@ -137,7 +137,7 @@ public void batchUserInfoUnordered() {
 
     verify(mUserInfoApi, times(1)).multipleUserInfo(uids);                // 6
     verifyNoMoreInteractions(mUserInfoApi);
-    
+
     verify(mUserDbAccessor, times(1)).getIn(uids);                        // 7
     verify(mUserDbAccessor, times(1))
         .put(Collections.singletonList(user));
@@ -202,7 +202,7 @@ But was 2 times. Undesired invocation:
 Observable<Pair<List<User>, long[]>> cacheResult =
         Observable.defer(() -> {
             // ...
-        });
+        })
         .publish()
         .autoConnect(2)
 ```

@@ -193,9 +193,3 @@ if (speakerOn) {
 好了，WebRTC ADM 的分析我们就进行到这里，这部分代码其实也是相对独立的，稍作裁剪就能摘出来直接使用，至于如何摘出 WebRTC 相关的 C++ 代码文件，可以看看[我写的一个小脚本](https://github.com/Piasy/HackWebRTC#webrtc-src-extractor)。
 
 再会 :)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

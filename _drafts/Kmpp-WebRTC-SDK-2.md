@@ -1,4 +1,12 @@
-# Kotlin multi-platform
+# 要点
+
++ ObjC 静态库：回调，对象 ObjC -> Kotlin -> ObjC，`__bridge` cast 导致 `EXC_BAD_ACCESS`；
++ native 共享源码；
++ native 回调 Kotlin，其他线程，`kotlin.native.initRuntimeIfNeeded()`；
++ native 返回字符串；
++ HTTP，HTTPS；
++ SocketIO，HTTPS；
++ Windows 静态库？
 
 ## Windows
 

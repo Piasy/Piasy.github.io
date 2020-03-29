@@ -263,9 +263,3 @@ ffmpeg -i audio.opus -i video.mp4 -c:a opus \
 + [RTP: A Transport Protocol for Real-Time Applications](https://tools.ietf.org/html/rfc3550#section-5.1)
 + [A General Mechanism for RTP Header Extensions](https://tools.ietf.org/html/rfc8285#section-4.2)
 + [3GPP TS 26.114 version 12.7.0 Release 12, 7.4.5](https://www.etsi.org/deliver/etsi_ts/126100_126199/126114/12.07.00_60/ts_126114v120700p.pdf)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

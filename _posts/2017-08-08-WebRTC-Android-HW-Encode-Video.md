@@ -202,9 +202,3 @@ WebRTC 的做法是，获取每个输出帧的 QP 值，如果 QP 值过大，�
 + [视频压缩编码和音频压缩编码的基本原理](http://blog.csdn.net/leixiaohua1020/article/details/28114081)
 + [Rate Control and H.264](http://www.pixeltools.com/rate_control_paper.html)
 + [CBR vs VBR Encoding](https://www.lifewire.com/difference-between-cbr-and-vbr-encoding-2438423)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

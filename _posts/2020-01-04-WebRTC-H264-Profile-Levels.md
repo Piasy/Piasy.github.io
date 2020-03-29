@@ -148,9 +148,3 @@ private boolean isH264HighProfileSupported(MediaCodecInfo info) {
 如果对比 Android 和 iOS PC Factory 的 createVideoSource 接口（iOS 叫 `videoSource`），我们会发现 Android 比 iOS 多一个 `isScreencast` 参数。实际上这个参数还比较重要，因为 WebRTC 内部会根据网络情况调整视频分辨率或帧率，而如果是屏幕共享（`isScreencast` 为 `true`）则不调分辨率。
 
 所以如果希望屏幕共享时能保持分辨率不变，那就需要对 iOS PC Factory 的接口稍作修改，增加一个 `isScreencast` 参数，并在 VideoSource 的 `is_screencast` 接口里返回。
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

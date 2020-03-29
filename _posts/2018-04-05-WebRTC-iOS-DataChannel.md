@@ -93,9 +93,3 @@ _dataChannel.delegate = self;
 ```
 
 _PS: 目前我对 iOS UI 编程尚不熟悉，所以 DataChannel 的使用没有 UI，代码在 [dc_text_chat 分支](https://github.com/Piasy/AppRTC-iOS/tree/dc_text_chat)_。
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

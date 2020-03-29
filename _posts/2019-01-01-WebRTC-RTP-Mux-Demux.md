@@ -424,9 +424,3 @@ _其实就是通过无符号数减法的溢出，把 RFC 定义的两种或起�
 好了，从 18 年 10 月到 19 年，这篇（_又臭又长_）的文章，总算完成了。
 
 RTP 协议 WebRTC 里用到了的部分，以及 WebRTC 封包和解包的代码主要流程，我算是搞清楚了个大概，希望能在你钻研这块代码的过程中有一点助益 :)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

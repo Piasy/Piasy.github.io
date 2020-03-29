@@ -201,9 +201,3 @@ Logging.d(TAG, "onMessage " + msg);
 [^sdp]: [SDP: Session Description Protocol](https://tools.ietf.org/html/rfc4566)
 [^offer-answer]: [JavaScript Session Establishment Protocol](https://tools.ietf.org/html/draft-ietf-rtcweb-jsep-22)
 [^ice]: [Interactive Connectivity Establishment (ICE): A Protocol for Network Address Translator (NAT) Traversal for Offer/Answer Protocols](https://tools.ietf.org/html/rfc5245)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

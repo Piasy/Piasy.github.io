@@ -9,6 +9,8 @@ tags:
 
 今年上半年开始接触 OWT，当时用起来之后整理了 [OWT Server 快速入门](/2019/04/14/OWT-Server-Quick-Start/index.html)，其中初步涉及了音视频数据的转发流程。最近在考虑实现客户端的推收流录制，正好之前也遇见了 OWT 录制的一些问题，所以这次就先对 OWT 的音视频数据转发和录制流程探个究竟，一方面可以作为客户端实现的借鉴，另一方面也可以为向 OWT Server 提交 PR 做好准备。
 
+_注：本文分析的代码，是 OWT Server 的 4.2.x 分支，4.3.x 更新了 Licode 的版本，有了较大的变化_。
+
 ## 音视频数据转发流程
 
 Licode（OWT 使用了一些 Licode 的代码）定义了 `Transport` 接口，并提供了 `DtlsTransport` 实现；`WebRtcConnection` 类实现了 `TransportListener` 接口，故 `DtlsTransport::onIceData` 收到发布端的数据并解密后，会交给 `WebRtcConnection::onTransportData`。`DtlsTransport` 的数据从哪里来？来自 `LibNiceConnection::onData`，它是对 [libnice/libnice](https://github.com/libnice/libnice) 的封装。原本 Licode 使用的是 [resiprocate/nICEr](https://github.com/resiprocate/nICEr)，对应的函数为 `NicerConnection::onData`，但 OWT 用 libnice 替换了 nICEr。
@@ -173,9 +175,3 @@ build/Release/mediaFrameMulticaster.node: undefined symbol: _ZN7log4cxx6Logger9g
 这是因为该模块没有链接 `log4cxx`，在相应模块的 `binding.gyp` 的 `libraries` 中添加 `'-llog4cxx',` 即可。例如上面是 `agent/addons/mediaFrameMulticaster` 模块，那就修改 `agent/addons/mediaFrameMulticaster/binding.gyp` 即可。
 
 此外，每个模块下都有 `log4cxx.properties` 和 `log4js_configuration.json`，用于控制日志输出的级别，需要注意如果开的日志级别不够，可能在日志文件里看不到日志。
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">

@@ -130,9 +130,3 @@ Android Studio 的调试毕竟只是为了加断点做一些流程分析，而�
 ## 总结
 
 好了，WebRTC 编译和调试的这场盛宴就到此为止了，希望大家喜欢。热心的朋友，可以给这个 GitHub 仓库贡献一个 star，或者 follow 我，再会 :)
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">
