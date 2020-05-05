@@ -7,9 +7,41 @@
 + HTTP，HTTPS；
 + SocketIO，HTTPS；
 + Windows 静态库？
++ FFmpeg
 
 ## Windows
 
 `.\gradlew assemble` 时可能报错 `Java Could not reserve enough space for object heap error`，[需要添加环境变量 `_JAVA_OPTIONS` 取值 `-Xmx512M`](https://stackoverflow.com/a/24406013/3077508)。
 
 另需要安装 64 位 jdk，否则可能报错 `Can't load AMD 64-bit .dll on a IA 32-bit platform`。
+
+## Linux
+
+std::regex std::bad_cast
+
+## mars xlog
+
+```bash
+comm/xlogger/xlogger.h          xlogger2
+comm/xlogger/xlogger.h          __xlogger_c_write
+comm/xlogger/xloggerbase.c      xlogger_Write
+comm/xlogger/xloggerbase.c      __xlogger_Write_impl
+log/src/appender.cc             xlogger_appender
+```
+
+在 `XLogger::VPrintf` 和 `xlogger_appender` 中，均对日志长度做了限定：不超过 4096。
+
+## profiling
+
+```bash
+git clone https://github.com/brendangregg/FlameGraph
+
+perf record -a -F 1000 --call-graph dwarf ./LinuxExample
+perf record -a -F 1000 -g ./LinuxExample
+perf script | ../FlameGraph/stackcollapse-perf.pl > out.perf-folded
+../FlameGraph/flamegraph.pl out.perf-folded > perf-kernel.svg
+```
+
+`--call-graph dwarf` 和 `-g` 结果略有不同，可以都试试。
+
++ [CPU Flame Graphs](http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
