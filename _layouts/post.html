@@ -54,7 +54,7 @@ layout: default
 
                 {% assign show_kpqr = false %}
                 {% for tag in site.tags %}
-                    {% if tag[0] == "WebRTC" or tag[0] == "实时多媒体" %}
+                    {% if tag[0] == "WebRTC" or tag[0] == "实时多媒体" or tag[0] == "AvConf" or tag[0] == "OWT" %}
                         {% assign show_kpqr = true %}
                     {% endif %}
                 {% endfor %}

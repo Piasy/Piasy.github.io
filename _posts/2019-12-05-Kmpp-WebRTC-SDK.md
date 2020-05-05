@@ -4,6 +4,7 @@ title: 基于 Kotlin multiplatform 的多平台 WebRTC SDK
 tags:
     - 多平台
     - 实时多媒体
+    - AvConf
 ---
 
 将近两年前，我发布了[移动客户端跨平台开发方案探索](/2017/12/16/Mobile-Client-Cross-Platform-Development/index.html)，初步探索了 Javascript, Dart, Java, C++ 这四种语言用作多平台开发的框架。这两年的时间里，Java (J2ObjC) 的方案比较好地满足了鼎点 Android/iOS/Windows SDK 的需求，痒点虽然有，但尚能忍受，这里列几个典型的痒点：
@@ -298,9 +299,3 @@ try {
 最后，本项目之后考虑开源，敬请期待 :)
 
 _细节仍有疑问？还不过瘾？_
-
----
-
-欢迎大家加入 Hack WebRTC 星球，和我一起讨论。
-
-<img src="https://imgs.piasy.com/2019-11-14-piasy-knowladge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">
