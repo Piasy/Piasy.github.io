@@ -19,6 +19,8 @@
 
 std::regex std::bad_cast
 
+https://github.com/yhirose/cpp-httplib/issues/422
+
 ## mars xlog
 
 ```bash
