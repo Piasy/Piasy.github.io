@@ -20,6 +20,8 @@ tags:
 
 今天我花了将近六个小时，成功把 iOS WebRTC arm64 架构的库文件从 5.3MB 缩减到了 2.3MB，体积缩减 56.6%，还是非常可观的，现在我把这个过程分享给大家。
 
+_Android 再花了五个半小时之后，成功把 armv7 架构的库文件从 4.1MB 缩减到了 1.7MB，体积缩减 58.5%_。
+
 思路就是前面回答的，先试试现有的 `peerconnectionfactory_no_media_objc` 是否好使，不行再看 M63 的修改能否参考。
 
 ## `peerconnectionfactory_no_media_objc`
@@ -120,8 +122,18 @@ modules 里面最显眼的就是 `audio_processing` 了，通过在所有的 `BU
 
 这时我把原有的 `framework_objc` 删掉，通过脚本编译发布版，得到了 2.3MB 的库文件。
 
----
+## Android
 
-安卓的编译，因为代码还没同步完，所以还得再等等，不过估计也只需要修改 sdk 下的 BUILD.gn 以及 JNI 代码了，Java 代码要动也可以，更简单。
+Android 后来代码始终无法同步成功，最终只能选择在云服务器上进行编译。编译时最大的麻烦是，在我的 Docker 镜像里，`clang++` 命令不输出任何信息，所以失败了没法看错在哪里。后来发现直接在服务器上运行 `clang++` 命令，能输出错误信息，好歹可以调了。
+
+## 依赖分析
+
+其实在裁剪 iOS 的时候，在进行逆向分析时，我就想能否很方便地找到依赖某个 target 的其他 target 呢？比如我想去掉 `audio_processing` 时，如果能找到依赖了它的 targets，那我直接删掉它们的这个依赖即可。不过经过一番 Google，没有发现可用的命令，只找到了列出一个 target 的所有依赖的命令，所以只能通过全局搜索 target 名来低效查找。
+
+后来裁剪 Android 时，我灵光一闪，其实上面找到的命令就可以用了，找最终编译动态库的 target 的所有依赖即可，然后搜索 `audio_processing`，就可以找到依赖了它的 targets 了。
+
+通过这个办法，我成功找到了 Android 最关键的一个依赖：`libjingle_peerconnection_jni` 依赖了 `//api:create_peerconnection_factory`，并最终导致了一大堆其他模块。去掉它之后，编译目标数从 1747 降为了 999。不过库体积倒是只从 1779800 B 降为了 1779752 B，不过未裁剪的库大小为 4312416 B，现在已经缩减了 58.7%，差不多了。
+
+---
 
 完整代码，可以从 [GitHub 获取](https://github.com/cdnbye/DataChannel)。
