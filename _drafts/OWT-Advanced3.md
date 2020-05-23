@@ -2,10 +2,18 @@
 
 ## RTCP
 
-RTCP packet type:
+RTCP 是 RTP 的一个姊妹协议，它的主要功能是为 RTP 传输的多媒体数据提供 QoS 反馈，这种反馈通过定期发送一些统计信息来实现，比如传输的数据量、包数、丢包率、包延迟的变化、RTT 等。A 向 B 发送 RTP 报文来实际传输多媒体数据，B 则向 A 定期发送 RTCP 报文进行 QoS 反馈，A 可以根据收到的 RTCP 报文，来调整流控参数，甚至切换 codec。
+
+最基本的 RTCP 报文类型：
 
 + SR, sender report: 200;
 + RR, receiver report: 201;
++ SDES, source description: 202;
++ BYE, goodbye: 203;
++ APP, application-specific message: 204;
+
+
+
 + RTPFB: 205;
 
 OWT Server 流程：

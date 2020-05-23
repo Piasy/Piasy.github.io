@@ -121,7 +121,7 @@ RTP 报文分为 header 和 payload 两部分，其中 header 又分为 fixed he
 
 + 一个 RTP 报文里只允许一个 header extension，「defined by profile」的取值用来标识后续的 ext header 的含义；
 + length 的单位为 4 字节，表明 header extension 部分的长度，允许为 0；
-+ header extension 部分大体为 ID + len + data 的格式，len 为 data 字节数减一；
++ header extension 部分大体为 ID + len + data 的格式；
 
 header extension RFC 8285 定义了两种：单字节 header 和双字节 header。
 
@@ -149,6 +149,8 @@ header extension RFC 8285 定义了两种：单字节 header 和双字节 header
       |                          data                                 |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
+
+单字节 header 的 L (len) 字段是 data 字节数减一。
 
 ### 双字节 header
 
@@ -181,6 +183,8 @@ header extension RFC 8285 定义了两种：单字节 header 和双字节 header
       |                          data                                 |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
+
+双字节 header 的 L (len) 字段是 data 字节数，可以为 0。
 
 ### 实际例子
 
