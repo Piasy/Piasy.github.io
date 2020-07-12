@@ -51,7 +51,7 @@ WebRTC 的渲染接口定义为 `VideoRenderer`，它用于预览的实现就是
 
 OpenGL（Open Graphics Library）是一套跨平台的渲染 2D、3D 计算机图形的库，通常用于视频、游戏，利用 GPU 进行硬件加速处理。OpenGL ES（Open Graphics Library for Embedded Systems，也叫 GLES）是 OpenGL 的一个子集，用于嵌入式系统，在安卓平台上，我们使用的实际上是 GLES API。GLES 也是跨平台的，既然跨平台，那就一定有连接跨平台 API 和具体平台实现的东西，这就是 EGL。EGL 是连接 OpenGL/GLES API 和底层系统 window system（或者叫做“操作系统的窗口系统”）的桥梁（抽象层），它负责上下文管理、窗口/缓冲区绑定、渲染同步（上层绘制 API 和下层渲染 API），让我们可以利用 OpenGL/GLES 实现高性能、硬件加速的 2D/3D 图形开发。
 
-> EGL™ is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs. 
+> EGL™ is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs.
 
 所谓的 OpenGL 环境管理，其实就是 EGL 环境的管理：`EGLContext`，`EGLSurface` 和 `EGLDisplay`。
 
