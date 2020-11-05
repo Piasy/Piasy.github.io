@@ -49,7 +49,7 @@ unzip owt-server-4.2.zip
 ``` bash
 cd owt-server-4.2 && \
 ./scripts/installDepsUnattended.sh && \
-npm install -g node-gyp graceful-fs grunt-cli && \
+npm install -g node-gyp@6.1.0 graceful-fs grunt-cli && \
 ./scripts/build.js -t mcu --check
 ```
 
