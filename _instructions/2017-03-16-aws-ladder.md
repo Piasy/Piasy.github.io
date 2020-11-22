@@ -18,9 +18,9 @@ RT-AC68U + koolshare 380.63_0-X7.2（升级后 format jffs at next boot 并重�
 
 详细步骤：
 
-+ 登录管理后台 - 系统管理（页面左侧栏高级设置倒数第三项） - 固件升级 - 上传，选择 `RT-AC68U_380.63_X7.2.trx` 文件；
++ 登录管理后台 - 系统管理（页面左侧栏高级设置倒数第三项） - 固件升级 - 上传，选择 [`RT-AC68U_380.63_X7.2.trx`](https://firmware.koolshare.cn/Koolshare_Merlin_Legacy_380/ASUS/RT-AC68U/X7.2/) 文件；
 + 升级完成后，登录管理后台 - 系统管理 - 系统设置，勾选「Format JFFS partition at next boot」，「Enable JFFS custom scripts and configs」，点击「应用本页面设置」（页面最底部），再点击「重新启动」（页面上方）；
 + 重启完毕后，登录管理后台 - Software center（左侧栏最底部）- 更新；
-+ 更新完毕后，Software center - 离线安装 - 选择 `shadowsocks_3.9.9.tar.gz` - 上传并安装；
++ 更新完毕后，Software center - 离线安装 - 选择 `shadowsocks_3.9.9.tar.gz`（或从 https://github.com/heweiye/Merlin_Shadowsocks 下载最新版本） - 上传并安装；
 + 界面显示「离线安装插件成功」后，点击 Software center，可以看到「科学上网」插件；
 + 进入科学上网插件 - 手动添加 - SS 节点，设置节点别名、服务器地址、服务器端口、密码、加密方式，其他选项保持默认，点击添加；节点管理 - 勾上「科学上网开关」，点击应用；
