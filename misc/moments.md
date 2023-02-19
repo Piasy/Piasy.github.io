@@ -52,4 +52,4 @@ permalink: /moments/
   
   * 2013 年冬，大三，第一次独立安卓项目，[大学生旅游路线自动规划](https://github.com/Piasy/student_travel_app){:target="_blank"}，参加学校挑战杯、创业课、X-lab 比赛等项目
   
-  * 2013 年秋，大三，和 Android 的第一次相遇，[QQ堂游戏](https://github.com/Piasy/QQTang){:target="_blank"}，软件工程大作业
+  * 2013 年秋，大三，和 Android 的第一次相遇，[QQ 堂游戏](https://github.com/Piasy/QQTang){:target="_blank"}，软件工程大作业
