@@ -6,8 +6,8 @@ permalink: /interesting/
 
 ## 公开演讲
 
-  * 2016.11.17，[droidcon Beijing，打通 RxJava 的任督二脉](/talks/RxJava-DroidCon-Beijing-Piasy/index.html)，[直播回放](/RxJava-droidcon-playback/index.html)
-  * 2016.08.07，[GDG meet up，近乎完美的 Android model 层架构](/talks/Perfect-Android-Model-Layer-GDG-Meetup-Piasy/index.html)，[直播回放](/GDG-meetup-playback/index.html)
+  * 2016.11.17，[droidcon Beijing，打通 RxJava 的任督二脉](https://piasy.github.io/talks/RxJava-DroidCon-Beijing-Piasy/)，[直播回放](/RxJava-droidcon-playback/index.html)
+  * 2016.08.07，[GDG meet up，近乎完美的 Android model 层架构](https://piasy.github.io/talks/Perfect-Android-Model-Layer-GDG-Meetup-Piasy/)，[直播回放](/GDG-meetup-playback/index.html)
 
 ## 杂
 
