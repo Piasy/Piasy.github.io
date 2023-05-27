@@ -195,11 +195,12 @@ void PeerConnectionImpl::onLocalDescription(const std::shared_ptr<SdpCallback>& 
 
 测试时我是起了一百对 pc，每对 pc 之间每隔 50ms 发送两条比较短小的测试消息，然后用 Android Studio 的 Profiler 看内存和 CPU 占用。
 
-| lib               | mem idle    | mem perf      | cpu perf |
-| -----------       | ----------- | -----------   | -------  |
-| libDC-debug       | 142MB       | 209MB (303MB) | 56%      |
-| libDC-release     | 142MB       | 209MB (303MB) | 44%      |
-| libWebRTC-release | 139MB       | 188MB (282MB) | 20%      |
+| lib                     | mem idle    | mem perf      | cpu perf |
+| -----------             | ----------- | -----------   | -------  |
+| libDC-debug             | 142MB       | 209MB (303MB) | 56%      |
+| libDC-release           | 142MB       | 209MB (303MB) | 44%      |
+| libDC-release (native)  | 144MB       | 210MB         | 30%      |
+| libWebRTC-release       | 139MB       | 188MB (282MB) | 20%      |
 
 测量结果还是比较出乎意料的：
 
@@ -209,6 +210,10 @@ void PeerConnectionImpl::onLocalDescription(const std::shared_ptr<SdpCallback>& 
 + 我也怀疑过是本地 module 依赖的 debug 配置问题，改为依赖 release aar，发现 CPU 占用有所降低，但是内存占用基本没区别；
 
 那么究竟是 libdatachannel 性能存在问题，还是封装实现的问题，还是测试 demo 的问题，亦或是 Pion 作者的结论有误？朋友们就且听下回分解啦 :)
+
+_文章发布后，花了一点时间快速试了一下抛开封装代码，直接在 native 层做性能测量，测量结果排除了封装代码的问题。_
+
+![内存占用详情](https://imgs.piasy.com/2023-04-11-mem-detail-compare.png)
 
 性能测量截图：
 
