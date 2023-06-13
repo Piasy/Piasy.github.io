@@ -5,7 +5,7 @@ title: 这个国庆假期我做了些什么？
 
 今年国庆假期，我依然没有出去。那我在家做了些什么？
 
-大抵就是三件事：给家里的宝宝做了一顿丰盛的排骨；一口气翻译了六篇 Advanced RxJava 博客，完成了六周的量，目前这个系列还有 18 篇文章，预计 5 个月之后就能翻译完；花了 50 个小时，验证了 [AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"} 在开启安卓新项目时的强大优势，怎么验证的？花了 50 个小时，就开发出了一个复杂的信息中心 APP 1.0 版本，架构先进，可维护性与可扩展性极佳。
+大抵就是三件事：；一口气翻译了六篇 Advanced RxJava 博客，完成了六周的量，目前这个系列还有 18 篇文章，预计 5 个月之后就能翻译完；花了 50 个小时，验证了 [AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"} 在开启安卓新项目时的强大优势，怎么验证的？花了 50 个小时，就开发出了一个复杂的信息中心 APP 1.0 版本，架构先进，可维护性与可扩展性极佳。
 
 > [https://github.com/Piasy/AndroidTDDBootStrap](https://github.com/Piasy/AndroidTDDBootStrap){:target="_blank"}
 
