@@ -22,4 +22,4 @@ permalink: /about/
 
 欢迎大家加入 Hack WebRTC 星球，和我一起钻研 WebRTC。
 
-<img src="https://imgs.piasy.com/2021-02-01-piasy-knowledge-planet.jpeg" alt="piasy-knowladge-planet" style="height:400px">
+<img src="https://imgs.piasy.com/2023-09-23-piasy-knowledge-planet.JPG" alt="piasy-knowladge-planet" style="height:400px">

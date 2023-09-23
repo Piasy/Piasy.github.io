@@ -66,7 +66,7 @@ ga_domain: blog.piasy.com
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "NEVER STOP"
-sidebar-avatar: https://imgs.piasy.com/2021-02-01-piasy-knowledge-planet.jpeg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://imgs.piasy.com/2023-09-23-piasy-knowledge-planet.JPG      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
